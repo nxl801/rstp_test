@@ -1,0 +1,81 @@
+# RSTP测试配置文件
+test_environment:
+  vmware:
+    vmrun_path: "C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe"
+    vmnet_name: "VMnet1"
+
+  timeouts:
+    convergence: 10
+    ha_switchover: 30
+    command_timeout: 30
+
+  traffic:
+    iperf_bandwidth: "100M"
+    iperf_port: 5201
+    test_duration: 60
+
+  paths:
+    log_dir: "./logs"
+    report_dir: "./reports"
+    temp_dir: "/tmp/rstp_test"
+
+# 虚拟机配置
+vms:
+  dut:
+    name: "DUT"
+    ip: "192.168.1.123"
+    username: "root"
+    password: "1"
+    vm_path: "/path/to/dut.vmx"
+    snapshot: "clean_state"
+# interface seq:[host-only, dut, NAT ]
+# eth0: host-only
+    interfaces: ["eth0","eth2","eth1",]
+
+  nodes:
+    - name: "TestNode1"
+      ip: "192.168.13.136"
+      username: "admin"
+      password: "8N10xiaol"
+      vm_path: "Z:/testNode1/Ubuntu 64 位.vmx"
+      snapshot: "cleansnapshot"
+# interface seq:[host-only, dut, NAT ]
+# eth0: host-only
+      interfaces: ["eth0","eth2","eth1",]
+
+    - name: "TestNode2"
+      ip: "192.168.13.137"
+      username: "admin"
+      password: "8N10xiaol"
+      vm_path: "Z:/testNode2/Ubuntu 64 位.vmx"
+      snapshot: "cleansnapshot"
+# interface seq:[host-only, dut, NAT ]
+# eth0: host-only
+      interfaces: ["eth0","eth2","eth1",]
+
+
+
+
+
+# RSTP参数测试矩阵
+rstp_parameters:
+  bridge_priority:
+    min: 12288
+    max: 61440
+    step: 4096
+    invalid: [4097, 12289, 70000]
+
+  hello_time:
+    min: 1
+    max: 10
+    default: 2
+
+  forward_delay:
+    min: 4
+    max: 30
+    default: 15
+
+  max_age:
+    min: 6
+    max: 40
+    default: 20
