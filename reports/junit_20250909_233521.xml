@@ -1,0 +1,1161 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="13" skipped="7" tests="56" time="2190.412" timestamp="2025-09-09T23:35:22.782842+08:00" hostname="DESKTOP-FDB8GR9"><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_port_state_transitions" time="462.753"><skipped type="pytest.skip" message="没有找到活动端口，跳过状态转换测试">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_additional_rstp.py:56: 没有找到活动端口，跳过状态转换测试</skipped></testcase><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_bpdu_propagation_and_keepalive" time="46.217" /><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_disabled_port_exclusion_enhanced" time="17.847"><skipped type="pytest.skip" message="需要至少2个活动端口进行测试">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_additional_rstp.py:314: 需要至少2个活动端口进行测试</skipped></testcase><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_proposal_agreement_handshake" time="26.712" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_tcn_topology_change_notification" time="31.156" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_edge_port_behavior" time="21.511" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_shared_vs_point_to_point_links" time="20.833" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_backup_port_concept_verification" time="22.900" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_shared_medium_simulation_attempt" time="22.220" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_backup_port_documentation_verification" time="0.007" /><testcase classname="tests.test_convergence.TestConvergence" name="test_direct_link_failure" time="16.525"><failure message="AssertionError: 新Root Port(eth2)应该不同于原Port(eth2)&#10;assert 'eth2' != 'eth2'">self = &lt;test_convergence.TestConvergence object at 0x00000298E8354410&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E8347A50&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E820BA70&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E8428AA0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E836F950&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E83967A0&gt;
+fault_injector = &lt;src.fault_injector.FaultInjector object at 0x00000298E837A900&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E83792B0&gt;
+
+    def test_direct_link_failure(self, dut_manager, test_nodes,
+                                 network_topology, rstp_analyzer,
+                                 fault_injector, convergence_monitor):
+        """TC.AUTO.2.1: 直接链路故障测试"""
+        logger.info("开始直接链路故障测试")
+    
+        # 创建环形拓扑提供冗余路径
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 调整优先级，确保 DUT 不是根网桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=16384)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=28672)
+    
+        # 等待初始收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        initial_convergence = convergence_monitor.wait_for_convergence(analyzers)
+        logger.info(f"初始收敛时间: {initial_convergence:.2f}秒")
+    
+        # 确定DUT的Root Port
+        info = rstp_analyzer.get_bridge_info()
+        root_port = None
+        for port_name, port_info in info.ports.items():
+            if port_info.role == PortRole.ROOT:
+                root_port = port_name
+                break
+    
+        assert root_port, "未找到Root Port"
+        logger.info(f"DUT的Root Port: {root_port}")
+    
+        # 测量故障收敛时间
+        start_time = time.time()
+        fault_injector.link_down(root_port)
+    
+        # 等待重新收敛
+        convergence_time = convergence_monitor.wait_for_convergence(analyzers)
+    
+        # 验证收敛时间（RSTP应该小于2秒）
+        assert convergence_time &lt; 2.0, \
+            f"RSTP收敛时间过长: {convergence_time:.2f}秒"
+    
+        # 验证新的Root Port
+        new_info = rstp_analyzer.get_bridge_info()
+        new_root_port = None
+        for port_name, port_info in new_info.ports.items():
+            if port_info.role == PortRole.ROOT:
+                new_root_port = port_name
+                break
+    
+        assert new_root_port, "应该选举新的Root Port"
+&gt;       assert new_root_port != root_port, \
+            f"新Root Port({new_root_port})应该不同于原Port({root_port})"
+E       AssertionError: 新Root Port(eth2)应该不同于原Port(eth2)
+E       assert 'eth2' != 'eth2'
+
+tests\test_convergence.py:73: AssertionError</failure></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_root_bridge_failure" time="0.040"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_convergence.py:80: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_multiple_link_failures" time="21.531" /><testcase classname="tests.test_convergence.TestConvergence" name="test_convergence_with_traffic" time="40.438" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_backup_port_simulation" time="17.998" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_comprehensive_port_state_transitions" time="13.348"><failure message="AssertionError: 需要至少一个活动端口进行状态转换测试&#10;assert 0 &gt; 0&#10; +  where 0 = len({})">self = &lt;test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage object at 0x00000298E8354A50&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E8360210&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8445010&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E841F380&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E836EEA0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E84E0120&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E83797F0&gt;
+
+    def test_comprehensive_port_state_transitions(self, dut_manager, test_nodes,
+                                                 network_topology, rstp_analyzer, convergence_monitor):
+        """全面的端口状态转换测试
+    
+        测试端口在各种场景下的状态转换，特别关注Learning状态
+        """
+        logger.info("开始全面端口状态转换测试")
+    
+        # 创建测试拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置优先级确保DUT不是根桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 获取测试端口
+        initial_info = rstp_analyzer.get_bridge_info()
+        active_ports = {name: port for name, port in initial_info.ports.items()
+                       if port.state != PortState.DISABLED}
+    
+&gt;       assert len(active_ports) &gt; 0, "需要至少一个活动端口进行状态转换测试"
+E       AssertionError: 需要至少一个活动端口进行状态转换测试
+E       assert 0 &gt; 0
+E        +  where 0 = len({})
+
+tests\test_enhanced_rstp_coverage.py:203: AssertionError</failure></testcase><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_detailed_bpdu_analysis" time="12.923"><failure message="ZeroDivisionError: integer division or modulo by zero">self = &lt;test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage object at 0x00000298E836C180&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E8360210&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8445010&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E841F380&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E836EEA0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E84C4A10&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E837BA10&gt;
+
+    def test_detailed_bpdu_analysis(self, dut_manager, test_nodes,
+                                   network_topology, rstp_analyzer, convergence_monitor):
+        """详细的BPDU分析测试
+    
+        验证RSTP的分布式BPDU生成机制和保活功能
+        """
+        logger.info("开始详细BPDU分析测试")
+    
+        # 创建多节点拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置不同优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
+    
+        # 等待收敛
+        logger.info("等待RSTP收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 获取Hello Time配置
+        dut_info = rstp_analyzer.get_bridge_info()
+        hello_time = getattr(dut_info, 'hello_time', 2)
+        logger.info(f"Hello Time: {hello_time}秒")
+    
+        # 测试1: 验证所有交换机都发送BPDU
+        logger.info("=== 测试1: 验证分布式BPDU生成 ===")
+    
+        # 在多个接口上同时捕获BPDU
+        active_ports = [name for name, port in dut_info.ports.items()
+                       if port.state != PortState.DISABLED]
+    
+        bpdu_sources = set()
+        total_bpdus = 0
+        capture_duration = hello_time * 6  # 捕获6个Hello周期
+    
+        for port_name in active_ports[:2]:  # 测试前2个端口
+            logger.info(f"在端口{port_name}上捕获BPDU")
+            try:
+                bpdus = rstp_analyzer.capture_bpdu(port_name, duration=capture_duration)
+                total_bpdus += len(bpdus)
+    
+                # 分析BPDU来源
+                for bpdu in bpdus:
+                    if hasattr(bpdu, 'bridge_id'):
+                        bpdu_sources.add(bpdu.bridge_id)
+                    elif hasattr(bpdu, 'source_bridge'):
+                        bpdu_sources.add(bpdu.source_bridge)
+    
+                logger.info(f"端口{port_name}捕获到{len(bpdus)}个BPDU")
+            except Exception as e:
+                logger.warning(f"端口{port_name}BPDU捕获失败: {e}")
+    
+        logger.info(f"总共捕获{total_bpdus}个BPDU，来自{len(bpdu_sources)}个不同源")
+    
+        # 验证BPDU数量
+&gt;       expected_min_bpdus = max(2, (capture_duration // hello_time) - 1)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: integer division or modulo by zero
+
+tests\test_enhanced_rstp_coverage.py:338: ZeroDivisionError</failure></testcase><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_topology_change_comprehensive" time="14.168" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_primary_controller_failure" time="0.001"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:40: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_rstp_reconvergence_no_switchover" time="28.006" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_split_brain_scenario" time="10.497" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_switchover_with_traffic" time="0.000"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:178: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_failback" time="0.002"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:227: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[12288]" time="3.812" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[16384]" time="3.658" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[32768]" time="3.655" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[61440]" time="3.660" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[4097]" time="1.835" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[12289]" time="1.823" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[70000]" time="1.819" /><testcase classname="tests.test_parameters.TestParameters" name="test_hello_time" time="8.263" /><testcase classname="tests.test_parameters.TestParameters" name="test_forward_delay" time="8.262" /><testcase classname="tests.test_parameters.TestParameters" name="test_max_age" time="8.240" /><testcase classname="tests.test_parameters.TestParameters" name="test_port_cost" time="227.391" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_persistence" time="7.219" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_boundaries" time="3.248" /><testcase classname="tests.test_protocol_conformance" name="test_port_role_assignment_simplified" time="0.395"><error message="failed on setup with &quot;file C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py, line 32&#10;  def test_port_role_assignment_simplified(self, dut_manager, test_nodes,&#10;E       fixture 'self' not found&#10;&gt;       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, convergence_monitor, doctest_namespace, dut_manager, event_loop_policy, extra, extras, fault_injector, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, logger, metadata, monkeypatch, network_topology, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rstp_analyzer, test_config, test_nodes, test_results, test_setup_teardown, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, traffic_generator, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, vmware_controller, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py:32&quot;">file C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py, line 32
+  def test_port_role_assignment_simplified(self, dut_manager, test_nodes,
+E       fixture 'self' not found
+&gt;       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, convergence_monitor, doctest_namespace, dut_manager, event_loop_policy, extra, extras, fault_injector, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, logger, metadata, monkeypatch, network_topology, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rstp_analyzer, test_config, test_nodes, test_results, test_setup_teardown, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, traffic_generator, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, vmware_controller, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py:32</error></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_root_bridge_election" time="65.876"><failure message="Failed: DUT的RSTP实现不符合IEEE 802.1D标准。设置最低优先级后仍不是根桥。这是DUT的问题，不是测试脚本的问题。">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x00000298E8355810&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E84A7E30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E849B7D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E84D3BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E83958C0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E85336B0&gt;
+
+    def test_root_bridge_election(self, dut_manager, test_nodes,
+                                network_topology, rstp_analyzer):
+        """TC.AUTO.1.1: 根网桥选举测试"""
+        logger.info("开始根网桥选举测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 等待初始拓扑稳定
+        time.sleep(3)
+    
+        # 确定DUT的正确网桥名称
+        logger.info("=== 检查DUT网桥配置 ===")
+        if hasattr(dut_manager, 'execute'):
+            execute_method = dut_manager.execute
+        elif hasattr(dut_manager, 'run'):
+            execute_method = dut_manager.run
+        else:
+            execute_method = dut_manager.send_command
+    
+        # 查找正确的测试网桥（应该包含测试接口）
+        bridge_name = None
+        try:
+            # 首先检查是否存在br0（常用的测试网桥名）
+            result = execute_method("ip link show br0")
+            if isinstance(result, tuple) and result[2] == 0:  # 命令成功
+                bridge_name = "br0"
+                logger.info("找到测试网桥: br0")
+            else:
+                # 查找包含eth0的网桥
+                result = execute_method("bridge link show | grep 'master'")
+                logger.info(f"网桥端口信息: {result}")
+    
+                # 从eth0找到它所属的网桥
+                result = execute_method("ip link show eth0")
+                if isinstance(result, tuple):
+                    output = result[0]
+                    # 查找 master 字段
+                    import re
+                    master_match = re.search(r'master\s+(\S+)', output)
+                    if master_match:
+                        bridge_name = master_match.group(1)
+                        logger.info(f"eth0所属网桥: {bridge_name}")
+    
+                # 如果还是没找到，尝试创建br0
+                if not bridge_name:
+                    logger.warning("未找到测试网桥，尝试创建br0")
+                    execute_method("sudo ip link add br0 type bridge")
+                    execute_method("sudo ip link set br0 up")
+                    execute_method("sudo ip link set eth0 master br0")
+                    execute_method("sudo ip link set eth1 master br0 2&gt;/dev/null || true")
+                    execute_method("sudo ip link set eth2 master br0 2&gt;/dev/null || true")
+                    execute_method("sudo bridge vlan add dev br0 vid 1 self")
+                    bridge_name = "br0"
+                    time.sleep(2)
+    
+            if bridge_name:
+                # 确保STP已启用
+                result = execute_method(f"echo 2 | sudo tee /sys/class/net/{bridge_name}/bridge/stp_state")
+                logger.info(f"启用{bridge_name}的RSTP")
+    
+                # 验证STP状态
+                stp_state = execute_method(f"cat /sys/class/net/{bridge_name}/bridge/stp_state")
+                logger.info(f"{bridge_name} STP状态: {stp_state}")
+            else:
+                logger.error("无法确定测试网桥")
+                bridge_name = "br0"  # 使用默认值
+    
+        except Exception as e:
+            logger.warning(f"网桥检查出错: {e}")
+            bridge_name = "br0"
+    
+        # 重新获取网桥信息确保分析器使用正确的网桥
+        logger.info("=== 初始网桥状态 ===")
+        initial_info = rstp_analyzer.get_bridge_info()
+    
+        # 检查端口数量
+        active_ports = [p for p in initial_info.ports.values() if p.state != PortState.DISABLED]
+        logger.info(f"活动端口数: {len(active_ports)}")
+    
+        if len(active_ports) &lt; 2:
+            logger.warning("活动端口不足，尝试启用更多端口")
+            for iface in ['eth0', 'eth1', 'eth2']:
+                try:
+                    execute_method(f"sudo ip link set {iface} up")
+                    execute_method(f"sudo ip link set {iface} master {bridge_name}")
+                except:
+                    pass
+            time.sleep(3)
+            initial_info = rstp_analyzer.get_bridge_info()
+            active_ports = [p for p in initial_info.ports.values() if p.state != PortState.DISABLED]
+    
+        # 显示所有端口信息
+        logger.info("初始端口状态:")
+        for port_name, port_info in initial_info.ports.items():
+            if port_info.state != PortState.DISABLED:
+                logger.info(f"  {port_name}: 角色={port_info.role.value}, 状态={port_info.state.value}")
+    
+        has_root_port_initial = any(
+            port.role == PortRole.ROOT
+            for port in initial_info.ports.values()
+            if port.state != PortState.DISABLED
+        )
+        logger.info(f"初始状态 - DUT有Root Port: {has_root_port_initial}")
+    
+        # 设置节点优先级
+        logger.info("=== 配置网桥优先级 ===")
+    
+        # TestNode1 设置为最低优先级（应该成为根桥）
+        logger.info("设置TestNode1优先级为16384")
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=16384)
+    
+        # DUT设置为较高优先级
+        logger.info("设置DUT优先级为32768")
+        try:
+            # 使用多种方法设置优先级
+            cmd1 = f"sudo ip link set {bridge_name} type bridge priority 32768"
+            result = execute_method(cmd1)
+            logger.info(f"ip命令设置结果: {result}")
+    
+            # 直接写入sysfs
+            cmd2 = f"echo 32768 | sudo tee /sys/class/net/{bridge_name}/bridge/priority"
+            result = execute_method(cmd2)
+            logger.info(f"sysfs设置结果: {result}")
+    
+        except Exception as e:
+            logger.error(f"设置DUT优先级失败: {e}")
+    
+        # TestNode2设置中间优先级
+        if len(test_nodes) &gt; 1:
+            logger.info("设置TestNode2优先级为24576")
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=24576)
+    
+        # 等待收敛
+        logger.info("等待RSTP收敛...")
+        time.sleep(10)
+    
+        # 第一阶段验证
+        logger.info("=== 第一阶段验证 ===")
+        info_phase1 = rstp_analyzer.get_bridge_info()
+    
+        # 验证优先级
+        try:
+            priority = execute_method(f"cat /sys/class/net/{bridge_name}/bridge/priority")
+            priority_value = priority[0].strip() if isinstance(priority, tuple) else str(priority).strip()
+            logger.info(f"DUT当前优先级: {priority_value}")
+            assert priority_value == "32768", f"优先级设置失败，期望32768，实际{priority_value}"
+        except Exception as e:
+            logger.warning(f"优先级验证失败: {e}")
+    
+        # 分析端口角色
+        has_root_port = False
+        for port_name, port_info in info_phase1.ports.items():
+            if port_info.state != PortState.DISABLED:
+                logger.info(f"  {port_name}: 角色={port_info.role.value}")
+                if port_info.role == PortRole.ROOT:
+                    has_root_port = True
+    
+        if has_root_port:
+            logger.info("✓ 第一阶段通过：DUT有Root Port，不是根桥")
+        else:
+            # 如果没有Root Port，检查是否所有端口都是Designated
+            all_designated = all(
+                p.role == PortRole.DESIGNATED
+                for p in info_phase1.ports.values()
+                if p.state != PortState.DISABLED
+            )
+            if all_designated and len([p for p in info_phase1.ports.values() if p.state != PortState.DISABLED]) &gt; 0:
+                logger.error("DUT是根桥（所有端口都是Designated），但不应该是")
+                # 这可能是因为其他节点的优先级设置失败
+                logger.info("检查其他节点的优先级...")
+                for i, node in enumerate(test_nodes):
+                    try:
+                        if hasattr(node, 'execute'):
+                            node_exec = node.execute
+                        else:
+                            node_exec = node.send_command
+                        result = node_exec("cat /sys/class/net/br0/bridge/priority")
+                        logger.info(f"TestNode{i+1}优先级: {result}")
+                    except:
+                        pass
+    
+        # 第二阶段：设置DUT为最低优先级
+        logger.info("\n=== 第二阶段：DUT应成为根桥 ===")
+        logger.info("设置DUT优先级为12288（最低）")
+    
+        try:
+            # 设置最低优先级
+            execute_method(f"sudo ip link set {bridge_name} type bridge priority 12288")
+            execute_method(f"echo 12288 | sudo tee /sys/class/net/{bridge_name}/bridge/priority")
+    
+            # 验证设置
+            priority = execute_method(f"cat /sys/class/net/{bridge_name}/bridge/priority")
+            priority_value = priority[0].strip() if isinstance(priority, tuple) else str(priority).strip()
+            logger.info(f"设置后优先级: {priority_value}")
+    
+        except Exception as e:
+            logger.error(f"设置最低优先级失败: {e}")
+    
+        # 等待收敛
+        logger.info("等待RSTP重新收敛...")
+        time.sleep(10)
+    
+        # 最终验证
+        logger.info("=== 最终验证 ===")
+        final_info = rstp_analyzer.get_bridge_info()
+    
+        # 分析最终状态
+        final_has_root_port = False
+        designated_count = 0
+    
+        for port_name, port_info in final_info.ports.items():
+            if port_info.state != PortState.DISABLED:
+                logger.info(f"  {port_name}: 角色={port_info.role.value}, 状态={port_info.state.value}")
+                if port_info.role == PortRole.ROOT:
+                    final_has_root_port = True
+                elif port_info.role == PortRole.DESIGNATED:
+                    designated_count += 1
+    
+        # 判断测试结果
+        if not final_has_root_port and designated_count &gt; 0:
+            logger.info("✓ DUT成为根桥")
+            # 验证所有端口
+            for port_name, port_info in final_info.ports.items():
+                if port_info.state != PortState.DISABLED:
+                    assert port_info.role == PortRole.DESIGNATED, \
+                        f"根桥端口{port_name}应是Designated，实际{port_info.role.value}"
+                    assert port_info.state == PortState.FORWARDING, \
+                        f"根桥端口{port_name}应是Forwarding，实际{port_info.state.value}"
+        else:
+            # 测试失败 - DUT的RSTP实现可能有问题
+            logger.error("DUT RSTP实现问题诊断:")
+            logger.error(f"1. DUT优先级已设置为12288（最低）")
+            logger.error(f"2. 但DUT仍有Root Port: {final_has_root_port}")
+            logger.error(f"3. Designated端口数: {designated_count}")
+            logger.error("可能的原因:")
+            logger.error("- DUT的RSTP实现不符合标准")
+            logger.error("- DUT没有正确处理优先级变化")
+            logger.error("- DUT的BPDU发送/接收有问题")
+    
+&gt;           pytest.fail(
+                f"DUT的RSTP实现不符合IEEE 802.1D标准。"
+                f"设置最低优先级后仍不是根桥。"
+                f"这是DUT的问题，不是测试脚本的问题。"
+            )
+E           Failed: DUT的RSTP实现不符合IEEE 802.1D标准。设置最低优先级后仍不是根桥。这是DUT的问题，不是测试脚本的问题。
+
+tests\test_protocol_conformance.py:313: Failed</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_role_assignment" time="26.025"><failure message="Failed: 没有活动端口，网络配置失败">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x00000298E8355950&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E84A7E30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E849B7D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E84D3BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E83958C0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E8533830&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E837BA10&gt;
+
+    def test_port_role_assignment(self, dut_manager, test_nodes,
+                                network_topology, rstp_analyzer, convergence_monitor):
+        """TC.AUTO.1.2: 端口角色与状态分配测试"""
+        logger.info("开始端口角色分配测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 确保测试节点1是根网桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待初始配置生效
+        time.sleep(3)
+    
+        # 确保DUT的所有相关接口都已启用
+        logger.info("启用DUT的网桥接口...")
+        try:
+            # 使用正确的SSH方法
+            if hasattr(dut_manager, 'execute'):
+                execute_method = dut_manager.execute
+            elif hasattr(dut_manager, 'run'):
+                execute_method = dut_manager.run
+            else:
+                execute_method = dut_manager.send_command
+    
+            # 启用物理接口和将其加入网桥
+            for iface in ['eth0', 'eth1', 'eth2']:
+                try:
+                    # 启用物理接口
+                    execute_method(f"sudo ip link set {iface} up")
+                    # 将接口加入网桥（如果还没有）
+                    execute_method(f"sudo ip link set {iface} master br0")
+                    # 在网桥中启用STP
+                    execute_method(f"sudo bridge link set dev {iface} state 3")
+                    logger.info(f"已启用接口 {iface}")
+                except Exception as e:
+                    logger.debug(f"接口 {iface} 配置: {e}")
+    
+            # 等待接口状态稳定
+            time.sleep(3)
+    
+            # 检查br0网桥的接口状态
+            result = execute_method("bridge link show br0")
+            logger.info(f"br0 网桥接口状态:\n{result}")
+    
+            # 也检查网桥本身的状态
+            result = execute_method("ip link show br0")
+            logger.info(f"br0 状态:\n{result}")
+    
+            # 检查STP状态
+            result = execute_method("cat /sys/class/net/br0/bridge/stp_state")
+            logger.info(f"br0 STP状态:\n{result}")
+    
+        except Exception as e:
+            logger.warning(f"配置接口时出错: {e}")
+    
+        # 获取初始桥信息
+        logger.info("获取初始网桥状态...")
+        initial_info = rstp_analyzer.get_bridge_info()
+    
+        # 调试信息
+        logger.info(f"Bridge ID: {initial_info.bridge_id if initial_info.bridge_id else '未获取'}")
+        logger.info(f"Root ID: {initial_info.root_id if initial_info.root_id else '未获取'}")
+        logger.info(f"Root Port: {initial_info.root_port}")
+        logger.info(f"协议版本: {initial_info.protocol_version}")
+    
+        # 打印所有端口状态
+        for port_name, port_info in initial_info.ports.items():
+            logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                    f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+    
+        # 等待网络收敛（不使用timeout参数）
+        logger.info("等待网络收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 再次获取桥信息
+        info = rstp_analyzer.get_bridge_info()
+    
+        # 重新打印端口状态
+        logger.info("收敛后的端口状态:")
+        for port_name, port_info in info.ports.items():
+            logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                    f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+    
+        # 判断是否为根桥
+        is_root_bridge = False
+    
+        try:
+            # 方法1：调用 is_root_bridge 方法
+            is_root_result = rstp_analyzer.is_root_bridge()
+            logger.info(f"is_root_bridge() 返回: {is_root_result}")
+    
+            # 方法2：检查是否有 Root Port
+            has_root_port = any(
+                port.role == PortRole.ROOT
+                for port in info.ports.values()
+                if port.state != PortState.DISABLED
+            )
+            logger.info(f"有Root Port: {has_root_port}")
+    
+            # 如果有Root Port，则不是根桥
+            if has_root_port:
+                is_root_bridge = False
+            # 如果所有活动端口都是Designated，则是根桥
+            elif all(port.role == PortRole.DESIGNATED
+                    for port in info.ports.values()
+                    if port.state != PortState.DISABLED):
+                is_root_bridge = True
+    
+        except Exception as e:
+            logger.warning(f"判断根桥状态时出错: {e}")
+    
+        logger.info(f"最终判定 - DUT是根桥: {is_root_bridge}")
+    
+        # 分析端口状态
+        active_ports = {}
+        disabled_ports = []
+    
+        for port_name, port_info in info.ports.items():
+            if port_info.state == PortState.DISABLED:
+                disabled_ports.append(port_name)
+            else:
+                active_ports[port_name] = port_info
+    
+        logger.info(f"活动端口数: {len(active_ports)}")
+        logger.info(f"禁用端口: {disabled_ports}")
+    
+        # 如果活动端口太少，尝试手动启用禁用的端口
+        if len(active_ports) &lt; 2 and disabled_ports:
+            logger.warning(f"活动端口不足，尝试启用禁用的端口...")
+    
+            for port in disabled_ports[:2]:  # 尝试启用前两个禁用的端口
+                try:
+                    logger.info(f"尝试启用端口 {port}")
+                    execute_method(f"sudo ip link set {port} up")
+                    execute_method(f"sudo ip link set {port} master br0")
+                    execute_method(f"sudo bridge link set dev {port} state 3")
+                except Exception as e:
+                    logger.warning(f"启用端口 {port} 失败: {e}")
+    
+            # 等待端口状态更新
+            time.sleep(5)
+    
+            # 重新获取信息
+            info = rstp_analyzer.get_bridge_info()
+            active_ports = {name: port for name, port in info.ports.items()
+                        if port.state != PortState.DISABLED}
+            disabled_ports = [name for name, port in info.ports.items()
+                            if port.state == PortState.DISABLED]
+    
+            logger.info(f"重新配置后 - 活动端口数: {len(active_ports)}")
+            logger.info(f"重新配置后 - 禁用端口: {disabled_ports}")
+    
+        # 统计角色
+        roles = {}
+        for port_name, port_info in active_ports.items():
+            roles.setdefault(port_info.role, []).append(port_name)
+    
+        logger.info(f"端口角色分布: {roles}")
+    
+        # 验证逻辑
+        if len(active_ports) == 0:
+&gt;           pytest.fail("没有活动端口，网络配置失败")
+E           Failed: 没有活动端口，网络配置失败
+
+tests\test_protocol_conformance.py:484: Failed</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_rstp_protocol_verification" time="54.098" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_alternate_port_verification" time="13.403"><failure message="AssertionError: DUT不应该是根桥（优先级设置为8192）&#10;assert not True">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x00000298E836D5B0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E84A7E30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E849B7D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E84D3BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E83958C0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E8533AD0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E83797F0&gt;
+
+    def test_alternate_port_verification(self, dut_manager, test_nodes,
+                                        network_topology, rstp_analyzer, convergence_monitor):
+        """专门测试Alternate Port的验证"""
+        logger.info("开始Alternate Port验证测试")
+    
+        # 创建三节点环形拓扑以确保产生Alternate Port
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置不同的网桥优先级确保DUT不是根桥
+        logger.info("设置网桥优先级")
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
+    
+        # 等待充分的收敛时间
+        logger.info("等待RSTP收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 分析DUT的端口角色
+        dut_info = rstp_analyzer.get_bridge_info()
+        logger.info(f"DUT桥信息: {dut_info}")
+    
+        # 确保DUT不是根桥
+        is_root = rstp_analyzer.is_root_bridge()
+&gt;       assert not is_root, "DUT不应该是根桥（优先级设置为8192）"
+E       AssertionError: DUT不应该是根桥（优先级设置为8192）
+E       assert not True
+
+tests\test_protocol_conformance.py:804: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_state_transitions" time="11.278"><failure message="AssertionError: 需要至少一个活动端口进行状态转换测试&#10;assert 0 &gt; 0&#10; +  where 0 = len({})">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x00000298E835D250&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E84A7E30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E849B7D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E84D3BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E83958C0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E85338F0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E83792B0&gt;
+
+    def test_port_state_transitions(self, dut_manager, test_nodes,
+                                  network_topology, rstp_analyzer, convergence_monitor):
+        """测试端口状态转换，特别是Learning状态"""
+        logger.info("开始端口状态转换测试")
+    
+        # 创建简单的点对点拓扑
+        network_topology.create_linear_topology(use_rstp=True)
+    
+        # 设置DUT为非根桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+    
+        # 初始等待收敛
+        logger.info("等待初始收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 获取一个活动端口进行测试
+        initial_info = rstp_analyzer.get_bridge_info()
+        active_ports = {name: port for name, port in initial_info.ports.items()
+                       if port.state != PortState.DISABLED}
+    
+&gt;       assert len(active_ports) &gt; 0, "需要至少一个活动端口进行状态转换测试"
+E       AssertionError: 需要至少一个活动端口进行状态转换测试
+E       assert 0 &gt; 0
+E        +  where 0 = len({})
+
+tests\test_protocol_conformance.py:855: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_bpdu_propagation_and_keepalive" time="12.918"><failure message="AssertionError: 需要至少一个活动端口进行BPDU测试&#10;assert 0 &gt; 0&#10; +  where 0 = len([])">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x00000298E83945A0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E84A7E30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E849B7D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E84D3BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E83958C0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E85339B0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E837B8C0&gt;
+
+    def test_bpdu_propagation_and_keepalive(self, dut_manager, test_nodes,
+                                           network_topology, rstp_analyzer, convergence_monitor):
+        """测试BPDU传播和保活机制"""
+        logger.info("开始BPDU传播和保活机制测试")
+    
+        # 创建环形拓扑以测试分布式BPDU生成
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置不同优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 获取Hello Time配置
+        dut_info = rstp_analyzer.get_bridge_info()
+        hello_time = getattr(dut_info, 'hello_time', 2)  # 默认2秒
+        logger.info(f"Hello Time: {hello_time}秒")
+    
+        # 开始BPDU捕获
+        logger.info("开始捕获BPDU报文")
+        capture_duration = hello_time * 5  # 捕获5个Hello Time周期
+    
+        # 获取DUT的活动端口
+        active_ports = [name for name, port in dut_info.ports.items()
+                       if port.state != PortState.DISABLED]
+    
+&gt;       assert len(active_ports) &gt; 0, "需要至少一个活动端口进行BPDU测试"
+E       AssertionError: 需要至少一个活动端口进行BPDU测试
+E       assert 0 &gt; 0
+E        +  where 0 = len([])
+
+tests\test_protocol_conformance.py:949: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_disabled_port_exclusion" time="44.764"><failure message="AssertionError: 重新启用后活动端口数量应该恢复&#10;assert 1 == 3&#10; +  where 1 = len({'eth0': PortInfo(name='eth0', role=&lt;PortRole.ROOT: 'root'&gt;, state=&lt;PortState.FORWARDING: 'forwarding'&gt;, path_cost=0, designated_bridge='', designated_port='')})&#10; +  and   3 = len({'eth0': PortInfo(name='eth0', role=&lt;PortRole.UNKNOWN: 'unknown'&gt;, state=&lt;PortState.DISABLED: 'disabled'&gt;, path_cost=0...le.UNKNOWN: 'unknown'&gt;, state=&lt;PortState.DISABLED: 'disabled'&gt;, path_cost=0, designated_bridge='', designated_port='')})">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x00000298E83946B0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E84A7E30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E849B7D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E84D3BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E83958C0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E8533C50&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x00000298E837B770&gt;
+
+    def test_disabled_port_exclusion(self, dut_manager, test_nodes,
+                                    network_topology, rstp_analyzer, convergence_monitor):
+        """测试禁用端口被正确排除在STP计算之外"""
+        logger.info("开始禁用端口排除测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 获取初始状态
+        initial_info = rstp_analyzer.get_bridge_info()
+        logger.info(f"所有端口信息: {initial_info.ports}")
+    
+        # 添加调试：查看原始RSTP输出
+        stdout, _, code = dut_manager.execute_as_root("ovs-appctl rstp/show rstp0")
+        logger.info(f"RSTP show输出 (code={code}): {stdout}")
+    
+        if code != 0:
+            stdout, _, code = dut_manager.execute_as_root("ovs-appctl stp/show rstp0")
+            logger.info(f"STP show输出 (code={code}): {stdout}")
+    
+        initial_active_ports = {name: port for name, port in initial_info.ports.items()
+                               if port.state != PortState.DISABLED}
+    
+        logger.info(f"初始活动端口: {list(initial_active_ports.keys())}")
+    
+        # 如果没有活动端口，尝试获取所有端口
+        if not initial_active_ports:
+            logger.info("没有找到活动端口，使用所有端口")
+            initial_active_ports = initial_info.ports
+    
+        assert len(initial_active_ports) &gt;= 1, "需要至少1个端口进行禁用测试"
+    
+        # 选择一个非Root Port进行禁用测试
+        test_port_name = None
+        for name, port in initial_active_ports.items():
+            if port.role != PortRole.ROOT:
+                test_port_name = name
+                break
+    
+        if not test_port_name:
+            # 如果没有非Root Port，选择任意一个端口
+            test_port_name = list(initial_active_ports.keys())[0]
+    
+        logger.info(f"选择端口{test_port_name}进行禁用测试")
+        initial_port_role = initial_active_ports[test_port_name].role
+    
+        # 显式禁用端口
+        logger.info(f"禁用端口{test_port_name}")
+        result = NetworkTopology.execute_bridge_command(dut_manager, "disable_port", port=test_port_name)
+        logger.info(f"禁用命令结果: {result}")
+    
+        # 检查端口配置
+        stdout, stderr, code = dut_manager.execute_as_root(f"ovs-vsctl get Port {test_port_name} other_config")
+        logger.info(f"端口{test_port_name}配置: stdout='{stdout}', stderr='{stderr}', code={code}")
+    
+        # 等待拓扑重新收敛
+        time.sleep(15)
+    
+        # 验证端口已被禁用
+        disabled_info = rstp_analyzer.get_bridge_info()
+        logger.info(f"禁用后所有端口状态: {[(p.name, p.state.value) for p in disabled_info.ports.values()]}")
+    
+        disabled_port = disabled_info.ports.get(test_port_name)
+    
+        if not disabled_port:
+            logger.error(f"端口{test_port_name}不存在于端口列表中")
+            return
+    
+        logger.info(f"端口{test_port_name}状态: {disabled_port.state.value}, 角色: {disabled_port.role.value}")
+    
+        # 暂时注释掉断言，先看看实际情况
+        # assert disabled_port.state == PortState.DISABLED, \
+        #     f"端口{test_port_name}应该是DISABLED状态，实际: {disabled_port.state}"
+    
+        # 验证其他端口的状态
+        current_active_ports = {name: port for name, port in disabled_info.ports.items()
+                               if port.state != PortState.DISABLED}
+    
+        logger.info(f"禁用后活动端口: {list(current_active_ports.keys())}")
+        logger.info(f"活动端口数量: {len(current_active_ports)}, 初始活动端口数量: {len(initial_active_ports)}")
+    
+        # 3. 验证网络仍然无环路且连通
+        roles, active_ports, disabled_ports = analyze_port_roles(disabled_info)
+        logger.info(f"禁用后端口角色分布: {roles}")
+    
+        # 验证基本的STP规则仍然满足
+        if not rstp_analyzer.is_root_bridge():
+            assert PortRole.ROOT in roles, "非根桥应该仍有Root Port"
+            assert len(roles[PortRole.ROOT]) == 1, "应该只有一个Root Port"
+    
+        # 4. 重新启用端口并验证恢复
+        logger.info(f"重新启用端口{test_port_name}")
+        NetworkTopology.execute_bridge_command(dut_manager, "enable_port", port=test_port_name)
+    
+        # 等待收敛
+        time.sleep(15)
+    
+        # 验证端口重新参与STP
+        recovered_info = rstp_analyzer.get_bridge_info()
+        recovered_port = recovered_info.ports.get(test_port_name)
+    
+        assert recovered_port, f"端口{test_port_name}应该存在"
+        assert recovered_port.state != PortState.DISABLED, \
+            f"端口{test_port_name}应该不再是DISABLED状态，实际: {recovered_port.state}"
+    
+        logger.info(f"✓ 端口{test_port_name}已重新启用，状态: {recovered_port.state.value}")
+    
+        # 验证端口重新获得适当的角色
+        final_active_ports = {name: port for name, port in recovered_info.ports.items()
+                             if port.state != PortState.DISABLED}
+    
+&gt;       assert len(final_active_ports) == len(initial_active_ports), \
+            "重新启用后活动端口数量应该恢复"
+E       AssertionError: 重新启用后活动端口数量应该恢复
+E       assert 1 == 3
+E        +  where 1 = len({'eth0': PortInfo(name='eth0', role=&lt;PortRole.ROOT: 'root'&gt;, state=&lt;PortState.FORWARDING: 'forwarding'&gt;, path_cost=0, designated_bridge='', designated_port='')})
+E        +  and   3 = len({'eth0': PortInfo(name='eth0', role=&lt;PortRole.UNKNOWN: 'unknown'&gt;, state=&lt;PortState.DISABLED: 'disabled'&gt;, path_cost=0...le.UNKNOWN: 'unknown'&gt;, state=&lt;PortState.DISABLED: 'disabled'&gt;, path_cost=0, designated_bridge='', designated_port='')})
+
+tests\test_protocol_conformance.py:1123: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_topology_change_notification" time="28.406" /><testcase classname="tests.test_security.TestSecurity" name="test_root_bridge_hijack_attack" time="34.216" /><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_flood_attack" time="27.671" /><testcase classname="tests.test_security.TestSecurity" name="test_topology_change_attack" time="305.146" /><testcase classname="tests.test_security.TestSecurity" name="test_mac_spoofing" time="34.796" /><testcase classname="tests.test_security.TestSecurity" name="test_port_security" time="0.008"><skipped type="pytest.skip" message="端口安全功能不可用">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_security.py:249: 端口安全功能不可用</skipped></testcase><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_filter_functionality" time="27.909"><failure message="Failed: BPDU过滤器配置失败: BPDU过滤器配置失败:">self = &lt;test_security.TestSecurity object at 0x00000298E83948D0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E85538C0&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8552CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E8552D60&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E8439350&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E84E46B0&gt;
+
+    def test_bpdu_filter_functionality(self, dut_manager, test_nodes,
+                                       network_topology, rstp_analyzer):
+        """测试BPDU过滤器功能"""
+        logger.info("开始BPDU过滤器功能测试")
+    
+        filter_port = "eth2"  # 假设eth2是边缘端口
+        test_passed = False
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建线性拓扑
+            network_topology.create_linear_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 记录启用过滤器前的BPDU发送情况
+            initial_bpdu_count = self._count_bpdu_packets(dut_manager, filter_port)
+            logger.info(f"启用过滤器前端口 {filter_port} BPDU数量: {initial_bpdu_count}")
+    
+            # 在DUT上启用BPDU过滤器
+            try:
+&gt;               self._enable_bpdu_filter(dut_manager, filter_port)
+
+tests\test_security.py:277: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_security.TestSecurity object at 0x00000298E83948D0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E85538C0&gt;, port = 'eth2'
+
+    def _enable_bpdu_filter(self, dut_manager, port):
+        """在指定端口启用BPDU过滤器"""
+        try:
+            # 检查SSH连接
+            if not dut_manager.is_connected():
+                dut_manager.reconnect()
+    
+            # 使用mstpctl启用BPDU过滤器
+            stdout, stderr, code = dut_manager.execute_sudo(
+                f"mstpctl setportbpdufilter br0 {port} yes"
+            )
+            if code != 0:
+                logger.warning(f"mstpctl设置BPDU过滤器失败，尝试使用brctl")
+                # 备用方法：使用brctl
+                stdout, stderr, code = dut_manager.execute_sudo(
+                    f"echo 1 &gt; /sys/class/net/br0/bridge/ports/{port}/bpdu_filter"
+                )
+                if code != 0:
+&gt;                   raise Exception(f"BPDU过滤器配置失败: {stderr}")
+E                   Exception: BPDU过滤器配置失败:
+
+tests\test_security.py:984: Exception
+
+During handling of the above exception, another exception occurred:
+
+self = &lt;test_security.TestSecurity object at 0x00000298E83948D0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E85538C0&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8552CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E8552D60&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E8439350&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E84E46B0&gt;
+
+    def test_bpdu_filter_functionality(self, dut_manager, test_nodes,
+                                       network_topology, rstp_analyzer):
+        """测试BPDU过滤器功能"""
+        logger.info("开始BPDU过滤器功能测试")
+    
+        filter_port = "eth2"  # 假设eth2是边缘端口
+        test_passed = False
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建线性拓扑
+            network_topology.create_linear_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 记录启用过滤器前的BPDU发送情况
+            initial_bpdu_count = self._count_bpdu_packets(dut_manager, filter_port)
+            logger.info(f"启用过滤器前端口 {filter_port} BPDU数量: {initial_bpdu_count}")
+    
+            # 在DUT上启用BPDU过滤器
+            try:
+                self._enable_bpdu_filter(dut_manager, filter_port)
+                logger.info(f"在端口 {filter_port} 启用BPDU过滤器")
+            except Exception as e:
+                logger.error(f"启用BPDU过滤器失败: {e}")
+&gt;               pytest.fail(f"BPDU过滤器配置失败: {e}")
+E               Failed: BPDU过滤器配置失败: BPDU过滤器配置失败:
+
+tests\test_security.py:281: Failed</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_malformed_bpdu_handling" time="25.223"><failure message="Failed: 畸形BPDU处理测试未通过验证">self = &lt;test_security.TestSecurity object at 0x00000298E83949E0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E85538C0&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8552CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E8552D60&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E8439350&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E84E6090&gt;
+
+    def test_malformed_bpdu_handling(self, dut_manager, test_nodes,
+                                     network_topology, rstp_analyzer):
+        """测试畸形BPDU处理能力"""
+        logger.info("开始畸形BPDU处理测试")
+    
+        test_passed = True
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建拓扑
+            network_topology.create_ring_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 记录初始状态
+            initial_info = rstp_analyzer.get_bridge_info()
+            initial_stable = rstp_analyzer.get_convergence_state()['stable']
+            logger.info(f"初始网络状态: {'稳定' if initial_stable else '不稳定'}")
+    
+            if test_nodes:
+                # 测试各种畸形BPDU
+                malformed_tests = [
+                    self._test_oversized_bpdu,
+                    self._test_undersized_bpdu,
+                    self._test_invalid_protocol_id,
+                    self._test_invalid_version,
+                    self._test_invalid_message_type,
+                    self._test_corrupted_fields
+                ]
+    
+                for test_func in malformed_tests:
+                    try:
+                        logger.info(f"执行测试: {test_func.__name__}")
+                        test_func(test_nodes[0])
+                        time.sleep(3)
+    
+                        # 检查网络是否仍然稳定
+                        current_stable = rstp_analyzer.get_convergence_state()['stable']
+                        if not current_stable:
+                            logger.error(f"{test_func.__name__} 导致网络不稳定")
+                            test_passed = False
+                        else:
+                            logger.info(f"{test_func.__name__} 网络保持稳定")
+    
+                    except Exception as e:
+                        logger.error(f"{test_func.__name__} 执行失败: {e}")
+                        test_passed = False
+    
+        except Exception as e:
+            logger.error(f"畸形BPDU测试失败: {e}")
+            pytest.fail(f"畸形BPDU测试执行失败: {e}")
+        finally:
+            # 清理测试环境
+            try:
+                self._cleanup_malformed_bpdu_test(dut_manager)
+            except Exception as e:
+                logger.error(f"清理畸形BPDU测试环境失败: {e}")
+    
+        if not test_passed:
+&gt;           pytest.fail("畸形BPDU处理测试未通过验证")
+E           Failed: 畸形BPDU处理测试未通过验证
+
+tests\test_security.py:393: Failed</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_non_standard_bpdu_handling" time="218.325" /><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_guard_functionality" time="37.379"><failure message="Failed: BPDU防护未能正确禁用端口">self = &lt;test_security.TestSecurity object at 0x00000298E8345A50&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E85538C0&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8552CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E8552D60&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E8439350&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E85A5250&gt;
+
+    def test_bpdu_guard_functionality(self, dut_manager, test_nodes,
+                                        network_topology, rstp_analyzer):
+        """测试BPDU防护功能"""
+        logger.info("开始BPDU防护功能测试")
+    
+        edge_port = "eth2"  # 假设eth2是边缘端口
+        test_passed = False
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建线性拓扑用于测试边缘端口
+            network_topology.create_linear_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 在DUT上启用BPDU防护
+            try:
+                self._enable_bpdu_guard(dut_manager, edge_port)
+            except Exception as e:
+                logger.error(f"启用BPDU防护失败: {e}")
+                pytest.fail(f"BPDU防护配置失败: {e}")
+    
+            # 记录初始端口状态
+            initial_port_state = self._get_port_state(dut_manager, edge_port)
+            logger.info(f"边缘端口 {edge_port} 初始状态: {initial_port_state}")
+    
+            if test_nodes:
+                # 从测试节点向边缘端口发送BPDU
+                logger.info(f"向边缘端口 {edge_port} 发送BPDU")
+                self._send_bpdu_to_edge_port(test_nodes[0], edge_port)
+    
+                # 等待BPDU防护生效
+                time.sleep(3)
+    
+                # 检查端口是否被err-disabled
+                final_port_state = self._get_port_state(dut_manager, edge_port)
+                logger.info(f"BPDU防护触发后端口 {edge_port} 状态: {final_port_state}")
+    
+                # 验证端口被正确禁用
+                if "err-disabled" in final_port_state.lower() or "disabled" in final_port_state.lower():
+                    logger.info("BPDU防护功能正常：端口已被禁用")
+                    test_passed = True
+                else:
+                    logger.error("BPDU防护功能异常：端口未被禁用")
+&gt;                   pytest.fail("BPDU防护未能正确禁用端口")
+E                   Failed: BPDU防护未能正确禁用端口
+
+tests\test_security.py:744: Failed</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_root_guard_functionality" time="43.871"><failure message="Failed: 根防护功能测试未通过验证">self = &lt;test_security.TestSecurity object at 0x00000298E820B890&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x00000298E85538C0&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x00000298E8552CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x00000298E8552D60&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x00000298E8439350&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x00000298E84E66F0&gt;
+
+    def test_root_guard_functionality(self, dut_manager, test_nodes,
+                                       network_topology, rstp_analyzer):
+        """测试根防护功能"""
+        logger.info("开始根防护功能测试")
+    
+        guard_port = "eth1"  # 假设eth1连接到可能的攻击源
+        test_passed = False
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建环形拓扑
+            network_topology.create_ring_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 获取当前根桥信息
+            initial_bridge_info = rstp_analyzer.get_bridge_info()
+            current_root_id = initial_bridge_info.root_id if initial_bridge_info else None
+            logger.info(f"当前根桥ID: {current_root_id}")
+    
+            # 在DUT上启用根防护
+            try:
+                self._enable_root_guard(dut_manager, guard_port)
+                logger.info(f"在端口 {guard_port} 启用根防护")
+            except Exception as e:
+                logger.error(f"启用根防护失败: {e}")
+                pytest.fail(f"根防护配置失败: {e}")
+    
+            # 记录初始端口状态
+            initial_port_state = self._get_port_state(dut_manager, guard_port)
+            logger.info(f"端口 {guard_port} 初始状态: {initial_port_state}")
+    
+            if test_nodes:
+                # 从测试节点发送更优的BPDU（尝试成为新根桥）
+                logger.info("发送更优BPDU尝试劫持根桥")
+                self._send_superior_bpdu(test_nodes[0])
+    
+                # 等待根防护生效
+                time.sleep(5)
+    
+                # 检查端口是否进入root-inconsistent状态
+                final_port_state = self._get_port_state(dut_manager, guard_port)
+                logger.info(f"根防护触发后端口 {guard_port} 状态: {final_port_state}")
+    
+                # 验证根桥没有改变
+                final_bridge_info = rstp_analyzer.get_bridge_info()
+                final_root_id = final_bridge_info.root_id if final_bridge_info else None
+    
+                if current_root_id == final_root_id:
+                    logger.info("根防护功能正常：根桥身份未被劫持")
+                    test_passed = True
+                else:
+                    logger.error(f"根防护功能异常：根桥从 {current_root_id} 变为 {final_root_id}")
+                    pytest.fail("根防护未能阻止根桥劫持")
+    
+                # 验证端口状态
+                if "root-inconsistent" in final_port_state.lower() or "blocking" in final_port_state.lower():
+                    logger.info("根防护功能正常：端口进入阻塞状态")
+                else:
+                    logger.error("根防护功能异常：端口未进入阻塞状态")
+                    test_passed = False
+    
+                # 测试根防护恢复
+                self._test_root_guard_recovery(dut_manager, test_nodes[0], guard_port)
+    
+        except Exception as e:
+            logger.error(f"根防护测试失败: {e}")
+            pytest.fail(f"根防护测试执行失败: {e}")
+        finally:
+            # 清理：禁用根防护
+            try:
+                self._cleanup_root_guard(dut_manager, guard_port)
+            except Exception as e:
+                logger.error(f"清理根防护配置失败: {e}")
+    
+        if not test_passed:
+&gt;           pytest.fail("根防护功能测试未通过验证")
+E           Failed: 根防护功能测试未通过验证
+
+tests\test_security.py:866: Failed</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_loop_guard_functionality" time="47.264" /></testsuite></testsuites>

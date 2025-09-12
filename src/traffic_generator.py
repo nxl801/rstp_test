@@ -13,7 +13,10 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
-from .ssh_manager import SSHManager
+try:
+    from .ssh_manager import SSHManager
+except ImportError:
+    from ssh_manager import SSHManager
 
 class TrafficType(Enum):
     """流量类型"""

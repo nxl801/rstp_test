@@ -1,0 +1,196 @@
+2025-09-10 17:25:53,534 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250910_172553.log
+2025-09-10 17:25:53,739 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-10 17:25:53,739 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-10 17:25:53,859 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-10 17:25:53,859 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-10 17:25:54,009 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-10 17:25:54,009 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-10 17:25:54,020 - RSTPTest - INFO - ============================================================
+2025-09-10 17:25:54,020 - RSTPTest - INFO - 开始测试: test_alternate_port_verification
+2025-09-10 17:25:54,021 - RSTPTest - INFO - ============================================================
+2025-09-10 17:25:54,022 - test_protocol_conformance - INFO - 开始Alternate Port验证测试
+2025-09-10 17:25:54,023 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-10 17:25:54,023 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-10 17:25:54,023 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-10 17:25:54,023 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-10 17:25:54,024 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-10 17:25:54,024 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 17:25:54,024 - NetworkTopology - INFO - DUT: DUT设备，优先检测OVS支持...
+2025-09-10 17:25:54,080 - NetworkTopology - INFO - DUT: ovs-vsctl检查结果: code=0
+2025-09-10 17:25:54,190 - NetworkTopology - INFO - DUT: OVS服务状态检查: code=0
+2025-09-10 17:25:54,190 - NetworkTopology - INFO - DUT: 检测到OVS支持
+2025-09-10 17:25:54,190 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-10 17:25:54,191 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-10 17:25:54,744 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-10 17:25:54,744 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-10 17:25:55,784 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-10 17:25:55,785 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-10 17:25:55,785 - NetworkTopology - INFO - 为 DUT 添加接口: ['br3', 'br4']
+2025-09-10 17:25:55,785 - NetworkTopology - INFO - 添加接口 br3 到 DUT 的网桥
+2025-09-10 17:25:56,229 - NetworkTopology - INFO - 添加接口 br4 到 DUT 的网桥
+2025-09-10 17:25:56,673 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-10 17:25:56,673 - NetworkTopology - INFO - 启动 DUT 的网桥 SE_ETH2...
+2025-09-10 17:25:56,762 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-10 17:25:56,954 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-10 17:25:56,954 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-10 17:25:56,954 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-10 17:25:56,955 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-10 17:25:56,955 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-10 17:25:56,955 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-10 17:25:56,955 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-10 17:25:57,009 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-10 17:25:57,010 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-10 17:26:07,130 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-10 17:26:07,130 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-10 17:26:07,130 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-10 17:26:07,130 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-10 17:26:07,131 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-10 17:26:12,779 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-10 17:26:17,318 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-10 17:26:17,453 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-10 17:26:17,454 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-10 17:26:17,454 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-10 17:26:17,454 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-10 17:26:17,454 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-10 17:26:18,646 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-10 17:26:19,823 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-10 17:26:19,823 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-10 17:26:19,919 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-10 17:26:20,183 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-10 17:26:20,183 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-10 17:26:20,184 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-10 17:26:20,184 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-10 17:26:20,184 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-10 17:26:20,184 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-10 17:26:20,184 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-10 17:26:20,240 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-10 17:26:20,240 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-10 17:26:20,414 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-10 17:26:20,414 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-10 17:26:20,414 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-10 17:26:20,415 - NetworkTopology - INFO - TestNode2 使用方法: mstpd
+2025-09-10 17:26:20,415 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-10 17:26:20,945 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (mstpd)...
+2025-09-10 17:26:25,455 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-10 17:26:25,592 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-10 17:26:25,592 - NetworkTopology - INFO - TestNode2: RSTP已通过mstpd配置
+2025-09-10 17:26:25,593 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-10 17:26:25,593 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-10 17:26:25,593 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-10 17:26:26,798 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-10 17:26:28,059 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-10 17:26:28,059 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-10 17:26:28,158 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-10 17:26:28,418 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-10 17:26:28,418 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-10 17:26:28,418 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-10 17:26:28,418 - test_protocol_conformance - INFO - 设置网桥优先级
+2025-09-10 17:26:28,747 - test_protocol_conformance - INFO - 等待RSTP收敛...
+2025-09-10 17:26:28,747 - ConvergenceMonitor - INFO - 等待网络收敛 (最长10秒)...
+2025-09-10 17:26:29,624 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 返回码: 0
+2025-09-10 17:26:29,624 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 输出: 1
+1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000901210b57df7
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(br3): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      LINK_DOWN
+     current:    AUTO_NEG
+     advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     speed: 0 Mbps now, 1000 Mbps max
+ 2(br4): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      STP_FORWARD
+     current:    1GB-FD AUTO_NEG
+     advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     speed: 1000 Mbps now, 1000 Mbps max
+ LOCAL(SE_ETH2): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+
+2025-09-10 17:26:29,625 - RSTPAnalyzer_DUT - INFO - 找到端口: br3 (从行:  1(br3): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:29,625 - RSTPAnalyzer_DUT - INFO - 找到端口: br4 (从行:  2(br4): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:29,625 - RSTPAnalyzer_DUT - INFO - 找到端口: SE_ETH2 (从行:  LOCAL(SE_ETH2): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:29,626 - RSTPAnalyzer_DUT - INFO - 解析到的端口名称: ['br3', 'br4', 'SE_ETH2']
+2025-09-10 17:26:29,913 - ConvergenceMonitor - INFO - 网络已收敛，耗时: 1.17秒
+2025-09-10 17:26:30,819 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 返回码: 0
+2025-09-10 17:26:30,819 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 输出: 1
+1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000901210b57df7
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(br3): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      LINK_DOWN
+     current:    AUTO_NEG
+     advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     speed: 0 Mbps now, 1000 Mbps max
+ 2(br4): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      STP_FORWARD
+     current:    1GB-FD AUTO_NEG
+     advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     speed: 1000 Mbps now, 1000 Mbps max
+ LOCAL(SE_ETH2): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+
+2025-09-10 17:26:30,821 - RSTPAnalyzer_DUT - INFO - 找到端口: br3 (从行:  1(br3): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:30,821 - RSTPAnalyzer_DUT - INFO - 找到端口: br4 (从行:  2(br4): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:30,821 - RSTPAnalyzer_DUT - INFO - 找到端口: SE_ETH2 (从行:  LOCAL(SE_ETH2): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:30,821 - RSTPAnalyzer_DUT - INFO - 解析到的端口名称: ['br3', 'br4', 'SE_ETH2']
+2025-09-10 17:26:31,105 - test_protocol_conformance - INFO - DUT桥信息: BridgeInfo(bridge_id='', root_id='', root_port='br3', root_path_cost=0, protocol_version='rstp', hello_time=2, forward_delay=15, max_age=20, topology_changes=0, ports={'br3': PortInfo(name='br3', role=<PortRole.ROOT: 'root'>, state=<PortState.DISABLED: 'disabled'>, path_cost=0, designated_bridge='', designated_port=''), 'br4': PortInfo(name='br4', role=<PortRole.ALTERNATE: 'alternate'>, state=<PortState.FORWARDING: 'forwarding'>, path_cost=0, designated_bridge='', designated_port=''), 'SE_ETH2': PortInfo(name='SE_ETH2', role=<PortRole.UNKNOWN: 'unknown'>, state=<PortState.DISABLED: 'disabled'>, path_cost=0, designated_bridge='', designated_port='')})
+2025-09-10 17:26:32,024 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 返回码: 0
+2025-09-10 17:26:32,024 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 输出: 1
+1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000901210b57df7
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(br3): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      LINK_DOWN
+     current:    AUTO_NEG
+     advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     speed: 0 Mbps now, 1000 Mbps max
+ 2(br4): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      STP_FORWARD
+     current:    1GB-FD AUTO_NEG
+     advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD 1GB-HD 1GB-FD COPPER AUTO_NEG AUTO_PAUSE AUTO_PAUSE_ASYM
+     speed: 1000 Mbps now, 1000 Mbps max
+ LOCAL(SE_ETH2): addr:90:12:10:b5:7d:f7
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+
+2025-09-10 17:26:32,025 - RSTPAnalyzer_DUT - INFO - 找到端口: br3 (从行:  1(br3): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:32,025 - RSTPAnalyzer_DUT - INFO - 找到端口: br4 (从行:  2(br4): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:32,026 - RSTPAnalyzer_DUT - INFO - 找到端口: SE_ETH2 (从行:  LOCAL(SE_ETH2): addr:90:12:10:b5:7d:f7)
+2025-09-10 17:26:32,026 - RSTPAnalyzer_DUT - INFO - 解析到的端口名称: ['br3', 'br4', 'SE_ETH2']
+2025-09-10 17:26:32,313 - RSTPAnalyzer_DUT - WARNING - 无法获取有效的bridge_id()或root_id()，假设非根桥
+2025-09-10 17:26:32,313 - test_protocol_conformance - INFO - DUT根桥判断结果: False
+2025-09-10 17:26:32,313 - test_protocol_conformance - INFO - DUT桥信息 - bridge_id: '', root_id: ''
+2025-09-10 17:26:32,313 - test_protocol_conformance - WARNING - DUT桥信息解析不完整，跳过根桥判断，继续端口角色验证
+2025-09-10 17:26:32,314 - test_protocol_conformance - INFO - 活动端口数量: 1
+2025-09-10 17:26:32,314 - test_protocol_conformance - INFO - 端口角色分布: {<PortRole.ALTERNATE: 'alternate'>: ['br4']}
+2025-09-10 17:26:32,733 - RSTPTest - INFO - 测试完成: test_alternate_port_verification (耗时: 38.71秒)
+2025-09-10 17:26:32,734 - RSTPTest - INFO - ============================================================
+
+2025-09-10 17:26:32,734 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-10 17:26:32,735 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-10 17:26:32,735 - SSH_DUT - INFO - SSH连接已关闭: DUT

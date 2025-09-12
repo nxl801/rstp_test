@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title id="head-title">enhanced_rstp_test_report.html</title>
+      <style type="text/css">body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  /* do not increase min-width as some may use split screens */
+  min-width: 800px;
+  color: #999;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+h2 {
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  color: black;
+}
+
+a {
+  color: #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+#environment td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  vertical-align: top;
+}
+#environment tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#environment ul {
+  margin: 0;
+  padding: 0 20px;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed,
+.passed .col-result {
+  color: green;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: orange;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: red;
+}
+
+.col-links__extra {
+  margin-right: 3px;
+}
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+#results-table {
+  border: 1px solid #e6e6e6;
+  color: #999;
+  font-size: 12px;
+  width: 100%;
+}
+#results-table th,
+#results-table td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  text-align: left;
+}
+#results-table th {
+  font-weight: bold;
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+.logwrapper {
+  max-height: 230px;
+  overflow-y: scroll;
+  background-color: #e6e6e6;
+}
+.logwrapper.expanded {
+  max-height: none;
+}
+.logwrapper.expanded .logexpander:after {
+  content: "collapse [-]";
+}
+.logwrapper .logexpander {
+  z-index: 1;
+  position: sticky;
+  top: 10px;
+  width: max-content;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 5px 7px;
+  margin: 10px 0 10px calc(100% - 80px);
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+.logwrapper .logexpander:after {
+  content: "expand [+]";
+}
+.logwrapper .logexpander:hover {
+  color: #000;
+  border-color: #000;
+}
+.logwrapper .log {
+  min-height: 40px;
+  position: relative;
+  top: -50px;
+  height: calc(100% + 50px);
+  border: 1px solid #e6e6e6;
+  color: black;
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  padding: 5px;
+  padding-right: 80px;
+  white-space: pre-wrap;
+}
+
+div.media {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin: 0 5px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.media-container {
+  display: grid;
+  grid-template-columns: 25px auto 25px;
+  align-items: center;
+  flex: 1 1;
+  overflow: hidden;
+  height: 200px;
+}
+
+.media-container--fullscreen {
+  grid-template-columns: 0px auto 0px;
+}
+
+.media-container__nav--right,
+.media-container__nav--left {
+  text-align: center;
+  cursor: pointer;
+}
+
+.media-container__viewport {
+  cursor: pointer;
+  text-align: center;
+  height: inherit;
+}
+.media-container__viewport img,
+.media-container__viewport video {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+
+.media__name,
+.media__counter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 25px;
+  align-items: center;
+}
+
+.collapsible td:not(.col-links) {
+  cursor: pointer;
+}
+.collapsible td:not(.col-links):hover::after {
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.col-result {
+  width: 130px;
+}
+.col-result:hover::after {
+  content: " (hide details)";
+}
+
+.col-result.collapsed:hover::after {
+  content: " (show details)";
+}
+
+#environment-header h2:hover::after {
+  content: " (hide details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#environment-header.collapsed h2:hover::after {
+  content: " (show details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+  cursor: pointer;
+}
+.sortable.desc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: -12.5px;
+  border: 10px solid #4caf50;
+  border-bottom: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.sortable.asc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: 12.5px;
+  border: 10px solid #4caf50;
+  border-top: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.hidden, .summary__reload__button.hidden {
+  display: none;
+}
+
+.summary__data {
+  flex: 0 0 550px;
+}
+.summary__reload {
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+}
+.summary__reload__button {
+  flex: 0 0 300px;
+  display: flex;
+  color: white;
+  font-weight: bold;
+  background-color: #4caf50;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.summary__reload__button:hover {
+  background-color: #46a049;
+}
+.summary__spacer {
+  flex: 0 0 550px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters,
+.collapse {
+  display: flex;
+  align-items: center;
+}
+.filters button,
+.collapse button {
+  color: #999;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.filters button:hover,
+.collapse button:hover {
+  color: #ccc;
+}
+
+.filter__label {
+  margin-right: 10px;
+}
+
+      </style>
+    
+  </head>
+  <body>
+    <h1 id="title">enhanced_rstp_test_report.html</h1>
+    <p>Report generated on 09-Sep-2025 at 11:11:27 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+        v4.1.1</p>
+    <div id="environment-header">
+      <h2>Environment</h2>
+    </div>
+    <table id="environment"></table>
+    <!-- TEMPLATES -->
+      <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="4">No results found. Check the filters.</th>
+        </tr>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="4">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                  <div class="media-container__nav--left"><</div>
+                  <div class="media-container__viewport">
+                    <img src="" />
+                    <video controls>
+                      <source src="" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="media-container__nav--right">></div>
+                </div>
+                <div class="media__name"></div>
+                <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+        </div>
+        <p class="run-count">8 tests took 00:02:55.</p>
+        <p class="filter">(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button hidden" onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
+        </div>
+        <div class="summary__spacer"></div>
+        <div class="controls">
+          <div class="filters">
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" />
+            <span class="failed">2 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" />
+            <span class="passed">6 Passed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" />
+            <span class="skipped">2 Skipped,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled/>
+            <span class="xfailed">0 Expected failures,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled/>
+            <span class="xpassed">0 Unexpected passes,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled/>
+            <span class="error">0 Errors,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled/>
+            <span class="rerun">0 Reruns</span>
+          </div>
+          <div class="collapse">
+            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
+          </div>
+        </div>
+      </div>
+      <div class="additional-summary summary">
+      </div>
+      <div class="additional-summary postfix">
+      </div>
+    </div>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable" data-column-type="result">Result</th>
+          <th class="sortable" data-column-type="testId">Test</th>
+          <th class="sortable" data-column-type="duration">Duration</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+    </table>
+  </body>
+  <footer>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.13.1&#34;, &#34;Platform&#34;: &#34;Windows-10-10.0.19045-SP0&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;8.4.1&#34;, &#34;pluggy&#34;: &#34;1.6.0&#34;}, &#34;Plugins&#34;: {&#34;anyio&#34;: &#34;4.9.0&#34;, &#34;asyncio&#34;: &#34;1.1.0&#34;, &#34;html&#34;: &#34;4.1.1&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;, &#34;rerunfailures&#34;: &#34;16.0.1&#34;, &#34;timeout&#34;: &#34;2.4.0&#34;, &#34;xdist&#34;: &#34;3.8.0&#34;}}, &#34;tests&#34;: {&#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_backup_port_simulation&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_backup_port_simulation&#34;, &#34;duration&#34;: &#34;00:00:18&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_backup_port_simulation&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:18&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\nINFO     SSH_DUT:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: DUT (192.168.1.123)\nINFO     RSTPTest:conftest.py:121 \u6210\u529f\u8fde\u63a5\u5230DUT: DUT\nINFO     SSH_TestNode1:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: TestNode1 (192.168.13.136)\nINFO     RSTPTest:conftest.py:140 \u6210\u529f\u8fde\u63a5\u5230\u8282\u70b9: TestNode1\nINFO     SSH_TestNode2:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: TestNode2 (192.168.13.137)\nINFO     RSTPTest:conftest.py:140 \u6210\u529f\u8fde\u63a5\u5230\u8282\u70b9: TestNode2\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_backup_port_simulation\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:36 \u5f00\u59cb\u5907\u4efd\u7aef\u53e3\u6a21\u62df\u6d4b\u8bd5\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:48 \u521b\u5efa\u6a21\u62df\u5171\u4eab\u7f51\u6bb5\u62d3\u6251\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:79 \u2713 \u521b\u5efa\u8fde\u63a5: rstp0:dut_port1 &amp;lt;-&amp;gt; shared_segment:shared_port1\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:79 \u2713 \u521b\u5efa\u8fde\u63a5: rstp0:dut_port2 &amp;lt;-&amp;gt; shared_segment:shared_port2\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:97 \u2713 \u521b\u5efa\u8fdc\u7a0b\u4ea4\u6362\u673a: remote_switch\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:100 \u7b49\u5f85RSTP\u6536\u655b...\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:105 DUT\u6865\u4fe1\u606f: BridgeInfo(bridge_id=&amp;#x27;&amp;#x27;, root_id=&amp;#x27;&amp;#x27;, root_port=&amp;#x27;eth0&amp;#x27;, root_path_cost=0, protocol_version=&amp;#x27;unknown&amp;#x27;, hello_time=0, forward_delay=0, max_age=0, topology_changes=0, ports={&amp;#x27;eth0&amp;#x27;: PortInfo(name=&amp;#x27;eth0&amp;#x27;, role=&amp;lt;PortRole.ROOT: &amp;#x27;root&amp;#x27;&amp;gt;, state=&amp;lt;PortState.DISABLED: &amp;#x27;disabled&amp;#x27;&amp;gt;, path_cost=0, designated_bridge=&amp;#x27;&amp;#x27;, designated_port=&amp;#x27;&amp;#x27;), &amp;#x27;eth2&amp;#x27;: PortInfo(name=&amp;#x27;eth2&amp;#x27;, role=&amp;lt;PortRole.UNKNOWN: &amp;#x27;unknown&amp;#x27;&amp;gt;, state=&amp;lt;PortState.DISABLED: &amp;#x27;disabled&amp;#x27;&amp;gt;, path_cost=0, designated_bridge=&amp;#x27;&amp;#x27;, designated_port=&amp;#x27;&amp;#x27;), &amp;#x27;eth3&amp;#x27;: PortInfo(name=&amp;#x27;eth3&amp;#x27;, role=&amp;lt;PortRole.UNKNOWN: &amp;#x27;unknown&amp;#x27;&amp;gt;, state=&amp;lt;PortState.DISABLED: &amp;#x27;disabled&amp;#x27;&amp;gt;, path_cost=0, designated_bridge=&amp;#x27;&amp;#x27;, designated_port=&amp;#x27;&amp;#x27;)})\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:170 \u6e05\u7406\u6d4b\u8bd5\u73af\u5883\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:177 \u2713 \u5907\u4efd\u7aef\u53e3\u6a21\u62df\u6d4b\u8bd5\u5b8c\u6210\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_backup_port_simulation (\u8017\u65f6: 17.32\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_comprehensive_port_state_transitions&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_comprehensive_port_state_transitions&#34;, &#34;duration&#34;: &#34;00:00:18&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_comprehensive_port_state_transitions&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:18&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests\\test_enhanced_rstp_coverage.py:203: in test_comprehensive_port_state_transitions\n    assert len(active_ports) &amp;gt; 0, &amp;quot;\u9700\u8981\u81f3\u5c11\u4e00\u4e2a\u6d3b\u52a8\u7aef\u53e3\u8fdb\u884c\u72b6\u6001\u8f6c\u6362\u6d4b\u8bd5&amp;quot;\nE   AssertionError: \u9700\u8981\u81f3\u5c11\u4e00\u4e2a\u6d3b\u52a8\u7aef\u53e3\u8fdb\u884c\u72b6\u6001\u8f6c\u6362\u6d4b\u8bd5\nE   assert 0 &amp;gt; 0\nE    +  where 0 = len({})\n\n------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_comprehensive_port_state_transitions\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:185 \u5f00\u59cb\u5168\u9762\u7aef\u53e3\u72b6\u6001\u8f6c\u6362\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 DUT: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 DUT: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 DUT: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 DUT: mstpd\u68c0\u67e5\u7ed3\u679c: code=1\nINFO     NetworkTopology:network_topology.py:131 DUT: \u68c0\u67e5iproute2\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:133 DUT: ip\u547d\u4ee4\u68c0\u67e5: code=0\nINFO     NetworkTopology:network_topology.py:135 DUT: \u4f7f\u7528iproute2\u914d\u7f6eRSTP\nINFO     NetworkTopology:network_topology.py:144 DUT: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 TestNode1: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 TestNode1: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 TestNode1: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 TestNode1: mstpd\u68c0\u67e5\u7ed3\u679c: code=0\nINFO     NetworkTopology:network_topology.py:104 TestNode1: \u68c0\u67e5mstpd\u670d\u52a1\u72b6\u6001...\nINFO     NetworkTopology:network_topology.py:106 TestNode1: mstpd\u670d\u52a1\u72b6\u6001: code=1, output=\nINFO     NetworkTopology:network_topology.py:112 TestNode1: \u5c1d\u8bd5\u542f\u52a8mstpd\u670d\u52a1...\nINFO     NetworkTopology:network_topology.py:117 TestNode1: mstpd\u542f\u52a8\u547d\u4ee4\u7ed3\u679c: code=0, stderr=[sudo] admin \u7684\u5bc6\u7801\uff1a\nINFO     NetworkTopology:network_topology.py:120 TestNode1: mstpd\u542f\u52a8\u540e\u72b6\u6001: code=1\nINFO     NetworkTopology:network_topology.py:127 TestNode1: mstpd\u542f\u52a8\u5931\u8d25\uff0c\u4f7f\u7528iproute2\nINFO     NetworkTopology:network_topology.py:144 TestNode1: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 TestNode2: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 TestNode2: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 TestNode2: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 TestNode2: mstpd\u68c0\u67e5\u7ed3\u679c: code=0\nINFO     NetworkTopology:network_topology.py:104 TestNode2: \u68c0\u67e5mstpd\u670d\u52a1\u72b6\u6001...\nINFO     NetworkTopology:network_topology.py:106 TestNode2: mstpd\u670d\u52a1\u72b6\u6001: code=1, output=\nINFO     NetworkTopology:network_topology.py:112 TestNode2: \u5c1d\u8bd5\u542f\u52a8mstpd\u670d\u52a1...\nINFO     NetworkTopology:network_topology.py:117 TestNode2: mstpd\u542f\u52a8\u547d\u4ee4\u7ed3\u679c: code=0, stderr=[sudo] admin \u7684\u5bc6\u7801\uff1a\nINFO     NetworkTopology:network_topology.py:120 TestNode2: mstpd\u542f\u52a8\u540e\u72b6\u6001: code=1\nINFO     NetworkTopology:network_topology.py:127 TestNode2: mstpd\u542f\u52a8\u5931\u8d25\uff0c\u4f7f\u7528iproute2\nINFO     NetworkTopology:network_topology.py:144 TestNode2: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:195 \u7b49\u5f85\u521d\u59cb\u6536\u655b...\nINFO     ConvergenceMonitor:conftest.py:209 \u7b49\u5f85\u7f51\u7edc\u6536\u655b (\u6700\u957f10\u79d2)...\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     ConvergenceMonitor:conftest.py:225 \u7f51\u7edc\u5df2\u6536\u655b\uff0c\u8017\u65f6: 0.27\u79d2\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_comprehensive_port_state_transitions (\u8017\u65f6: 18.69\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_detailed_bpdu_analysis&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_detailed_bpdu_analysis&#34;, &#34;duration&#34;: &#34;00:00:13&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_detailed_bpdu_analysis&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:13&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;tests\\test_enhanced_rstp_coverage.py:338: in test_detailed_bpdu_analysis\n    expected_min_bpdus = max(2, (capture_duration // hello_time) - 1)\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   ZeroDivisionError: integer division or modulo by zero\n\n------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_detailed_bpdu_analysis\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:287 \u5f00\u59cb\u8be6\u7ec6BPDU\u5206\u6790\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 DUT: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode1: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode2: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:299 \u7b49\u5f85RSTP\u6536\u655b...\nINFO     ConvergenceMonitor:conftest.py:209 \u7b49\u5f85\u7f51\u7edc\u6536\u655b (\u6700\u957f10\u79d2)...\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     ConvergenceMonitor:conftest.py:225 \u7f51\u7edc\u5df2\u6536\u655b\uff0c\u8017\u65f6: 0.22\u79d2\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:305 Hello Time: 0\u79d2\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:308 === \u6d4b\u8bd51: \u9a8c\u8bc1\u5206\u5e03\u5f0fBPDU\u751f\u6210 ===\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:335 \u603b\u5171\u6355\u83b70\u4e2aBPDU\uff0c\u6765\u81ea0\u4e2a\u4e0d\u540c\u6e90\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_detailed_bpdu_analysis (\u8017\u65f6: 13.49\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_topology_change_comprehensive&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_topology_change_comprehensive&#34;, &#34;duration&#34;: &#34;00:00:13&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_enhanced_rstp_coverage.py::TestEnhancedRSTPCoverage::test_topology_change_comprehensive&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:13&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_topology_change_comprehensive\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:421 \u5f00\u59cb\u5168\u9762\u62d3\u6251\u53d8\u66f4\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 DUT: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode1: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode2: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:431 \u7b49\u5f85\u521d\u59cb\u6536\u655b...\nINFO     ConvergenceMonitor:conftest.py:209 \u7b49\u5f85\u7f51\u7edc\u6536\u655b (\u6700\u957f10\u79d2)...\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     ConvergenceMonitor:conftest.py:225 \u7f51\u7edc\u5df2\u6536\u655b\uff0c\u8017\u65f6: 0.26\u79d2\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:438 \u521d\u59cb\u72b6\u6001: DUT\u662f\u6839\u6865=True\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:441 === \u6d4b\u8bd5\u573a\u666f1: \u6839\u6865\u53d8\u66f4 ===\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:473 === \u6d4b\u8bd5\u573a\u666f2: \u7aef\u53e3\u6545\u969c\u6062\u590d ===\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:515 === \u6d4b\u8bd5\u573a\u666f3: \u7aef\u53e3\u4f18\u5148\u7ea7\u53d8\u66f4 ===\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nWARNING  test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:545 \u672a\u68c0\u6d4b\u5230\u660e\u663e\u7684\u62d3\u6251\u53d8\u66f4\uff0c\u53ef\u80fd\u662f\u6d4b\u8bd5\u73af\u5883\u9650\u5236\nINFO     test_enhanced_rstp_coverage:test_enhanced_rstp_coverage.py:547 \u2713 \u5168\u9762\u62d3\u6251\u53d8\u66f4\u6d4b\u8bd5\u5b8c\u6210\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_topology_change_comprehensive (\u8017\u65f6: 13.06\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================\n\nINFO     SSH_TestNode1:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: TestNode1\nINFO     SSH_TestNode2:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: TestNode2\nINFO     SSH_DUT:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: DUT&#34;}], &#34;tests/test_additional_rstp.py::TestAdditionalRSTP::test_port_state_transitions&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Skipped&#34;, &#34;testId&#34;: &#34;tests/test_additional_rstp.py::TestAdditionalRSTP::test_port_state_transitions&#34;, &#34;duration&#34;: &#34;00:00:23&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Skipped&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_additional_rstp.py::TestAdditionalRSTP::test_port_state_transitions&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:23&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;(&amp;#x27;C:\\\\Users\\\\30380\\\\OneDrive\\\\101_Schneider\\\\05_EAE_rstp_test_framework\\\\tests\\\\test_additional_rstp.py&amp;#x27;, 56, &amp;#x27;Skipped: \u6ca1\u6709\u627e\u5230\u6d3b\u52a8\u7aef\u53e3\uff0c\u8df3\u8fc7\u72b6\u6001\u8f6c\u6362\u6d4b\u8bd5&amp;#x27;)\n\n------------------------------ Captured log setup ------------------------------\nINFO     SSH_DUT:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: DUT (192.168.1.123)\nINFO     RSTPTest:conftest.py:121 \u6210\u529f\u8fde\u63a5\u5230DUT: DUT\nINFO     SSH_TestNode1:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: TestNode1 (192.168.13.136)\nINFO     RSTPTest:conftest.py:140 \u6210\u529f\u8fde\u63a5\u5230\u8282\u70b9: TestNode1\nINFO     SSH_TestNode2:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: TestNode2 (192.168.13.137)\nINFO     RSTPTest:conftest.py:140 \u6210\u529f\u8fde\u63a5\u5230\u8282\u70b9: TestNode2\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_port_state_transitions\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_additional_rstp:test_additional_rstp.py:22 \u5f00\u59cb\u7aef\u53e3\u72b6\u6001\u8f6c\u6362\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 DUT: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 DUT: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 DUT: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 DUT: mstpd\u68c0\u67e5\u7ed3\u679c: code=1\nINFO     NetworkTopology:network_topology.py:131 DUT: \u68c0\u67e5iproute2\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:133 DUT: ip\u547d\u4ee4\u68c0\u67e5: code=0\nINFO     NetworkTopology:network_topology.py:135 DUT: \u4f7f\u7528iproute2\u914d\u7f6eRSTP\nINFO     NetworkTopology:network_topology.py:144 DUT: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 TestNode1: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 TestNode1: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 TestNode1: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 TestNode1: mstpd\u68c0\u67e5\u7ed3\u679c: code=0\nINFO     NetworkTopology:network_topology.py:104 TestNode1: \u68c0\u67e5mstpd\u670d\u52a1\u72b6\u6001...\nINFO     NetworkTopology:network_topology.py:106 TestNode1: mstpd\u670d\u52a1\u72b6\u6001: code=1, output=\nINFO     NetworkTopology:network_topology.py:112 TestNode1: \u5c1d\u8bd5\u542f\u52a8mstpd\u670d\u52a1...\nINFO     NetworkTopology:network_topology.py:117 TestNode1: mstpd\u542f\u52a8\u547d\u4ee4\u7ed3\u679c: code=0, stderr=[sudo] admin \u7684\u5bc6\u7801\uff1a\nINFO     NetworkTopology:network_topology.py:120 TestNode1: mstpd\u542f\u52a8\u540e\u72b6\u6001: code=1\nINFO     NetworkTopology:network_topology.py:127 TestNode1: mstpd\u542f\u52a8\u5931\u8d25\uff0c\u4f7f\u7528iproute2\nINFO     NetworkTopology:network_topology.py:144 TestNode1: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 TestNode2: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 TestNode2: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 TestNode2: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 TestNode2: mstpd\u68c0\u67e5\u7ed3\u679c: code=0\nINFO     NetworkTopology:network_topology.py:104 TestNode2: \u68c0\u67e5mstpd\u670d\u52a1\u72b6\u6001...\nINFO     NetworkTopology:network_topology.py:106 TestNode2: mstpd\u670d\u52a1\u72b6\u6001: code=1, output=\nINFO     NetworkTopology:network_topology.py:112 TestNode2: \u5c1d\u8bd5\u542f\u52a8mstpd\u670d\u52a1...\nINFO     NetworkTopology:network_topology.py:117 TestNode2: mstpd\u542f\u52a8\u547d\u4ee4\u7ed3\u679c: code=0, stderr=[sudo] admin \u7684\u5bc6\u7801\uff1a\nINFO     NetworkTopology:network_topology.py:120 TestNode2: mstpd\u542f\u52a8\u540e\u72b6\u6001: code=1\nINFO     NetworkTopology:network_topology.py:127 TestNode2: mstpd\u542f\u52a8\u5931\u8d25\uff0c\u4f7f\u7528iproute2\nINFO     NetworkTopology:network_topology.py:144 TestNode2: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nINFO     test_additional_rstp:test_additional_rstp.py:45 \u4f7f\u7528\u7f51\u6865: rstp0\nINFO     test_additional_rstp:test_additional_rstp.py:48 === \u6b65\u9aa41: \u7981\u7528\u7aef\u53e3\u89e6\u53d1\u72b6\u6001\u8f6c\u6362 ===\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_port_state_transitions (\u8017\u65f6: 22.67\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_additional_rstp.py::TestAdditionalRSTP::test_bpdu_propagation_and_keepalive&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_additional_rstp.py::TestAdditionalRSTP::test_bpdu_propagation_and_keepalive&#34;, &#34;duration&#34;: &#34;00:00:21&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_additional_rstp.py::TestAdditionalRSTP::test_bpdu_propagation_and_keepalive&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:21&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_bpdu_propagation_and_keepalive\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_additional_rstp:test_additional_rstp.py:189 \u5f00\u59cbBPDU\u4f20\u64ad\u548c\u4fdd\u6d3b\u673a\u5236\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 DUT: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode1: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode2: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nINFO     test_additional_rstp:test_additional_rstp.py:212 === \u6b65\u9aa41: \u9a8c\u8bc1\u5206\u5e03\u5f0fBPDU\u751f\u6210 ===\nINFO     test_additional_rstp:test_additional_rstp.py:236 \u68c0\u6d4b\u5230\u7f51\u6865\u63a5\u53e3: [&amp;#x27;18:&amp;#x27;, &amp;#x27;26:&amp;#x27;]\nINFO     test_additional_rstp:test_additional_rstp.py:249 \u5728\u63a5\u53e3 18: \u4e0a\u6355\u83b7BPDU...\nINFO     RSTPAnalyzer_DUT:rstp_analyzer.py:652 \u5f00\u59cb\u6355\u83b7BPDU\u5305 (\u63a5\u53e3: 18:, \u6570\u91cf: 10)\nINFO     RSTPAnalyzer_DUT:rstp_analyzer.py:678 \u6355\u83b7\u5230 0 \u4e2aBPDU\u5305\nWARNING  test_additional_rstp:test_additional_rstp.py:271 \u5728 18: \u4e0a\u672a\u6355\u83b7\u5230BPDU\nINFO     test_additional_rstp:test_additional_rstp.py:249 \u5728\u63a5\u53e3 26: \u4e0a\u6355\u83b7BPDU...\nINFO     RSTPAnalyzer_DUT:rstp_analyzer.py:652 \u5f00\u59cb\u6355\u83b7BPDU\u5305 (\u63a5\u53e3: 26:, \u6570\u91cf: 10)\nINFO     RSTPAnalyzer_DUT:rstp_analyzer.py:678 \u6355\u83b7\u5230 0 \u4e2aBPDU\u5305\nWARNING  test_additional_rstp:test_additional_rstp.py:271 \u5728 26: \u4e0a\u672a\u6355\u83b7\u5230BPDU\nINFO     test_additional_rstp:test_additional_rstp.py:276 \u603b\u5171\u6355\u83b7 0 \u4e2aBPDU\uff0c\u6765\u81ea 0 \u4e2a\u4e0d\u540c\u6e90\nWARNING  test_additional_rstp:test_additional_rstp.py:287 \u672a\u68c0\u6d4b\u5230BPDU\u4f20\u64ad\nINFO     test_additional_rstp:test_additional_rstp.py:289 BPDU\u4f20\u64ad\u548c\u4fdd\u6d3b\u673a\u5236\u6d4b\u8bd5\u5b8c\u6210\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_bpdu_propagation_and_keepalive (\u8017\u65f6: 20.54\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_additional_rstp.py::TestAdditionalRSTP::test_disabled_port_exclusion_enhanced&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Skipped&#34;, &#34;testId&#34;: &#34;tests/test_additional_rstp.py::TestAdditionalRSTP::test_disabled_port_exclusion_enhanced&#34;, &#34;duration&#34;: &#34;00:00:17&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Skipped&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_additional_rstp.py::TestAdditionalRSTP::test_disabled_port_exclusion_enhanced&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:17&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;(&amp;#x27;C:\\\\Users\\\\30380\\\\OneDrive\\\\101_Schneider\\\\05_EAE_rstp_test_framework\\\\tests\\\\test_additional_rstp.py&amp;#x27;, 314, &amp;#x27;Skipped: \u9700\u8981\u81f3\u5c112\u4e2a\u6d3b\u52a8\u7aef\u53e3\u8fdb\u884c\u6d4b\u8bd5&amp;#x27;)\n\n------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_disabled_port_exclusion_enhanced\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_additional_rstp:test_additional_rstp.py:294 \u5f00\u59cb\u589e\u5f3a\u7684\u7981\u7528\u7aef\u53e3\u6392\u9664\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 DUT: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode1: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode2: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_additional_rstp:test_additional_rstp.py:311 \u521d\u59cb\u6d3b\u52a8\u7aef\u53e3\u6570\u91cf: 0\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_disabled_port_exclusion_enhanced (\u8017\u65f6: 17.03\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================\n\nINFO     SSH_TestNode1:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: TestNode1\nINFO     SSH_TestNode2:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: TestNode2\nINFO     SSH_DUT:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: DUT&#34;}], &#34;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_backup_port_concept_verification&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_backup_port_concept_verification&#34;, &#34;duration&#34;: &#34;00:00:28&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_backup_port_concept_verification&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:28&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\nINFO     SSH_DUT:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: DUT (192.168.1.123)\nINFO     RSTPTest:conftest.py:121 \u6210\u529f\u8fde\u63a5\u5230DUT: DUT\nINFO     SSH_TestNode1:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: TestNode1 (192.168.13.136)\nINFO     RSTPTest:conftest.py:140 \u6210\u529f\u8fde\u63a5\u5230\u8282\u70b9: TestNode1\nINFO     SSH_TestNode2:ssh_manager.py:49 SSH\u8fde\u63a5\u6210\u529f: TestNode2 (192.168.13.137)\nINFO     RSTPTest:conftest.py:140 \u6210\u529f\u8fde\u63a5\u5230\u8282\u70b9: TestNode2\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_backup_port_concept_verification\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:27 \u5f00\u59cb\u5907\u4efd\u7aef\u53e3\u6982\u5ff5\u9a8c\u8bc1\u6d4b\u8bd5\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 DUT: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 DUT: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 DUT: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 DUT: mstpd\u68c0\u67e5\u7ed3\u679c: code=1\nINFO     NetworkTopology:network_topology.py:131 DUT: \u68c0\u67e5iproute2\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:133 DUT: ip\u547d\u4ee4\u68c0\u67e5: code=0\nINFO     NetworkTopology:network_topology.py:135 DUT: \u4f7f\u7528iproute2\u914d\u7f6eRSTP\nINFO     NetworkTopology:network_topology.py:144 DUT: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 TestNode1: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 TestNode1: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 TestNode1: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 TestNode1: mstpd\u68c0\u67e5\u7ed3\u679c: code=0\nINFO     NetworkTopology:network_topology.py:104 TestNode1: \u68c0\u67e5mstpd\u670d\u52a1\u72b6\u6001...\nINFO     NetworkTopology:network_topology.py:106 TestNode1: mstpd\u670d\u52a1\u72b6\u6001: code=1, output=\nINFO     NetworkTopology:network_topology.py:112 TestNode1: \u5c1d\u8bd5\u542f\u52a8mstpd\u670d\u52a1...\nINFO     NetworkTopology:network_topology.py:117 TestNode1: mstpd\u542f\u52a8\u547d\u4ee4\u7ed3\u679c: code=0, stderr=[sudo] admin \u7684\u5bc6\u7801\uff1a\nINFO     NetworkTopology:network_topology.py:120 TestNode1: mstpd\u542f\u52a8\u540e\u72b6\u6001: code=1\nINFO     NetworkTopology:network_topology.py:127 TestNode1: mstpd\u542f\u52a8\u5931\u8d25\uff0c\u4f7f\u7528iproute2\nINFO     NetworkTopology:network_topology.py:144 TestNode1: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:92 TestNode2: \u5f00\u59cb\u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:96 TestNode2: \u8df3\u8fc7OVS\u68c0\u6d4b\uff0c\u4f7f\u7528\u7edf\u4e00\u7684RSTP\u65b9\u6cd5\nINFO     NetworkTopology:network_topology.py:99 TestNode2: \u68c0\u67e5mstpd\u652f\u6301...\nINFO     NetworkTopology:network_topology.py:102 TestNode2: mstpd\u68c0\u67e5\u7ed3\u679c: code=0\nINFO     NetworkTopology:network_topology.py:104 TestNode2: \u68c0\u67e5mstpd\u670d\u52a1\u72b6\u6001...\nINFO     NetworkTopology:network_topology.py:106 TestNode2: mstpd\u670d\u52a1\u72b6\u6001: code=1, output=\nINFO     NetworkTopology:network_topology.py:112 TestNode2: \u5c1d\u8bd5\u542f\u52a8mstpd\u670d\u52a1...\nINFO     NetworkTopology:network_topology.py:117 TestNode2: mstpd\u542f\u52a8\u547d\u4ee4\u7ed3\u679c: code=0, stderr=[sudo] admin \u7684\u5bc6\u7801\uff1a\nINFO     NetworkTopology:network_topology.py:120 TestNode2: mstpd\u542f\u52a8\u540e\u72b6\u6001: code=1\nINFO     NetworkTopology:network_topology.py:127 TestNode2: mstpd\u542f\u52a8\u5931\u8d25\uff0c\u4f7f\u7528iproute2\nINFO     NetworkTopology:network_topology.py:144 TestNode2: \u6700\u7ec8\u9009\u62e9RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:46 === \u5f53\u524d\u7aef\u53e3\u72b6\u6001 ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:49 \u7aef\u53e3 eth0: \u89d2\u8272=root, \u72b6\u6001=disabled\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:49 \u7aef\u53e3 eth2: \u89d2\u8272=unknown, \u72b6\u6001=disabled\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:49 \u7aef\u53e3 eth3: \u89d2\u8272=unknown, \u72b6\u6001=disabled\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:67 \u26a0 \u5728\u5f53\u524d\u70b9\u5bf9\u70b9\u62d3\u6251\u4e2d\u672a\u68c0\u6d4b\u5230\u5907\u4efd\u7aef\u53e3\uff08\u7b26\u5408\u9884\u671f\uff09\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:68 \u5907\u4efd\u7aef\u53e3\u901a\u5e38\u51fa\u73b0\u5728\u5171\u4eab\u4ecb\u8d28\u7f51\u6bb5\u4e2d\uff0c\u5f53\u524d\u6d4b\u8bd5\u73af\u5883\u4e3a\u70b9\u5bf9\u70b9\u94fe\u8def\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:76 \u7aef\u53e3\u89d2\u8272\u5206\u5e03: {}\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:82 === RSTP\u7aef\u53e3\u89d2\u8272\u8986\u76d6\u5206\u6790 ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:87 - root\u7aef\u53e3: \u672a\u68c0\u6d4b\u5230\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:87 - designated\u7aef\u53e3: \u672a\u68c0\u6d4b\u5230\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:87 - alternate\u7aef\u53e3: \u672a\u68c0\u6d4b\u5230\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:92 - backup\u7aef\u53e3: \u672a\u68c0\u6d4b\u5230\uff08\u5728\u70b9\u5bf9\u70b9\u62d3\u6251\u4e2d\u4e3a\u6b63\u5e38\u73b0\u8c61\uff09\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:94 \u5907\u4efd\u7aef\u53e3\u6982\u5ff5\u9a8c\u8bc1\u6d4b\u8bd5\u5b8c\u6210\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_backup_port_concept_verification (\u8017\u65f6: 27.33\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_shared_medium_simulation_attempt&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_shared_medium_simulation_attempt&#34;, &#34;duration&#34;: &#34;00:00:23&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_shared_medium_simulation_attempt&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:23&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_shared_medium_simulation_attempt\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:103 \u5f00\u59cb\u5171\u4eab\u4ecb\u8d28\u6a21\u62df\u5c1d\u8bd5\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:115 === \u5c1d\u8bd5\u521b\u5efa\u5171\u4eab\u4ecb\u8d28\u6a21\u62df\u573a\u666f ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:118 \u521b\u5efa\u4e2d\u5fc3\u4ea4\u6362\u673a\u6a21\u62df\u5171\u4eab\u4ecb\u8d28...\nINFO     NetworkTopology:network_topology.py:345 \u521b\u5efaRSTP\u73af\u5f62\u62d3\u6251...\nINFO     NetworkTopology:network_topology.py:346 \u53ef\u7528\u8282\u70b9\u6570\u91cf: 3\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 1/3: DUT\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 DUT \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a DUT \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 DUT: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 DUT \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 DUT \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a DUT \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 DUT: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 DUT RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a DUT \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 DUT \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 DUT \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 DUT \u7684\u7f51\u6865 rstp0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 DUT \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 DUT: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 DUT \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 DUT RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 2/3: TestNode1\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode1 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode1 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode1: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode1 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode1 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode1 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode1: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode1 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode1 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode1 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode1 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode1 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode1 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode1: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode1 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode1 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:349 \u5f00\u59cb\u914d\u7f6e\u8282\u70b9 3/3: TestNode2\nINFO     NetworkTopology:network_topology.py:358 \u4e3a\u8282\u70b9 TestNode2 \u914d\u7f6eRSTP\u7f51\u6865...\nINFO     NetworkTopology:network_topology.py:154 \u5f00\u59cb\u4e3a TestNode2 \u68c0\u6d4bRSTP\u652f\u6301\u65b9\u6cd5...\nINFO     NetworkTopology:network_topology.py:89 TestNode2: \u4f7f\u7528\u7f13\u5b58\u7684RSTP\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:156 TestNode2 \u4f7f\u7528\u65b9\u6cd5: iproute2\nINFO     NetworkTopology:network_topology.py:159 \u6e05\u7406 TestNode2 \u7684\u65e7\u7f51\u6865\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:163 \u4e3a TestNode2 \u914d\u7f6eRSTP (iproute2)...\nINFO     NetworkTopology:network_topology.py:246 TestNode2: RSTP\u5df2\u901a\u8fc7iproute2\u914d\u7f6e\nINFO     NetworkTopology:network_topology.py:172 TestNode2 RSTP\u6838\u5fc3\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:176 \u4e3a TestNode2 \u6dfb\u52a0\u63a5\u53e3: [&amp;#x27;eth0&amp;#x27;, &amp;#x27;eth2&amp;#x27;]\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth0 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:178 \u6dfb\u52a0\u63a5\u53e3 eth2 \u5230 TestNode2 \u7684\u7f51\u6865\nINFO     NetworkTopology:network_topology.py:180 TestNode2 \u63a5\u53e3\u6dfb\u52a0\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:183 \u542f\u52a8 TestNode2 \u7684\u7f51\u6865 br0...\nINFO     NetworkTopology:network_topology.py:187 \u9a8c\u8bc1 TestNode2 \u7684RSTP\u914d\u7f6e...\nINFO     NetworkTopology:network_topology.py:325 TestNode2: STP/RSTP\u5df2\u542f\u7528\nINFO     NetworkTopology:network_topology.py:189 TestNode2 \u7f51\u6865\u914d\u7f6e\u9a8c\u8bc1\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:360 \u8282\u70b9 TestNode2 RSTP\u914d\u7f6e\u5b8c\u6210\nINFO     NetworkTopology:network_topology.py:373 \u73af\u5f62\u62d3\u6251\u521b\u5efa\u5b8c\u6210\nERROR    RSTPAnalyzer_DUT:rstp_analyzer.py:89 \u65e0\u6cd5\u83b7\u53d6\u7f51\u6865\u4fe1\u606f: br0\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:133 === \u5206\u6790\u5f53\u524d\u7aef\u53e3\u914d\u7f6e ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:163 \u26a0 \u672a\u68c0\u6d4b\u5230\u5907\u4efd\u7aef\u53e3\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:164 \u8fd9\u5728\u5f53\u524d\u6d4b\u8bd5\u73af\u5883\u4e2d\u662f\u6b63\u5e38\u7684\uff0c\u56e0\u4e3a\u7f3a\u4e4f\u771f\u6b63\u7684\u5171\u4eab\u4ecb\u8d28\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:166 \u5171\u4eab\u4ecb\u8d28\u6a21\u62df\u5c1d\u8bd5\u5b8c\u6210\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_shared_medium_simulation_attempt (\u8017\u65f6: 22.53\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================&#34;}], &#34;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_backup_port_documentation_verification&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_backup_port_documentation_verification&#34;, &#34;duration&#34;: &#34;7 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_backup_port_simulation.py::TestBackupPortSimulation::test_backup_port_documentation_verification&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;7 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;------------------------------ Captured log setup ------------------------------\nINFO     RSTPTest:conftest.py:184 ============================================================\nINFO     RSTPTest:conftest.py:185 \u5f00\u59cb\u6d4b\u8bd5: test_backup_port_documentation_verification\nINFO     RSTPTest:conftest.py:186 ============================================================\n\n------------------------------ Captured log call -------------------------------\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:177 \u5f00\u59cb\u5907\u4efd\u7aef\u53e3\u6587\u6863\u9a8c\u8bc1\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:181 \u2713 PortRole.BACKUP \u5b58\u5728\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:192 === \u5907\u4efd\u7aef\u53e3\u7406\u8bba\u7279\u6027\u9a8c\u8bc1 ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:194 purpose: \u4e3a\u5171\u4eab\u4ecb\u8d28\u7f51\u6bb5\u63d0\u4f9b\u5197\u4f59\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:194 difference_from_alternate: \u5907\u4efd\u7aef\u53e3\u662f\u540c\u4e00\u4ea4\u6362\u673a\u4e0a\u6307\u5b9a\u7aef\u53e3\u7684\u5907\u4efd\uff0c\u800c\u5907\u7528\u7aef\u53e3\u662f\u4e0d\u540c\u4ea4\u6362\u673a\u63d0\u4f9b\u7684\u8def\u5f84\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:194 state: Discarding\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:194 scenario: \u51fa\u73b0\u5728\u8fde\u63a5\u5230\u96c6\u7ebf\u5668\u6216\u5171\u4eab\u4ecb\u8d28\u7684\u573a\u666f\u4e2d\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:194 fast_transition: \u5f53\u5bf9\u5e94\u7684\u6307\u5b9a\u7aef\u53e3\u5931\u6548\u65f6\uff0c\u53ef\u4ee5\u5feb\u901f\u8f6c\u6362\u4e3a\u6307\u5b9a\u7aef\u53e3\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:204 === \u7aef\u53e3\u89d2\u8272\u5bf9\u6bd4 ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:206 root: \u8fde\u63a5\u5230\u6839\u6865\u7684\u6700\u4f73\u8def\u5f84\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:206 designated: \u4e3a\u7f51\u6bb5\u63d0\u4f9b\u8f6c\u53d1\u670d\u52a1\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:206 alternate: \u63d0\u4f9b\u5230\u6839\u6865\u7684\u5907\u7528\u8def\u5f84\uff08\u6765\u81ea\u5176\u4ed6\u4ea4\u6362\u673a\uff09\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:206 backup: \u540c\u4e00\u4ea4\u6362\u673a\u4e0a\u6307\u5b9a\u7aef\u53e3\u7684\u5907\u4efd\uff08\u5171\u4eab\u4ecb\u8d28\u573a\u666f\uff09\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:216 === \u6d4b\u8bd5\u8986\u76d6\u7387\u5206\u6790 ===\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:219 \u5df2\u8986\u76d6: Root Port, Designated Port, Alternate Port, Disabled Port\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:219 \u90e8\u5206\u8986\u76d6: Backup Port (\u6982\u5ff5\u9a8c\u8bc1)\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:221 \u8986\u76d6\u9650\u5236: \u6d4b\u8bd5\u6846\u67b6\u65e0\u6cd5\u521b\u5efa\u771f\u6b63\u7684\u5171\u4eab\u4ecb\u8d28\u62d3\u6251\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:221 \u5efa\u8bae: \u5728\u5b9e\u9645\u90e8\u7f72\u73af\u5883\u4e2d\u4f7f\u7528\u96c6\u7ebf\u5668\u6216\u914d\u7f6e\u4ea4\u6362\u673a\u5171\u4eab\u6a21\u5f0f\u8fdb\u884c\u5b8c\u6574\u6d4b\u8bd5\nINFO     test_backup_port_simulation:test_backup_port_simulation.py:223 \u5907\u4efd\u7aef\u53e3\u6587\u6863\u9a8c\u8bc1\u5b8c\u6210\n\n---------------------------- Captured log teardown -----------------------------\nINFO     RSTPTest:conftest.py:193 \u6d4b\u8bd5\u5b8c\u6210: test_backup_port_documentation_verification (\u8017\u65f6: 0.00\u79d2)\nINFO     RSTPTest:conftest.py:194 ============================================================\n\nINFO     SSH_TestNode1:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: TestNode1\nINFO     SSH_TestNode2:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: TestNode2\nINFO     SSH_DUT:ssh_manager.py:150 SSH\u8fde\u63a5\u5df2\u5173\u95ed: DUT&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;enhanced_rstp_test_report.html&#34;}"></div>
+    <script>
+      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
+
+class DataManager {
+    setManager(data) {
+        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
+        const collapsedIds = []
+        const tests = Object.values(data.tests).flat().map((test, index) => {
+            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
+            const id = `test_${index}`
+            if (collapsed) {
+                collapsedIds.push(id)
+            }
+            return {
+                ...test,
+                id,
+                collapsed,
+            }
+        })
+        const dataBlob = { ...data, tests }
+        this.data = { ...dataBlob }
+        this.renderData = { ...dataBlob }
+        setCollapsedIds(collapsedIds)
+    }
+
+    get allData() {
+        return { ...this.data }
+    }
+
+    resetRender() {
+        this.renderData = { ...this.data }
+    }
+
+    setRender(data) {
+        this.renderData.tests = [...data]
+    }
+
+    toggleCollapsedItem(id) {
+        this.renderData.tests = this.renderData.tests.map((test) =>
+            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
+        )
+    }
+
+    set allCollapsed(collapsed) {
+        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
+            { ...test, collapsed }
+        ))] }
+    }
+
+    get testSubset() {
+        return [...this.renderData.tests]
+    }
+
+    get environment() {
+        return this.renderData.environment
+    }
+
+    get initialSort() {
+        return this.data.initialSort
+    }
+}
+
+module.exports = {
+    manager: new DataManager(),
+}
+
+},{"./storage.js":8}],2:[function(require,module,exports){
+const mediaViewer = require('./mediaviewer.js')
+const templateEnvRow = document.getElementById('template_environment_row')
+const templateResult = document.getElementById('template_results-table__tbody')
+
+function htmlToElements(html) {
+    const temp = document.createElement('template')
+    temp.innerHTML = html
+    return temp.content.childNodes
+}
+
+const find = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return elem.querySelector(selector)
+}
+
+const findAll = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return [...elem.querySelectorAll(selector)]
+}
+
+const dom = {
+    getStaticRow: (key, value) => {
+        const envRow = templateEnvRow.content.cloneNode(true)
+        const isObj = typeof value === 'object' && value !== null
+        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
+
+        const valuesElement = htmlToElements(
+            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
+        const td = findAll('td', envRow)
+        td[0].textContent = key
+        td[1].appendChild(valuesElement)
+
+        return envRow
+    },
+    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
+        const resultBody = templateResult.content.cloneNode(true)
+        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
+        resultBody.querySelector('tbody').id = testId
+        resultBody.querySelector('.collapsible').dataset.id = id
+
+        resultsTableRow.forEach((html) => {
+            const t = document.createElement('template')
+            t.innerHTML = html
+            resultBody.querySelector('.collapsible').appendChild(t.content)
+        })
+
+        if (log) {
+            // Wrap lines starting with "E" with span.error to color those lines red
+            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
+            resultBody.querySelector('.log').innerHTML = wrappedLog
+        } else {
+            resultBody.querySelector('.log').remove()
+        }
+
+        if (collapsed) {
+            resultBody.querySelector('.collapsible > td')?.classList.add('collapsed')
+            resultBody.querySelector('.extras-row').classList.add('hidden')
+        } else {
+            resultBody.querySelector('.collapsible > td')?.classList.remove('collapsed')
+        }
+
+        const media = []
+        extras?.forEach(({ name, format_type, content }) => {
+            if (['image', 'video'].includes(format_type)) {
+                media.push({ path: content, name, format_type })
+            }
+
+            if (format_type === 'html') {
+                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
+            }
+        })
+        mediaViewer.setup(resultBody, media)
+
+        // Add custom html from the pytest_html_results_table_html hook
+        tableHtml?.forEach((item) => {
+            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
+        })
+
+        return resultBody
+    },
+}
+
+module.exports = {
+    dom,
+    htmlToElements,
+    find,
+    findAll,
+}
+
+},{"./mediaviewer.js":6}],3:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const storageModule = require('./storage.js')
+
+const getFilteredSubSet = (filter) =>
+    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
+
+const doInitFilter = () => {
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+}
+
+const doFilter = (type, show) => {
+    if (show) {
+        storageModule.showCategory(type)
+    } else {
+        storageModule.hideCategory(type)
+    }
+
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+
+    const sortColumn = storageModule.getSort()
+    doSort(sortColumn, true)
+}
+
+module.exports = {
+    doFilter,
+    doInitFilter,
+}
+
+},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
+const { redraw, bindEvents, renderStatic } = require('./main.js')
+const { doInitFilter } = require('./filter.js')
+const { doInitSort } = require('./sort.js')
+const { manager } = require('./datamanager.js')
+const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
+
+function init() {
+    manager.setManager(data)
+    doInitFilter()
+    doInitSort()
+    renderStatic()
+    redraw()
+    bindEvents()
+}
+
+init()
+
+},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
+const { dom, find, findAll } = require('./dom.js')
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const { doFilter } = require('./filter.js')
+const {
+    getVisible,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    getSortDirection,
+    possibleFilters,
+} = require('./storage.js')
+
+const removeChildren = (node) => {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild)
+    }
+}
+
+const renderStatic = () => {
+    const renderEnvironmentTable = () => {
+        const environment = manager.environment
+        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
+        const table = document.getElementById('environment')
+        removeChildren(table)
+        rows.forEach((row) => table.appendChild(row))
+    }
+    renderEnvironmentTable()
+}
+
+const addItemToggleListener = (elem) => {
+    elem.addEventListener('click', ({ target }) => {
+        const id = target.parentElement.dataset.id
+        manager.toggleCollapsedItem(id)
+
+        const collapsedIds = getCollapsedIds()
+        if (collapsedIds.includes(id)) {
+            const updated = collapsedIds.filter((item) => item !== id)
+            setCollapsedIds(updated)
+        } else {
+            collapsedIds.push(id)
+            setCollapsedIds(collapsedIds)
+        }
+        redraw()
+    })
+}
+
+const renderContent = (tests) => {
+    const sortAttr = getSort(manager.initialSort)
+    const sortAsc = JSON.parse(getSortDirection())
+    const rows = tests.map(dom.getResultTBody)
+    const table = document.getElementById('results-table')
+    const tableHeader = document.getElementById('results-table-head')
+
+    const newTable = document.createElement('table')
+    newTable.id = 'results-table'
+
+    // remove all sorting classes and set the relevant
+    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
+    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
+    newTable.appendChild(tableHeader)
+
+    if (!rows.length) {
+        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
+        newTable.appendChild(emptyTable)
+    } else {
+        rows.forEach((row) => {
+            if (!!row) {
+                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
+                find('.logexpander', row).addEventListener('click',
+                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
+                )
+                newTable.appendChild(row)
+            }
+        })
+    }
+
+    table.replaceWith(newTable)
+}
+
+const renderDerived = () => {
+    const currentFilter = getVisible()
+    possibleFilters.forEach((result) => {
+        const input = document.querySelector(`input[data-test-result="${result}"]`)
+        input.checked = currentFilter.includes(result)
+    })
+}
+
+const bindEvents = () => {
+    const filterColumn = (evt) => {
+        const { target: element } = evt
+        const { testResult } = element.dataset
+
+        doFilter(testResult, element.checked)
+        const collapsedIds = getCollapsedIds()
+        const updated = manager.renderData.tests.map((test) => {
+            return {
+                ...test,
+                collapsed: collapsedIds.includes(test.id),
+            }
+        })
+        manager.setRender(updated)
+        redraw()
+    }
+
+    const header = document.getElementById('environment-header')
+    header.addEventListener('click', () => {
+        const table = document.getElementById('environment')
+        table.classList.toggle('hidden')
+        header.classList.toggle('collapsed')
+    })
+
+    findAll('input[name="filter_checkbox"]').forEach((elem) => {
+        elem.addEventListener('click', filterColumn)
+    })
+
+    findAll('.sortable').forEach((elem) => {
+        elem.addEventListener('click', (evt) => {
+            const { target: element } = evt
+            const { columnType } = element.dataset
+            doSort(columnType)
+            redraw()
+        })
+    })
+
+    document.getElementById('show_all_details').addEventListener('click', () => {
+        manager.allCollapsed = false
+        setCollapsedIds([])
+        redraw()
+    })
+    document.getElementById('hide_all_details').addEventListener('click', () => {
+        manager.allCollapsed = true
+        const allIds = manager.renderData.tests.map((test) => test.id)
+        setCollapsedIds(allIds)
+        redraw()
+    })
+}
+
+const redraw = () => {
+    const { testSubset } = manager
+
+    renderContent(testSubset)
+    renderDerived()
+}
+
+module.exports = {
+    redraw,
+    bindEvents,
+    renderStatic,
+}
+
+},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
+class MediaViewer {
+    constructor(assets) {
+        this.assets = assets
+        this.index = 0
+    }
+
+    nextActive() {
+        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
+        return [this.activeFile, this.index]
+    }
+
+    prevActive() {
+        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
+        return [this.activeFile, this.index]
+    }
+
+    get currentIndex() {
+        return this.index
+    }
+
+    get activeFile() {
+        return this.assets[this.index]
+    }
+}
+
+
+const setup = (resultBody, assets) => {
+    if (!assets.length) {
+        resultBody.querySelector('.media').classList.add('hidden')
+        return
+    }
+
+    const mediaViewer = new MediaViewer(assets)
+    const container = resultBody.querySelector('.media-container')
+    const leftArrow = resultBody.querySelector('.media-container__nav--left')
+    const rightArrow = resultBody.querySelector('.media-container__nav--right')
+    const mediaName = resultBody.querySelector('.media__name')
+    const counter = resultBody.querySelector('.media__counter')
+    const imageEl = resultBody.querySelector('img')
+    const sourceEl = resultBody.querySelector('source')
+    const videoEl = resultBody.querySelector('video')
+
+    const setImg = (media, index) => {
+        if (media?.format_type === 'image') {
+            imageEl.src = media.path
+
+            imageEl.classList.remove('hidden')
+            videoEl.classList.add('hidden')
+        } else if (media?.format_type === 'video') {
+            sourceEl.src = media.path
+
+            videoEl.classList.remove('hidden')
+            imageEl.classList.add('hidden')
+        }
+
+        mediaName.innerText = media?.name
+        counter.innerText = `${index + 1} / ${assets.length}`
+    }
+    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
+
+    const moveLeft = () => {
+        const [media, index] = mediaViewer.prevActive()
+        setImg(media, index)
+    }
+    const doRight = () => {
+        const [media, index] = mediaViewer.nextActive()
+        setImg(media, index)
+    }
+    const openImg = () => {
+        window.open(mediaViewer.activeFile.path, '_blank')
+    }
+    if (assets.length === 1) {
+        container.classList.add('media-container--fullscreen')
+    } else {
+        leftArrow.addEventListener('click', moveLeft)
+        rightArrow.addEventListener('click', doRight)
+    }
+    imageEl.addEventListener('click', openImg)
+}
+
+module.exports = {
+    setup,
+}
+
+},{}],7:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const storageModule = require('./storage.js')
+
+const genericSort = (list, key, ascending, customOrder) => {
+    let sorted
+    if (customOrder) {
+        sorted = list.sort((a, b) => {
+            const aValue = a.result.toLowerCase()
+            const bValue = b.result.toLowerCase()
+
+            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
+            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
+
+            // Compare the indices to determine the sort order
+            return aIndex - bIndex
+        })
+    } else {
+        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
+    }
+
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const durationSort = (list, ascending) => {
+    const parseDuration = (duration) => {
+        if (duration.includes(':')) {
+            // If it's in the format "HH:mm:ss"
+            const [hours, minutes, seconds] = duration.split(':').map(Number)
+            return (hours * 3600 + minutes * 60 + seconds) * 1000
+        } else {
+            // If it's in the format "nnn ms"
+            return parseInt(duration)
+        }
+    }
+    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const doInitSort = () => {
+    const type = storageModule.getSort(manager.initialSort)
+    const ascending = storageModule.getSortDirection()
+    const list = manager.testSubset
+    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
+
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    if (type?.toLowerCase() === 'original') {
+        manager.setRender(list)
+    } else {
+        let sortedList
+        switch (type) {
+        case 'duration':
+            sortedList = durationSort(list, ascending)
+            break
+        case 'result':
+            sortedList = genericSort(list, type, ascending, initialOrder)
+            break
+        default:
+            sortedList = genericSort(list, type, ascending)
+            break
+        }
+        manager.setRender(sortedList)
+    }
+}
+
+const doSort = (type, skipDirection) => {
+    const newSortType = storageModule.getSort(manager.initialSort) !== type
+    const currentAsc = storageModule.getSortDirection()
+    let ascending
+    if (skipDirection) {
+        ascending = currentAsc
+    } else {
+        ascending = newSortType ? false : !currentAsc
+    }
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    const list = manager.testSubset
+    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
+    manager.setRender(sortedList)
+}
+
+module.exports = {
+    doInitSort,
+    doSort,
+}
+
+},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
+const possibleFilters = [
+    'passed',
+    'skipped',
+    'failed',
+    'error',
+    'xfailed',
+    'xpassed',
+    'rerun',
+]
+
+const getVisible = () => {
+    const url = new URL(window.location.href)
+    const settings = new URLSearchParams(url.search).get('visible')
+    const lower = (item) => {
+        const lowerItem = item.toLowerCase()
+        if (possibleFilters.includes(lowerItem)) {
+            return lowerItem
+        }
+        return null
+    }
+    return settings === null ?
+        possibleFilters :
+        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
+}
+
+const hideCategory = (categoryToHide) => {
+    const url = new URL(window.location.href)
+    const visibleParams = new URLSearchParams(url.search).get('visible')
+    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
+    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
+
+    url.searchParams.set('visible', settings)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const showCategory = (categoryToShow) => {
+    if (typeof window === 'undefined') {
+        return
+    }
+    const url = new URL(window.location.href)
+    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
+        [...possibleFilters]
+    const settings = [...new Set([categoryToShow, ...currentVisible])]
+    const noFilter = possibleFilters.length === settings.length || !settings.length
+
+    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getSort = (initialSort) => {
+    const url = new URL(window.location.href)
+    let sort = new URLSearchParams(url.search).get('sort')
+    if (!sort) {
+        sort = initialSort || 'result'
+    }
+    return sort
+}
+
+const setSort = (type) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('sort', type)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getCollapsedCategory = (renderCollapsed) => {
+    let categories
+    if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
+        switch (true) {
+        case !renderCollapsed && collapsedItems === null:
+            categories = ['passed']
+            break
+        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
+            categories = []
+            break
+        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
+            categories = [...possibleFilters]
+            break
+        default:
+            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
+            break
+        }
+    } else {
+        categories = []
+    }
+    return categories
+}
+
+const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
+const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
+
+const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
+const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
+
+module.exports = {
+    getVisible,
+    hideCategory,
+    showCategory,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    setSort,
+    getSortDirection,
+    setSortDirection,
+    getCollapsedCategory,
+    possibleFilters,
+}
+
+},{}]},{},[4]);
+    </script>
+  </footer>
+</html>

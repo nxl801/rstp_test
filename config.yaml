@@ -35,7 +35,7 @@ vms:
   nodes:
     - name: "TestNode1"
       ip: "192.168.13.136"
-      username: "admin"
+      username: "root"
       password: "8N10xiaol"
       vm_path: "Z:/testNode1/Ubuntu 64 位.vmx"
       snapshot: "cleansnapshot"
@@ -45,7 +45,7 @@ vms:
 
     - name: "TestNode2"
       ip: "192.168.13.137"
-      username: "admin"
+      username: "root"
       password: "8N10xiaol"
       vm_path: "Z:/testNode2/Ubuntu 64 位.vmx"
       snapshot: "cleansnapshot"

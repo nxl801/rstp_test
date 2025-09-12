@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="5" tests="56" time="3783.756" timestamp="2025-09-12T00:48:17.671211+08:00" hostname="DESKTOP-FDB8GR9"><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_port_state_transitions" time="552.991" /><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_bpdu_propagation_and_keepalive" time="52.527" /><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_disabled_port_exclusion_enhanced" time="46.215" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_proposal_agreement_handshake" time="34.253" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_tcn_topology_change_notification" time="40.121" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_edge_port_behavior" time="29.138" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_shared_vs_point_to_point_links" time="34.918" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_backup_port_concept_verification" time="30.810" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_shared_medium_simulation_attempt" time="30.262" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_backup_port_documentation_verification" time="0.006" /><testcase classname="tests.test_convergence.TestConvergence" name="test_direct_link_failure" time="40.365" /><testcase classname="tests.test_convergence.TestConvergence" name="test_root_bridge_failure" time="0.034"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_convergence.py:79: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_multiple_link_failures" time="48.443"><failure message="AssertionError: eth0收敛时间过长&#10;assert 8.408777713775635 &lt; 3.0">self = &lt;test_convergence.TestConvergence object at 0x000001EE093C02B0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE09449650&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000001EE097116D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000001EE097127B0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000001EE091F7490&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000001EE096BD220&gt;
+fault_injector = &lt;src.fault_injector.FaultInjector object at 0x000001EE09404DD0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000001EE09796CF0&gt;
+
+    @pytest.mark.slow
+    def test_multiple_link_failures(self, dut_manager, test_nodes,
+                                    network_topology, rstp_analyzer,
+                                    fault_injector, convergence_monitor):
+        """测试多重链路故障"""
+        logger.info("开始多重链路故障测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 等待初始收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        convergence_monitor.wait_for_convergence(analyzers)
+    
+        # 连续故障注入
+        failures = []
+        interfaces = ["eth0", "eth2"]
+    
+        for iface in interfaces:
+            logger.info(f"注入故障: {iface}")
+    
+            # 使用改进的故障收敛时间测量方法
+            convergence_time = convergence_monitor.measure_fault_convergence(
+                fault_function=lambda i=iface: fault_injector.link_down(i),
+                analyzers=analyzers
+            )
+            failures.append({
+                'interface': iface,
+                'convergence_time': convergence_time
+            })
+    
+            logger.info(f"{iface}故障收敛时间: {convergence_time:.3f}秒")
+            time.sleep(2)
+    
+        # 恢复所有链路
+        for iface in interfaces:
+            fault_injector.link_up(iface)
+    
+        # 等待最终收敛
+        final_convergence = convergence_monitor.wait_for_convergence(analyzers)
+    
+        # 验证所有收敛时间
+        for failure in failures:
+&gt;           assert failure['convergence_time'] &lt; 3.0, \
+                f"{failure['interface']}收敛时间过长"
+E           AssertionError: eth0收敛时间过长
+E           assert 8.408777713775635 &lt; 3.0
+
+tests\test_convergence.py:175: AssertionError</failure></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_convergence_with_traffic" time="47.502" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_backup_port_simulation" time="21.118" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_comprehensive_port_state_transitions" time="102.949" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_detailed_bpdu_analysis" time="305.321" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_topology_change_comprehensive" time="85.956" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_primary_controller_failure" time="0.001"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:40: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_rstp_reconvergence_no_switchover" time="293.309" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_split_brain_scenario" time="10.538" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_switchover_with_traffic" time="0.000"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:178: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_failback" time="0.002"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:227: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[12288]" time="4.016" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[16384]" time="3.865" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[32768]" time="3.869" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[61440]" time="3.865" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[4097]" time="2.067"><failure message="Failed: DUT违反802.1D标准：接受了无效优先级 4097，实际设置为 4097（不是4096的倍数）">self = &lt;test_parameters.TestParameters object at 0x000001EE0940F2F0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE094E45D0&gt;, priority = 4097
+
+    @pytest.mark.parametrize("priority", [4097, 12289, 70000])
+    def test_bridge_priority_invalid(self, dut_manager, priority):
+        """TC.AUTO.3.1.3: 测试无效的网桥优先级"""
+        logger.info(f"测试无效优先级: {priority}")
+    
+        # 确保网桥存在并正确配置
+        bridge_name = "SE_ETH2" if dut_manager.config.name == "DUT" else "br0"
+    
+        # 创建网桥
+        if dut_manager.config.name == "DUT":
+            # 对于DUT，创建OVS网桥
+            dut_manager.execute_sudo(f"ovs-vsctl --if-exists del-br {bridge_name}")
+            dut_manager.execute_sudo(f"ovs-vsctl add-br {bridge_name}")
+            dut_manager.execute_sudo(f"ovs-vsctl set bridge {bridge_name} stp_enable=true")
+            dut_manager.execute_sudo(f"ovs-vsctl set bridge {bridge_name} rstp_enable=true")
+        else:
+            dut_manager.execute_sudo(f"brctl addbr {bridge_name} 2&gt;/dev/null || true")
+            dut_manager.execute_sudo(f"brctl stp {bridge_name} on")
+        dut_manager.execute_sudo(f"ip link set {bridge_name} up")
+    
+        # 尝试设置无效优先级
+        network_topology = NetworkTopology([dut_manager])
+        stdout, stderr, code = network_topology.execute_bridge_command(
+            dut_manager, "set_priority", priority=priority
+        )
+    
+        # 对于DUT（OVS），验证其对无效值的处理
+        if dut_manager.config.name == "DUT":
+            # 验证OVS是否正确处理了无效值
+            time.sleep(1)
+            stdout_check, _, code_check = dut_manager.execute_as_root(
+                f"ovs-vsctl get bridge {bridge_name} other-config:stp-priority"
+            )
+            if code_check == 0:
+                import re
+                match = re.search(r'"(\d+)"', stdout_check)
+                if match:
+                    actual_priority = int(match.group(1))
+                    logger.info(f"DUT处理无效优先级 {priority} -&gt; {actual_priority}")
+    
+                    # 记录DUT的行为：是否遵循802.1D标准（优先级应为4096的倍数）
+                    if actual_priority % 4096 != 0:
+                        logger.error(f"DUT接受了非标准优先级值 {actual_priority}，不符合802.1D标准（应为4096的倍数）")
+                        # 这是一个合规性问题，测试应该失败
+&gt;                       pytest.fail(f"DUT违反802.1D标准：接受了无效优先级 {priority}，实际设置为 {actual_priority}（不是4096的倍数）")
+E                       Failed: DUT违反802.1D标准：接受了无效优先级 4097，实际设置为 4097（不是4096的倍数）
+
+tests\test_parameters.py:198: Failed</failure></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[12289]" time="2.023"><failure message="Failed: DUT违反802.1D标准：接受了无效优先级 12289，实际设置为 12289（不是4096的倍数）">self = &lt;test_parameters.TestParameters object at 0x000001EE093DC490&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE094E45D0&gt;, priority = 12289
+
+    @pytest.mark.parametrize("priority", [4097, 12289, 70000])
+    def test_bridge_priority_invalid(self, dut_manager, priority):
+        """TC.AUTO.3.1.3: 测试无效的网桥优先级"""
+        logger.info(f"测试无效优先级: {priority}")
+    
+        # 确保网桥存在并正确配置
+        bridge_name = "SE_ETH2" if dut_manager.config.name == "DUT" else "br0"
+    
+        # 创建网桥
+        if dut_manager.config.name == "DUT":
+            # 对于DUT，创建OVS网桥
+            dut_manager.execute_sudo(f"ovs-vsctl --if-exists del-br {bridge_name}")
+            dut_manager.execute_sudo(f"ovs-vsctl add-br {bridge_name}")
+            dut_manager.execute_sudo(f"ovs-vsctl set bridge {bridge_name} stp_enable=true")
+            dut_manager.execute_sudo(f"ovs-vsctl set bridge {bridge_name} rstp_enable=true")
+        else:
+            dut_manager.execute_sudo(f"brctl addbr {bridge_name} 2&gt;/dev/null || true")
+            dut_manager.execute_sudo(f"brctl stp {bridge_name} on")
+        dut_manager.execute_sudo(f"ip link set {bridge_name} up")
+    
+        # 尝试设置无效优先级
+        network_topology = NetworkTopology([dut_manager])
+        stdout, stderr, code = network_topology.execute_bridge_command(
+            dut_manager, "set_priority", priority=priority
+        )
+    
+        # 对于DUT（OVS），验证其对无效值的处理
+        if dut_manager.config.name == "DUT":
+            # 验证OVS是否正确处理了无效值
+            time.sleep(1)
+            stdout_check, _, code_check = dut_manager.execute_as_root(
+                f"ovs-vsctl get bridge {bridge_name} other-config:stp-priority"
+            )
+            if code_check == 0:
+                import re
+                match = re.search(r'"(\d+)"', stdout_check)
+                if match:
+                    actual_priority = int(match.group(1))
+                    logger.info(f"DUT处理无效优先级 {priority} -&gt; {actual_priority}")
+    
+                    # 记录DUT的行为：是否遵循802.1D标准（优先级应为4096的倍数）
+                    if actual_priority % 4096 != 0:
+                        logger.error(f"DUT接受了非标准优先级值 {actual_priority}，不符合802.1D标准（应为4096的倍数）")
+                        # 这是一个合规性问题，测试应该失败
+&gt;                       pytest.fail(f"DUT违反802.1D标准：接受了无效优先级 {priority}，实际设置为 {actual_priority}（不是4096的倍数）")
+E                       Failed: DUT违反802.1D标准：接受了无效优先级 12289，实际设置为 12289（不是4096的倍数）
+
+tests\test_parameters.py:198: Failed</failure></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[70000]" time="1.994"><failure message="Failed: DUT违反802.1D标准：接受了无效优先级 70000，实际设置为 70000（不是4096的倍数）">self = &lt;test_parameters.TestParameters object at 0x000001EE093DC5A0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE094E45D0&gt;, priority = 70000
+
+    @pytest.mark.parametrize("priority", [4097, 12289, 70000])
+    def test_bridge_priority_invalid(self, dut_manager, priority):
+        """TC.AUTO.3.1.3: 测试无效的网桥优先级"""
+        logger.info(f"测试无效优先级: {priority}")
+    
+        # 确保网桥存在并正确配置
+        bridge_name = "SE_ETH2" if dut_manager.config.name == "DUT" else "br0"
+    
+        # 创建网桥
+        if dut_manager.config.name == "DUT":
+            # 对于DUT，创建OVS网桥
+            dut_manager.execute_sudo(f"ovs-vsctl --if-exists del-br {bridge_name}")
+            dut_manager.execute_sudo(f"ovs-vsctl add-br {bridge_name}")
+            dut_manager.execute_sudo(f"ovs-vsctl set bridge {bridge_name} stp_enable=true")
+            dut_manager.execute_sudo(f"ovs-vsctl set bridge {bridge_name} rstp_enable=true")
+        else:
+            dut_manager.execute_sudo(f"brctl addbr {bridge_name} 2&gt;/dev/null || true")
+            dut_manager.execute_sudo(f"brctl stp {bridge_name} on")
+        dut_manager.execute_sudo(f"ip link set {bridge_name} up")
+    
+        # 尝试设置无效优先级
+        network_topology = NetworkTopology([dut_manager])
+        stdout, stderr, code = network_topology.execute_bridge_command(
+            dut_manager, "set_priority", priority=priority
+        )
+    
+        # 对于DUT（OVS），验证其对无效值的处理
+        if dut_manager.config.name == "DUT":
+            # 验证OVS是否正确处理了无效值
+            time.sleep(1)
+            stdout_check, _, code_check = dut_manager.execute_as_root(
+                f"ovs-vsctl get bridge {bridge_name} other-config:stp-priority"
+            )
+            if code_check == 0:
+                import re
+                match = re.search(r'"(\d+)"', stdout_check)
+                if match:
+                    actual_priority = int(match.group(1))
+                    logger.info(f"DUT处理无效优先级 {priority} -&gt; {actual_priority}")
+    
+                    # 记录DUT的行为：是否遵循802.1D标准（优先级应为4096的倍数）
+                    if actual_priority % 4096 != 0:
+                        logger.error(f"DUT接受了非标准优先级值 {actual_priority}，不符合802.1D标准（应为4096的倍数）")
+                        # 这是一个合规性问题，测试应该失败
+&gt;                       pytest.fail(f"DUT违反802.1D标准：接受了无效优先级 {priority}，实际设置为 {actual_priority}（不是4096的倍数）")
+E                       Failed: DUT违反802.1D标准：接受了无效优先级 70000，实际设置为 70000（不是4096的倍数）
+
+tests\test_parameters.py:198: Failed</failure></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_hello_time" time="8.361" /><testcase classname="tests.test_parameters.TestParameters" name="test_forward_delay" time="8.390" /><testcase classname="tests.test_parameters.TestParameters" name="test_max_age" time="8.391" /><testcase classname="tests.test_parameters.TestParameters" name="test_port_cost" time="472.381" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_persistence" time="7.634" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_boundaries" time="3.227" /><testcase classname="tests.test_protocol_conformance" name="test_port_role_assignment_simplified" time="71.416" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_root_bridge_election" time="46.795"><failure message="Failed: DUT的RSTP实现不符合IEEE 802.1D标准。设置最低优先级后仍不是根桥。这是DUT的问题，不是测试脚本的问题。">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000001EE093BE350&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE094FAC30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000001EE094FF4D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000001EE094F7BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000001EE0947D310&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000001EE0947D1F0&gt;
+
+    def test_root_bridge_election(self, dut_manager, test_nodes,
+                                network_topology, rstp_analyzer):
+        """TC.AUTO.1.1: 根网桥选举测试"""
+        logger.info("开始根网桥选举测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 等待初始拓扑稳定
+        time.sleep(3)
+    
+        # 确定DUT的正确网桥名称（DUT使用OVS+SE_ETH2）
+        logger.info("=== 检查DUT网桥配置 ===")
+        if hasattr(dut_manager, 'execute'):
+            execute_method = dut_manager.execute
+        elif hasattr(dut_manager, 'run'):
+            execute_method = dut_manager.run
+        else:
+            execute_method = dut_manager.send_command
+    
+        # DUT使用OVS，网桥名称为SE_ETH2
+        bridge_name = "SE_ETH2"
+        logger.info(f"DUT使用OVS网桥: {bridge_name}")
+    
+        try:
+            # 检查OVS网桥是否存在
+            result = execute_method(f"sudo ovs-vsctl br-exists {bridge_name}")
+            if isinstance(result, tuple) and result[2] == 0:  # 命令成功
+                logger.info(f"OVS网桥 {bridge_name} 存在")
+            else:
+                logger.warning(f"OVS网桥 {bridge_name} 不存在，可能需要先创建拓扑")
+    
+            # 检查RSTP是否已启用
+            result = execute_method(f"sudo ovs-vsctl get bridge {bridge_name} rstp_enable")
+            if isinstance(result, tuple):
+                rstp_status = result[0].strip()
+                logger.info(f"{bridge_name} RSTP状态: {rstp_status}")
+                if rstp_status != "true":
+                    # 启用RSTP
+                    execute_method(f"sudo ovs-vsctl set bridge {bridge_name} rstp_enable=true")
+                    logger.info(f"已启用{bridge_name}的RSTP")
+    
+        except Exception as e:
+            logger.warning(f"OVS网桥检查出错: {e}")
+    
+        # 重新获取网桥信息确保分析器使用正确的网桥
+        logger.info("=== 初始网桥状态 ===")
+        initial_info = rstp_analyzer.get_bridge_info()
+    
+        # 检查端口数量
+        active_ports = [p for p in initial_info.ports.values() if p.state != PortState.DISABLED]
+        logger.info(f"活动端口数: {len(active_ports)}")
+    
+        if len(active_ports) &lt; 2:
+            logger.warning("活动端口不足，尝试启用更多端口")
+            # DUT设备使用br3和br4作为网口
+            for iface in ['br3', 'br4']:
+                try:
+                    # 启用网络接口
+                    execute_method(f"sudo ip link set {iface} up")
+                    # 检查端口是否已在OVS网桥中
+                    result = execute_method(f"sudo ovs-vsctl port-to-br {iface}")
+                    if isinstance(result, tuple) and result[2] != 0:  # 端口不在网桥中
+                        execute_method(f"sudo ovs-vsctl add-port {bridge_name} {iface}")
+                        logger.info(f"已将端口 {iface} 添加到OVS网桥 {bridge_name}")
+                except Exception as e:
+                    logger.warning(f"配置端口 {iface} 失败: {e}")
+            time.sleep(3)
+            initial_info = rstp_analyzer.get_bridge_info()
+            active_ports = [p for p in initial_info.ports.values() if p.state != PortState.DISABLED]
+    
+        # 显示所有端口信息
+        logger.info("初始端口状态:")
+        for port_name, port_info in initial_info.ports.items():
+            if port_info.state != PortState.DISABLED:
+                logger.info(f"  {port_name}: 角色={port_info.role.value}, 状态={port_info.state.value}")
+    
+        has_root_port_initial = any(
+            port.role == PortRole.ROOT
+            for port in initial_info.ports.values()
+            if port.state != PortState.DISABLED
+        )
+        logger.info(f"初始状态 - DUT有Root Port: {has_root_port_initial}")
+    
+        # 设置节点优先级
+        logger.info("=== 配置网桥优先级 ===")
+    
+        # TestNode1 设置为最低优先级（应该成为根桥）
+        logger.info("设置TestNode1优先级为16384")
+        network_topology.execute_bridge_command(test_nodes[0], "set_priority", priority=16384)
+    
+        # DUT设置为较高优先级（使用OVS命令）
+        logger.info("设置DUT优先级为32768")
+        try:
+            # 使用OVS命令设置优先级 - 统一使用stp-priority参数
+            cmd = f"sudo ovs-vsctl set bridge {bridge_name} other-config:stp-priority=32768"
+            result = execute_method(cmd)
+            logger.info(f"OVS设置优先级结果: {result}")
+    
+            # 验证设置
+            verify_cmd = f"sudo ovs-vsctl get bridge {bridge_name} other-config:stp-priority"
+            result = execute_method(verify_cmd)
+            logger.info(f"验证优先级设置: {result}")
+    
+        except Exception as e:
+            logger.error(f"设置DUT优先级失败: {e}")
+    
+        # TestNode2设置中间优先级
+        if len(test_nodes) &gt; 1:
+            logger.info("设置TestNode2优先级为24576")
+            network_topology.execute_bridge_command(test_nodes[1], "set_priority", priority=24576)
+    
+        # 等待收敛
+        logger.info("等待RSTP收敛...")
+        time.sleep(10)
+    
+        # 第一阶段验证
+        logger.info("=== 第一阶段验证 ===")
+        # DUT使用SE_ETH2网桥，需要传递正确的网桥名称
+        info_phase1 = rstp_analyzer.get_bridge_info(bridge_name)
+    
+        # 验证优先级（使用OVS命令）
+        try:
+            priority_cmd = f"sudo ovs-vsctl get bridge {bridge_name} other-config:stp-priority"
+            priority = execute_method(priority_cmd)
+            # 处理OVS返回的格式：去除引号和换行符
+            if isinstance(priority, tuple):
+                priority_value = priority[0]
+            else:
+                priority_value = str(priority)
+    
+            # 使用增强的字符串清理函数
+            import re
+            priority_value = self._clean_ovs_output(priority_value)
+    
+            logger.info(f"DUT当前优先级: {priority_value}")
+            # 验证优先级设置是否正确
+            if priority_value != "32768":
+                logger.warning(f"优先级验证失败: 期望32768，实际{priority_value}")
+            else:
+                logger.info("优先级验证通过")
+        except Exception as e:
+            logger.warning(f"优先级验证失败: {e}")
+    
+        # 分析端口角色
+        has_root_port = False
+        for port_name, port_info in info_phase1.ports.items():
+            if port_info.state != PortState.DISABLED:
+                logger.info(f"  {port_name}: 角色={port_info.role.value}")
+                if port_info.role == PortRole.ROOT:
+                    has_root_port = True
+    
+        if has_root_port:
+            logger.info("✓ 第一阶段通过：DUT有Root Port，不是根桥")
+        else:
+            # 如果没有Root Port，检查是否所有端口都是Designated
+            all_designated = all(
+                p.role == PortRole.DESIGNATED
+                for p in info_phase1.ports.values()
+                if p.state != PortState.DISABLED
+            )
+            if all_designated and len([p for p in info_phase1.ports.values() if p.state != PortState.DISABLED]) &gt; 0:
+                logger.error("DUT是根桥（所有端口都是Designated），但不应该是")
+                # 这可能是因为其他节点的优先级设置失败
+                logger.info("检查其他节点的优先级...")
+                for i, node in enumerate(test_nodes):
+                    try:
+                        if hasattr(node, 'execute'):
+                            node_exec = node.execute
+                        else:
+                            node_exec = node.send_command
+                        # TestNode使用br0网桥
+                        test_bridge_name = "br0"
+                        result = node_exec(f"cat /sys/class/net/{test_bridge_name}/bridge/priority")
+                        logger.info(f"TestNode{i+1}优先级: {result}")
+                    except:
+                        pass
+    
+        # 第二阶段：设置DUT为最低优先级
+        logger.info("\n=== 第二阶段：DUT应成为根桥 ===")
+        logger.info("设置DUT优先级为12288（最低）")
+    
+        try:
+            # 设置最低优先级（使用正确的OVS命令）
+            cmd = f"sudo ovs-vsctl set bridge {bridge_name} other-config:stp-priority=12288"
+            result = execute_method(cmd)
+            logger.info(f"OVS设置最低优先级结果: {result}")
+    
+            # 验证设置
+            verify_cmd = f"sudo ovs-vsctl get bridge {bridge_name} other-config:stp-priority"
+            priority = execute_method(verify_cmd)
+            # 处理OVS返回的格式：去除引号和换行符
+            if isinstance(priority, tuple):
+                priority_value = priority[0]
+            else:
+                priority_value = str(priority)
+    
+            # 使用增强的字符串清理函数
+            priority_value = self._clean_ovs_output(priority_value)
+    
+            logger.info(f"设置后优先级: {priority_value}")
+    
+            # 验证优先级设置是否正确
+            if priority_value != "12288":
+                logger.warning(f"优先级验证失败: 期望12288，实际{priority_value}")
+            else:
+                logger.info("最低优先级设置验证通过")
+    
+        except Exception as e:
+            logger.error(f"设置最低优先级失败: {e}")
+    
+        # 等待收敛
+        logger.info("等待RSTP重新收敛...")
+        time.sleep(10)
+    
+        # 最终验证
+        logger.info("=== 最终验证 ===")
+        # DUT使用SE_ETH2网桥，需要传递正确的网桥名称
+        final_info = rstp_analyzer.get_bridge_info(bridge_name)
+    
+        # 分析最终状态
+        final_has_root_port = False
+        designated_count = 0
+    
+        for port_name, port_info in final_info.ports.items():
+            if port_info.state != PortState.DISABLED:
+                logger.info(f"  {port_name}: 角色={port_info.role.value}, 状态={port_info.state.value}")
+                if port_info.role == PortRole.ROOT:
+                    final_has_root_port = True
+                elif port_info.role == PortRole.DESIGNATED:
+                    designated_count += 1
+    
+        # 判断测试结果
+        if not final_has_root_port and designated_count &gt; 0:
+            logger.info("✓ DUT成为根桥")
+            # 验证所有端口
+            for port_name, port_info in final_info.ports.items():
+                if port_info.state != PortState.DISABLED:
+                    assert port_info.role == PortRole.DESIGNATED, \
+                        f"根桥端口{port_name}应是Designated，实际{port_info.role.value}"
+                    assert port_info.state == PortState.FORWARDING, \
+                        f"根桥端口{port_name}应是Forwarding，实际{port_info.state.value}"
+        else:
+            # 测试失败 - DUT的RSTP实现可能有问题
+            logger.error("DUT RSTP实现问题诊断:")
+            logger.error(f"1. DUT优先级已设置为12288（最低）")
+            logger.error(f"2. 但DUT仍有Root Port: {final_has_root_port}")
+            logger.error(f"3. Designated端口数: {designated_count}")
+            logger.error("可能的原因:")
+            logger.error("- DUT的RSTP实现不符合标准")
+            logger.error("- DUT没有正确处理优先级变化")
+            logger.error("- DUT的BPDU发送/接收有问题")
+    
+&gt;           pytest.fail(
+                f"DUT的RSTP实现不符合IEEE 802.1D标准。"
+                f"设置最低优先级后仍不是根桥。"
+                f"这是DUT的问题，不是测试脚本的问题。"
+            )
+E           Failed: DUT的RSTP实现不符合IEEE 802.1D标准。设置最低优先级后仍不是根桥。这是DUT的问题，不是测试脚本的问题。
+
+tests\test_protocol_conformance.py:402: Failed</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_role_assignment" time="28.058"><failure message="AssertionError: 两端口非根桥应该有Designated Port&#10;assert &lt;PortRole.DESIGNATED: 'designated'&gt; in {&lt;PortRole.ROOT: 'root'&gt;: ['br3'], &lt;PortRole.ALTERNATE: 'alternate'&gt;: ['br4']}&#10; +  where &lt;PortRole.DESIGNATED: 'designated'&gt; = PortRole.DESIGNATED">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000001EE093BE210&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE094FAC30&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000001EE094FF4D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000001EE094F7BD0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000001EE0947D310&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000001EE09463410&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000001EE09795D30&gt;
+
+    def test_port_role_assignment(self, dut_manager, test_nodes,
+                                network_topology, rstp_analyzer, convergence_monitor):
+        """TC.AUTO.1.2: 端口角色与状态分配测试"""
+        logger.info("开始端口角色分配测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 确保测试节点1是根网桥
+        network_topology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        network_topology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待初始配置生效
+        time.sleep(3)
+    
+        # 确保DUT的OVS网桥接口已正确配置
+        logger.info("检查DUT的OVS网桥接口...")
+        try:
+            # 使用正确的SSH方法
+            if hasattr(dut_manager, 'execute'):
+                execute_method = dut_manager.execute
+            elif hasattr(dut_manager, 'run'):
+                execute_method = dut_manager.run
+            else:
+                execute_method = dut_manager.send_command
+    
+            # DUT使用OVS网桥SE_ETH2
+            bridge_name = "SE_ETH2"
+    
+            # 检查OVS网桥状态
+            result = execute_method(f"sudo ovs-vsctl show")
+            logger.info(f"OVS配置状态:\n{result}")
+    
+            # 检查网桥端口
+            result = execute_method(f"sudo ovs-vsctl list-ports {bridge_name}")
+            logger.info(f"{bridge_name} 网桥端口:\n{result}")
+    
+            # 检查STP状态（OVS中RSTP基于STP实现）
+            result = execute_method(f"sudo ovs-vsctl get bridge {bridge_name} stp_enable")
+            logger.info(f"{bridge_name} STP状态:\n{result}")
+    
+            # 如果STP未启用，则启用它
+            if isinstance(result, tuple) and result[0].strip() != "true":
+                execute_method(f"sudo ovs-vsctl set bridge {bridge_name} stp_enable=true")
+                logger.info(f"已启用{bridge_name}的STP")
+                time.sleep(2)
+    
+            # 检查端口信息（使用ovs-ofctl show命令）
+            result = execute_method(f"sudo ovs-ofctl show {bridge_name}")
+            logger.info(f"{bridge_name} 端口信息:\n{result}")
+    
+        except Exception as e:
+            logger.warning(f"检查OVS配置时出错: {e}")
+    
+        # 获取初始桥信息
+        logger.info("获取初始网桥状态...")
+        # DUT使用SE_ETH2网桥，需要传递正确的网桥名称
+        initial_info = rstp_analyzer.get_bridge_info(bridge_name)
+    
+        # 调试信息
+        logger.info(f"Bridge ID: {initial_info.bridge_id if initial_info.bridge_id else '未获取'}")
+        logger.info(f"Root ID: {initial_info.root_id if initial_info.root_id else '未获取'}")
+        logger.info(f"Root Port: {initial_info.root_port}")
+        logger.info(f"协议版本: {initial_info.protocol_version}")
+    
+        # 打印所有端口状态
+        for port_name, port_info in initial_info.ports.items():
+            logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                    f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+    
+        # 等待网络收敛（不使用timeout参数）
+        logger.info("等待网络收敛...")
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+    
+        # 再次获取桥信息
+        # DUT使用SE_ETH2网桥，需要传递正确的网桥名称
+        info = rstp_analyzer.get_bridge_info(bridge_name)
+    
+        # 重新打印端口状态
+        logger.info("收敛后的端口状态:")
+        for port_name, port_info in info.ports.items():
+            logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                    f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+    
+        # 判断是否为根桥
+        is_root_bridge = False
+    
+        try:
+            # 方法1：调用 is_root_bridge 方法（传递正确的网桥名称）
+            is_root_result = rstp_analyzer.is_root_bridge(bridge_name)
+            logger.info(f"is_root_bridge() 返回: {is_root_result}")
+    
+            # 方法2：检查是否有 Root Port
+            has_root_port = any(
+                port.role == PortRole.ROOT
+                for port in info.ports.values()
+                if port.state != PortState.DISABLED
+            )
+            logger.info(f"有Root Port: {has_root_port}")
+    
+            # 如果有Root Port，则不是根桥
+            if has_root_port:
+                is_root_bridge = False
+            # 如果所有活动端口都是Designated，则是根桥
+            elif all(port.role == PortRole.DESIGNATED
+                    for port in info.ports.values()
+                    if port.state != PortState.DISABLED):
+                is_root_bridge = True
+    
+        except Exception as e:
+            logger.warning(f"判断根桥状态时出错: {e}")
+    
+        logger.info(f"最终判定 - DUT是根桥: {is_root_bridge}")
+    
+        # 分析端口状态
+        active_ports = {}
+        disabled_ports = []
+    
+        for port_name, port_info in info.ports.items():
+            if port_info.state == PortState.DISABLED:
+                disabled_ports.append(port_name)
+            else:
+                active_ports[port_name] = port_info
+    
+        logger.info(f"活动端口数: {len(active_ports)}")
+        logger.info(f"禁用端口: {disabled_ports}")
+    
+        # 如果活动端口太少，尝试手动启用禁用的端口
+        if len(active_ports) &lt; 2 and disabled_ports:
+            logger.warning(f"活动端口不足，尝试启用禁用的端口...")
+    
+            for port in disabled_ports[:2]:  # 尝试启用前两个禁用的端口
+                try:
+                    logger.info(f"尝试启用端口 {port}")
+                    # 使用OVS命令启用端口
+                    execute_method(f"sudo ip link set {port} up")
+                    # 检查端口是否已在OVS网桥中
+                    result = execute_method(f"sudo ovs-vsctl port-to-br {port}")
+                    if isinstance(result, tuple) and result[2] != 0:  # 端口不在网桥中
+                        execute_method(f"sudo ovs-vsctl add-port {bridge_name} {port}")
+                        logger.info(f"已将端口 {port} 添加到OVS网桥 {bridge_name}")
+                except Exception as e:
+                    logger.warning(f"启用端口 {port} 失败: {e}")
+    
+            # 等待端口状态更新
+            time.sleep(5)
+    
+            # 重新获取信息
+            # DUT使用SE_ETH2网桥，需要传递正确的网桥名称
+            info = rstp_analyzer.get_bridge_info(bridge_name)
+            active_ports = {name: port for name, port in info.ports.items()
+                        if port.state != PortState.DISABLED}
+            disabled_ports = [name for name, port in info.ports.items()
+                            if port.state == PortState.DISABLED]
+    
+            logger.info(f"重新配置后 - 活动端口数: {len(active_ports)}")
+            logger.info(f"重新配置后 - 禁用端口: {disabled_ports}")
+    
+        # 统计角色
+        roles = {}
+        for port_name, port_info in active_ports.items():
+            roles.setdefault(port_info.role, []).append(port_name)
+    
+        logger.info(f"端口角色分布: {roles}")
+    
+        # 验证逻辑
+        if len(active_ports) == 0:
+            pytest.fail("没有活动端口，网络配置失败")
+        elif len(active_ports) == 1:
+            # 单端口情况的验证
+            logger.warning("只有一个活动端口，进行单端口验证")
+            port_name = list(active_ports.keys())[0]
+            port_info = active_ports[port_name]
+    
+            logger.info(f"单端口 {port_name}: 角色={port_info.role}, 状态={port_info.state}")
+    
+            # 单端口可能是Root（连接到根桥）或Designated（如果是孤立端口）
+            assert port_info.role in [PortRole.ROOT, PortRole.DESIGNATED], \
+                f"单端口应该是Root或Designated角色，实际: {port_info.role}"
+    
+            # 活动端口应该是Forwarding状态
+            assert port_info.state == PortState.FORWARDING, \
+                f"活动端口应该处于Forwarding状态，实际: {port_info.state}"
+    
+            logger.info("单端口验证通过")
+        elif len(active_ports) == 2:
+            # 两端口情况：一个Root Port，一个Designated Port
+            logger.info("两端口验证：检查Root Port和Designated Port")
+            if not is_root_bridge:
+                assert PortRole.ROOT in roles and len(roles[PortRole.ROOT]) == 1, \
+                    "非根桥应该有且仅有一个Root Port"
+&gt;               assert PortRole.DESIGNATED in roles, \
+                    "两端口非根桥应该有Designated Port"
+E               AssertionError: 两端口非根桥应该有Designated Port
+E               assert &lt;PortRole.DESIGNATED: 'designated'&gt; in {&lt;PortRole.ROOT: 'root'&gt;: ['br3'], &lt;PortRole.ALTERNATE: 'alternate'&gt;: ['br4']}
+E                +  where &lt;PortRole.DESIGNATED: 'designated'&gt; = PortRole.DESIGNATED
+
+tests\test_protocol_conformance.py:601: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_rstp_protocol_verification" time="51.947" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_alternate_port_verification" time="23.340" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_state_transitions" time="43.156" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_bpdu_propagation_and_keepalive" time="306.641" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_disabled_port_exclusion" time="81.598" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_topology_change_notification" time="31.031" /><testcase classname="tests.test_security.TestSecurity" name="test_root_bridge_hijack_attack" time="152.688" /><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_flood_attack" time="50.773" /><testcase classname="tests.test_security.TestSecurity" name="test_topology_change_attack" time="45.746" /><testcase classname="tests.test_security.TestSecurity" name="test_mac_spoofing" time="37.209" /><testcase classname="tests.test_security.TestSecurity" name="test_port_security" time="0.054"><skipped type="pytest.skip" message="端口安全功能不可用">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_security.py:450: 端口安全功能不可用</skipped></testcase><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_filter_functionality" time="227.941" /><testcase classname="tests.test_security.TestSecurity" name="test_malformed_bpdu_handling" time="74.943" /><testcase classname="tests.test_security.TestSecurity" name="test_non_standard_bpdu_handling" time="32.990" /><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_guard_functionality" time="30.044"><failure message="Failed: BPDU防护未能正确禁用端口">self = &lt;test_security.TestSecurity object at 0x000001EE09449B50&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE09436F90&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000001EE09435A90&gt;, &lt;src.ssh_manager.SSHManager object at 0x000001EE09437540&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000001EE094BB1D0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000001EE09463590&gt;
+
+    def test_bpdu_guard_functionality(self, dut_manager, test_nodes,
+                                        network_topology, rstp_analyzer):
+        """测试BPDU防护功能"""
+        logger.info("开始BPDU防护功能测试")
+    
+        edge_port = "eth2"  # 假设eth2是边缘端口
+        test_passed = False
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建线性拓扑用于测试边缘端口
+            network_topology.create_linear_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 在DUT上启用BPDU防护
+            try:
+                self._enable_bpdu_guard(dut_manager, edge_port)
+            except Exception as e:
+                logger.error(f"启用BPDU防护失败: {e}")
+                pytest.fail(f"BPDU防护配置失败: {e}")
+    
+            # 记录初始端口状态
+            initial_port_state = self._get_port_state(dut_manager, edge_port)
+            logger.info(f"边缘端口 {edge_port} 初始状态: {initial_port_state}")
+    
+            if test_nodes:
+                # 从测试节点向边缘端口发送BPDU
+                logger.info(f"向边缘端口 {edge_port} 发送BPDU")
+                self._send_bpdu_to_edge_port(test_nodes[0], edge_port)
+    
+                # 等待BPDU防护生效
+                time.sleep(3)
+    
+                # 检查端口是否被err-disabled
+                final_port_state = self._get_port_state(dut_manager, edge_port)
+                logger.info(f"BPDU防护触发后端口 {edge_port} 状态: {final_port_state}")
+    
+                # 验证端口被正确禁用
+                if "err-disabled" in final_port_state.lower() or "disabled" in final_port_state.lower():
+                    logger.info("BPDU防护功能正常：端口已被禁用")
+                    test_passed = True
+                else:
+                    logger.error("BPDU防护功能异常：端口未被禁用")
+&gt;                   pytest.fail("BPDU防护未能正确禁用端口")
+E                   Failed: BPDU防护未能正确禁用端口
+
+tests\test_security.py:998: Failed</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_root_guard_functionality" time="54.084"><failure message="Failed: 根防护功能测试未通过验证">self = &lt;test_security.TestSecurity object at 0x000001EE092A3B60&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000001EE09436F90&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000001EE09435A90&gt;, &lt;src.ssh_manager.SSHManager object at 0x000001EE09437540&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000001EE094BB1D0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000001EE09801CD0&gt;
+
+    def test_root_guard_functionality(self, dut_manager, test_nodes,
+                                       network_topology, rstp_analyzer):
+        """测试根防护功能"""
+        logger.info("开始根防护功能测试")
+    
+        guard_port = "eth1"  # 假设eth1连接到可能的攻击源
+        test_passed = False
+    
+        try:
+            # 检查SSH连接状态
+            if not dut_manager.is_connected():
+                logger.error("SSH连接未激活")
+                pytest.fail("SSH连接失败，无法执行测试")
+    
+            # 创建环形拓扑
+            network_topology.create_ring_topology(use_rstp=True)
+            time.sleep(5)
+    
+            # 获取当前根桥信息
+            initial_bridge_info = rstp_analyzer.get_bridge_info()
+            current_root_id = initial_bridge_info.root_id if initial_bridge_info else None
+            logger.info(f"当前根桥ID: {current_root_id}")
+    
+            # 在DUT上启用根防护
+            try:
+                self._enable_root_guard(dut_manager, guard_port)
+                logger.info(f"在端口 {guard_port} 启用根防护")
+            except Exception as e:
+                logger.error(f"启用根防护失败: {e}")
+                pytest.fail(f"根防护配置失败: {e}")
+    
+            # 记录初始端口状态
+            initial_port_state = self._get_port_state(dut_manager, guard_port)
+            logger.info(f"端口 {guard_port} 初始状态: {initial_port_state}")
+    
+            if test_nodes:
+                # 从测试节点发送更优的BPDU（尝试成为新根桥）
+                logger.info("发送更优BPDU尝试劫持根桥")
+                self._send_superior_bpdu(test_nodes[0])
+    
+                # 等待根防护生效
+                time.sleep(5)
+    
+                # 检查端口是否进入root-inconsistent状态
+                final_port_state = self._get_port_state(dut_manager, guard_port)
+                logger.info(f"根防护触发后端口 {guard_port} 状态: {final_port_state}")
+    
+                # 验证根桥没有改变
+                final_bridge_info = rstp_analyzer.get_bridge_info()
+                final_root_id = final_bridge_info.root_id if final_bridge_info else None
+    
+                if current_root_id == final_root_id:
+                    logger.info("根防护功能正常：根桥身份未被劫持")
+                    test_passed = True
+                else:
+                    logger.error(f"根防护功能异常：根桥从 {current_root_id} 变为 {final_root_id}")
+                    pytest.fail("根防护未能阻止根桥劫持")
+    
+                # 验证端口状态
+                if "root-inconsistent" in final_port_state.lower() or "blocking" in final_port_state.lower():
+                    logger.info("根防护功能正常：端口进入阻塞状态")
+                else:
+                    logger.error("根防护功能异常：端口未进入阻塞状态")
+                    test_passed = False
+    
+                # 测试根防护恢复
+                self._test_root_guard_recovery(dut_manager, test_nodes[0], guard_port)
+    
+        except Exception as e:
+            logger.error(f"根防护测试失败: {e}")
+            pytest.fail(f"根防护测试执行失败: {e}")
+        finally:
+            # 清理：禁用根防护
+            try:
+                self._cleanup_root_guard(dut_manager, guard_port)
+            except Exception as e:
+                logger.error(f"清理根防护配置失败: {e}")
+    
+        if not test_passed:
+&gt;           pytest.fail("根防护功能测试未通过验证")
+E           Failed: 根防护功能测试未通过验证
+
+tests\test_security.py:1120: Failed</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_loop_guard_functionality" time="55.548" /></testsuite></testsuites>

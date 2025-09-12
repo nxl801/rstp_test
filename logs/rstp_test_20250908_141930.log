@@ -1,0 +1,177 @@
+2025-09-08 14:19:30,754 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250908_141930.log
+2025-09-08 14:19:30,971 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-08 14:19:30,971 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-08 14:19:31,318 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-08 14:19:31,318 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-08 14:19:31,628 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-08 14:19:31,628 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-08 14:19:31,629 - RSTPTest - INFO - ============================================================
+2025-09-08 14:19:31,629 - RSTPTest - INFO - 开始测试: test_rstp_protocol_verification
+2025-09-08 14:19:31,629 - RSTPTest - INFO - ============================================================
+2025-09-08 14:19:31,630 - test_protocol_conformance - INFO - 开始RSTP协议验证
+2025-09-08 14:19:31,631 - test_protocol_conformance - INFO - === 诊断DUT网桥配置 ===
+2025-09-08 14:19:31,637 - test_protocol_conformance - INFO - 系统网桥列表:
+11: br-4a389c520921: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default 
+    link/ether 02:42:c4:3d:0e:d5 brd ff:ff:ff:ff:ff:ff
+12: br-b2bd2c7fedc8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default 
+    link/ether 02:42:16:bc:82:a6 brd ff:ff:ff:ff:ff:ff
+13: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default 
+    link/ether 02:42:fe:70:1e:32 brd ff:ff:ff:ff:ff:ff
+
+2025-09-08 14:19:31,689 - test_protocol_conformance - INFO - OVS配置:
+8c812ea9-3b0c-46a1-bd3c-ef3904d38c1a
+    Bridge SE_ETH4
+        Port SE_ETH4
+            Interface SE_ETH4
+                type: internal
+    Bridge SE_ETH6
+        Port SE_ETH6
+            Interface SE_ETH6
+                type: internal
+    Bridge rstp0
+        Port rstp0
+            Interface rstp0
+                type: internal
+    Bridge br0
+        Port eth0
+            Interface eth0
+                error: "could not open network device eth0 (No such device)"
+        Port br0
+            
+2025-09-08 14:19:31,691 - test_protocol_conformance - INFO - 检测到OVS网桥: rstp0
+2025-09-08 14:19:31,793 - test_protocol_conformance - INFO - rstp0 RSTP状态: ('true\n', '', 0)
+2025-09-08 14:19:31,793 - test_protocol_conformance - INFO - rstp0 STP状态: ('true\n', '', 0)
+2025-09-08 14:19:31,845 - test_protocol_conformance - INFO - rstp0 端口: ('', '', 0)
+2025-09-08 14:19:31,845 - test_protocol_conformance - INFO - 使用网桥 rstp0 创建网络拓扑
+2025-09-08 14:19:31,845 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-08 14:19:31,846 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-08 14:19:31,846 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-08 14:19:31,846 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-08 14:19:31,846 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-08 14:19:31,846 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-08 14:19:31,847 - NetworkTopology - INFO - DUT: 检查OVS支持...
+2025-09-08 14:19:31,893 - NetworkTopology - INFO - DUT: ovs-vsctl检查结果: code=0
+2025-09-08 14:19:31,893 - NetworkTopology - INFO - DUT: 检查OVS服务状态...
+2025-09-08 14:19:31,950 - NetworkTopology - INFO - DUT: OVS服务状态检查: code=0, output=active
+2025-09-08 14:19:31,950 - NetworkTopology - INFO - DUT: 检测到OVS支持
+2025-09-08 14:19:31,950 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-08 14:19:31,950 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-08 14:19:32,276 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-08 14:19:32,277 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-08 14:19:32,672 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-08 14:19:32,673 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-08 14:19:32,673 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-08 14:19:32,673 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-08 14:19:32,893 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-08 14:19:33,133 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-08 14:19:33,133 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-08 14:19:33,188 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-08 14:19:33,285 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-08 14:19:33,285 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-08 14:19:33,285 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-08 14:19:33,286 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-08 14:19:33,286 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-08 14:19:33,286 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-08 14:19:33,286 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-08 14:19:33,307 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-08 14:19:33,307 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-08 14:19:33,482 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=1, output=
+2025-09-08 14:19:33,482 - NetworkTopology - INFO - TestNode1: 尝试启动mstpd服务...
+2025-09-08 14:19:33,845 - NetworkTopology - INFO - TestNode1: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-08 14:19:35,987 - NetworkTopology - INFO - TestNode1: mstpd启动后状态: code=1
+2025-09-08 14:19:35,987 - NetworkTopology - INFO - TestNode1: mstpd启动失败，使用iproute2
+2025-09-08 14:19:35,988 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: iproute2
+2025-09-08 14:19:35,988 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-08 14:19:35,988 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-08 14:19:37,055 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-08 14:19:39,307 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-08 14:19:39,308 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-08 14:19:39,308 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-08 14:19:39,308 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-08 14:19:40,003 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-08 14:19:40,682 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-08 14:19:40,682 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-08 14:19:41,033 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-08 14:19:41,097 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-08 14:19:41,155 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-08 14:19:41,156 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-08 14:19:41,156 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-08 14:19:41,156 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-08 14:19:41,156 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-08 14:19:41,156 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-08 14:19:41,157 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-08 14:19:41,173 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-08 14:19:41,173 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-08 14:19:41,356 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=1, output=
+2025-09-08 14:19:41,356 - NetworkTopology - INFO - TestNode2: 尝试启动mstpd服务...
+2025-09-08 14:19:41,717 - NetworkTopology - INFO - TestNode2: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-08 14:19:43,860 - NetworkTopology - INFO - TestNode2: mstpd启动后状态: code=1
+2025-09-08 14:19:43,860 - NetworkTopology - INFO - TestNode2: mstpd启动失败，使用iproute2
+2025-09-08 14:19:43,860 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: iproute2
+2025-09-08 14:19:43,861 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-08 14:19:43,861 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-08 14:19:49,006 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-08 14:19:51,143 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-08 14:19:51,143 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-08 14:19:51,144 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-08 14:19:51,144 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-08 14:19:51,809 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-08 14:19:52,472 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-08 14:19:52,472 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-08 14:19:52,836 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-08 14:19:52,909 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-08 14:19:52,968 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-08 14:19:52,968 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-08 14:19:52,969 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-08 14:19:52,969 - test_protocol_conformance - INFO - 等待RSTP稳定...
+2025-09-08 14:19:57,969 - test_protocol_conformance - INFO - 确保rstp0上RSTP已启用
+2025-09-08 14:19:58,083 - test_protocol_conformance - INFO - RSTP状态:
+---- rstp0 ----
+Root ID:
+  stp-priority    32768
+  stp-system-id   72:d4:79:ad:71:4f
+  stp-hello-time  2s
+  stp-max-age     20s
+  stp-fwd-delay   15s
+  This bridge is the root
+
+Bridge ID:
+  stp-priority    32768
+  stp-system-id   72:d4:79:ad:71:4f
+  stp-hello-time  2s
+  stp-max-age     20s
+  stp-fwd
+2025-09-08 14:20:01,085 - test_protocol_conformance - INFO - === 检查BPDU发送状态 ===
+2025-09-08 14:20:01,091 - test_protocol_conformance - INFO - rstp0 接口统计:
+11010: rstp0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether 72:d4:79:ad:71:4f brd ff:ff:ff:ff:ff:ff
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       0       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+           746       7      0       0       0       0 
+
+2025-09-08 14:20:01,201 - test_protocol_conformance - INFO - RSTP相关进程: root        2078  0.0  0.0   4060  3200 ?        S    Sep04   0:00 /bin/bash /usr/share/ovs-configs/monitor_rstp.sh
+root        2132  0.0  0.0   4060  1976 ?        S    Sep04   5:18 /bin/bash /usr/share/ovs-configs/monitor_rstp.sh
+
+2025-09-08 14:20:01,202 - test_protocol_conformance - INFO - === 尝试捕获BPDU ===
+2025-09-08 14:20:01,253 - test_protocol_conformance - INFO - 网桥rstp0的接口: ['eth0', 'eth1', 'eth2']
+2025-09-08 14:20:01,253 - test_protocol_conformance - INFO - 尝试在 rstp0 上捕获BPDU...
+2025-09-08 14:20:01,301 - test_protocol_conformance - WARNING - 接口 rstp0 未UP，跳过
+2025-09-08 14:20:01,302 - test_protocol_conformance - INFO - 尝试在 eth0 上捕获BPDU...
+2025-09-08 14:20:01,352 - test_protocol_conformance - WARNING - 接口 eth0 未UP，跳过
+2025-09-08 14:20:01,353 - test_protocol_conformance - INFO - 尝试在 eth1 上捕获BPDU...
+2025-09-08 14:20:01,406 - test_protocol_conformance - WARNING - 接口 eth1 未UP，跳过
+2025-09-08 14:20:01,406 - test_protocol_conformance - INFO - 尝试在 any 上捕获BPDU...
+2025-09-08 14:20:01,406 - RSTPAnalyzer_DUT - INFO - 开始捕获BPDU包 (接口: any, 数量: 5)
+2025-09-08 14:20:01,538 - RSTPAnalyzer_DUT - INFO - 捕获到 0 个BPDU包
+2025-09-08 14:20:01,538 - test_protocol_conformance - ERROR - 完全没有捕获到BPDU
+2025-09-08 14:20:01,538 - test_protocol_conformance - INFO - === 最终诊断 ===
+2025-09-08 14:20:01,600 - test_protocol_conformance - INFO - 1. RSTP启用状态: True
+2025-09-08 14:20:01,601 - test_protocol_conformance - INFO - 2. 网桥存在: True
+2025-09-08 14:20:01,601 - test_protocol_conformance - INFO - 3. 有网桥接口: True
+2025-09-08 14:20:01,979 - RSTPTest - INFO - 测试完成: test_rstp_protocol_verification (耗时: 30.35秒)
+2025-09-08 14:20:01,979 - RSTPTest - INFO - ============================================================
+
+2025-09-08 14:20:01,980 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-08 14:20:01,980 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-08 14:20:01,981 - SSH_DUT - INFO - SSH连接已关闭: DUT

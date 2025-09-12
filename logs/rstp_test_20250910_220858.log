@@ -1,0 +1,315 @@
+2025-09-10 22:08:58,976 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250910_220858.log
+2025-09-10 22:08:59,174 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-10 22:08:59,174 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-10 22:08:59,175 - RSTPTest - INFO - ============================================================
+2025-09-10 22:08:59,175 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[12288]
+2025-09-10 22:08:59,175 - RSTPTest - INFO - ============================================================
+2025-09-10 22:08:59,176 - test_parameters - INFO - 测试网桥优先级: 12288
+2025-09-10 22:09:00,660 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:00,661 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:00,661 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 12288 (方法: ovs)
+2025-09-10 22:09:00,661 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:00,786 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:00,939 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-10 22:09:03,161 - test_parameters - INFO - 从OVS配置读取到优先级: 12288
+2025-09-10 22:09:03,161 - test_parameters - INFO - 优先级12288设置成功
+2025-09-10 22:09:03,162 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[12288] (耗时: 3.99秒)
+2025-09-10 22:09:03,162 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:03,164 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:03,164 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[16384]
+2025-09-10 22:09:03,164 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:03,165 - test_parameters - INFO - 测试网桥优先级: 16384
+2025-09-10 22:09:04,628 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:04,629 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:04,629 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 16384 (方法: ovs)
+2025-09-10 22:09:04,629 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:04,756 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:04,904 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-10 22:09:07,008 - test_parameters - INFO - 从OVS配置读取到优先级: 16384
+2025-09-10 22:09:07,008 - test_parameters - INFO - 优先级16384设置成功
+2025-09-10 22:09:07,009 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[16384] (耗时: 3.84秒)
+2025-09-10 22:09:07,009 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:07,010 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:07,011 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[32768]
+2025-09-10 22:09:07,011 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:07,011 - test_parameters - INFO - 测试网桥优先级: 32768
+2025-09-10 22:09:08,512 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:08,512 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:08,513 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 32768 (方法: ovs)
+2025-09-10 22:09:08,513 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:08,636 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:08,784 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-10 22:09:10,893 - test_parameters - INFO - 从OVS配置读取到优先级: 32768
+2025-09-10 22:09:10,893 - test_parameters - INFO - 优先级32768设置成功
+2025-09-10 22:09:10,894 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[32768] (耗时: 3.88秒)
+2025-09-10 22:09:10,894 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:10,895 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:10,895 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[61440]
+2025-09-10 22:09:10,895 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:10,896 - test_parameters - INFO - 测试网桥优先级: 61440
+2025-09-10 22:09:12,360 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:12,361 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:12,361 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 61440 (方法: ovs)
+2025-09-10 22:09:12,361 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:12,484 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:12,627 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-10 22:09:14,736 - test_parameters - INFO - 从OVS配置读取到优先级: 61440
+2025-09-10 22:09:14,736 - test_parameters - INFO - 优先级61440设置成功
+2025-09-10 22:09:14,737 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[61440] (耗时: 3.84秒)
+2025-09-10 22:09:14,737 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:14,739 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:14,739 - RSTPTest - INFO - 开始测试: test_bridge_priority_invalid[4097]
+2025-09-10 22:09:14,739 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:14,740 - test_parameters - INFO - 测试无效优先级: 4097
+2025-09-10 22:09:15,367 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:15,367 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:15,368 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 4097 (方法: ovs)
+2025-09-10 22:09:15,368 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:15,532 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:16,783 - test_parameters - INFO - DUT处理无效优先级 4097 -> 4097
+2025-09-10 22:09:16,783 - test_parameters - ERROR - DUT接受了非标准优先级值 4097，不符合802.1D标准（应为4096的倍数）
+2025-09-10 22:09:17,199 - RSTPTest - INFO - 测试完成: test_bridge_priority_invalid[4097] (耗时: 2.46秒)
+2025-09-10 22:09:17,200 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:17,201 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:17,201 - RSTPTest - INFO - 开始测试: test_bridge_priority_invalid[12289]
+2025-09-10 22:09:17,202 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:17,202 - test_parameters - INFO - 测试无效优先级: 12289
+2025-09-10 22:09:17,775 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:17,776 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:17,776 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 12289 (方法: ovs)
+2025-09-10 22:09:17,776 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:17,939 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:19,187 - test_parameters - INFO - DUT处理无效优先级 12289 -> 12289
+2025-09-10 22:09:19,187 - test_parameters - ERROR - DUT接受了非标准优先级值 12289，不符合802.1D标准（应为4096的倍数）
+2025-09-10 22:09:19,204 - RSTPTest - INFO - 测试完成: test_bridge_priority_invalid[12289] (耗时: 2.00秒)
+2025-09-10 22:09:19,205 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:19,206 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:19,206 - RSTPTest - INFO - 开始测试: test_bridge_priority_invalid[70000]
+2025-09-10 22:09:19,206 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:19,207 - test_parameters - INFO - 测试无效优先级: 70000
+2025-09-10 22:09:19,795 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:19,796 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:19,796 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 70000 (方法: ovs)
+2025-09-10 22:09:19,796 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:09:19,955 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:09:21,228 - test_parameters - INFO - DUT处理无效优先级 70000 -> 70000
+2025-09-10 22:09:21,228 - test_parameters - ERROR - DUT接受了非标准优先级值 70000，不符合802.1D标准（应为4096的倍数）
+2025-09-10 22:09:21,246 - RSTPTest - INFO - 测试完成: test_bridge_priority_invalid[70000] (耗时: 2.04秒)
+2025-09-10 22:09:21,246 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:21,248 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:21,248 - RSTPTest - INFO - 开始测试: test_hello_time
+2025-09-10 22:09:21,248 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:21,248 - test_parameters - INFO - 测试Hello Time参数
+2025-09-10 22:09:22,857 - test_parameters - INFO - 设置Hello Time: 1秒
+2025-09-10 22:09:22,857 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:22,858 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:25,088 - test_parameters - INFO - 设置Hello Time: 2秒
+2025-09-10 22:09:25,088 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:25,088 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:27,359 - test_parameters - INFO - 设置Hello Time: 5秒
+2025-09-10 22:09:27,359 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:27,359 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:29,627 - test_parameters - INFO - Hello Time测试通过
+2025-09-10 22:09:29,628 - RSTPTest - INFO - 测试完成: test_hello_time (耗时: 8.38秒)
+2025-09-10 22:09:29,628 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:29,629 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:29,629 - RSTPTest - INFO - 开始测试: test_forward_delay
+2025-09-10 22:09:29,629 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:29,630 - test_parameters - INFO - 测试Forward Delay参数
+2025-09-10 22:09:31,240 - test_parameters - INFO - 设置Forward Delay: 4秒
+2025-09-10 22:09:31,240 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:31,240 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:33,475 - test_parameters - INFO - 设置Forward Delay: 10秒
+2025-09-10 22:09:33,475 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:33,475 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:35,760 - test_parameters - INFO - 设置Forward Delay: 15秒
+2025-09-10 22:09:35,761 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:35,761 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:38,039 - test_parameters - INFO - Forward Delay测试通过
+2025-09-10 22:09:38,040 - RSTPTest - INFO - 测试完成: test_forward_delay (耗时: 8.41秒)
+2025-09-10 22:09:38,040 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:38,041 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:38,041 - RSTPTest - INFO - 开始测试: test_max_age
+2025-09-10 22:09:38,041 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:38,042 - test_parameters - INFO - 测试Max Age参数
+2025-09-10 22:09:39,628 - test_parameters - INFO - 设置Max Age: 6秒
+2025-09-10 22:09:39,628 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:39,628 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:41,862 - test_parameters - INFO - 设置Max Age: 10秒
+2025-09-10 22:09:41,862 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:41,862 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:44,135 - test_parameters - INFO - 设置Max Age: 20秒
+2025-09-10 22:09:44,135 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:44,135 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:46,419 - test_parameters - INFO - Max Age测试通过
+2025-09-10 22:09:46,420 - RSTPTest - INFO - 测试完成: test_max_age (耗时: 8.38秒)
+2025-09-10 22:09:46,420 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:09:46,543 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-10 22:09:46,544 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-10 22:09:46,684 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-10 22:09:46,684 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-10 22:09:46,684 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:09:46,685 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:09:46,685 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-10 22:09:46,685 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-10 22:09:46,742 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-10 22:09:46,742 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-10 22:09:46,901 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-10 22:09:46,901 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-10 22:09:46,902 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-10 22:09:46,902 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-10 22:09:46,902 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-10 22:09:47,115 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-10 22:09:47,115 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-10 22:09:47,287 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-10 22:09:47,287 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-10 22:09:47,287 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-10 22:09:47,288 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:47,288 - RSTPTest - INFO - 开始测试: test_port_cost
+2025-09-10 22:09:47,288 - RSTPTest - INFO - ============================================================
+2025-09-10 22:09:47,289 - test_parameters - INFO - 测试端口路径成本
+2025-09-10 22:09:47,289 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-10 22:09:47,289 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-10 22:09:47,289 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-10 22:09:47,290 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-10 22:09:47,290 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-10 22:09:47,290 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: ovs
+2025-09-10 22:09:47,290 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-10 22:09:47,290 - NetworkTopology - INFO - 清理 DUT 的测试接口...
+2025-09-10 22:09:47,291 - NetworkTopology - INFO - 清理DUT网桥 SE_ETH2 上的测试veth接口...
+2025-09-10 22:09:47,924 - NetworkTopology - INFO - DUT网桥 SE_ETH2 接口清理完成
+2025-09-10 22:09:47,924 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-10 22:09:47,924 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-10 22:09:48,067 - NetworkTopology - INFO - DUT: 网桥SE_ETH2已存在，跳过创建
+2025-09-10 22:09:49,115 - NetworkTopology - INFO - DUT: 网桥SE_ETH2优先级已设置为1
+1
+"8192
+2025-09-10 22:09:49,115 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-10 22:09:49,115 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-10 22:09:49,115 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-10 22:09:49,116 - NetworkTopology - INFO - 跳过DUT接口 br3，将通过veth pair连接
+2025-09-10 22:09:49,116 - NetworkTopology - INFO - 跳过DUT接口 br4，将通过veth pair连接
+2025-09-10 22:09:49,116 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-10 22:09:49,116 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-10 22:09:49,307 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-10 22:09:49,307 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-10 22:09:49,308 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-10 22:09:49,308 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-10 22:09:49,308 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-10 22:09:49,308 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: mstpd
+2025-09-10 22:09:49,309 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-10 22:09:49,309 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-10 22:09:49,805 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-10 22:09:54,313 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-10 22:09:54,441 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-10 22:09:54,441 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-10 22:09:54,441 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-10 22:09:54,442 - NetworkTopology - INFO - 为 TestNode1 准备添加接口: ['eth0', 'eth2']
+2025-09-10 22:09:54,442 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-10 22:09:55,634 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-10 22:09:56,810 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-10 22:09:56,811 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-10 22:09:56,907 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-10 22:09:57,175 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-10 22:09:57,175 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-10 22:09:57,175 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-10 22:09:57,175 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-10 22:09:57,176 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-10 22:09:57,176 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: mstpd
+2025-09-10 22:09:57,176 - NetworkTopology - INFO - TestNode2 使用方法: mstpd
+2025-09-10 22:09:57,176 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-10 22:09:57,665 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (mstpd)...
+2025-09-10 22:10:02,179 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-10 22:10:02,309 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-10 22:10:02,310 - NetworkTopology - INFO - TestNode2: RSTP已通过mstpd配置
+2025-09-10 22:10:02,310 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-10 22:10:02,310 - NetworkTopology - INFO - 为 TestNode2 准备添加接口: ['eth0', 'eth2']
+2025-09-10 22:10:02,310 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-10 22:10:03,487 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-10 22:10:04,712 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-10 22:10:04,712 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-10 22:10:04,809 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-10 22:10:05,074 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-10 22:10:05,075 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-10 22:10:05,075 - NetworkTopology - INFO - 创建节点间的veth pair连接...
+2025-09-10 22:10:05,075 - NetworkTopology - INFO - 创建连接: DUT:br3 <-> TestNode1:eth0
+2025-09-10 22:10:05,893 - NetworkTopology - INFO - ✓ 连接创建成功: veth01a <-> veth01b
+2025-09-10 22:10:05,894 - NetworkTopology - INFO - 创建连接: TestNode1:eth2 <-> TestNode2:eth0
+2025-09-10 22:10:06,697 - NetworkTopology - INFO - ✓ 连接创建成功: veth12a <-> veth12b
+2025-09-10 22:10:06,698 - NetworkTopology - INFO - 创建连接: TestNode2:eth2 <-> DUT:br4
+2025-09-10 22:10:07,486 - NetworkTopology - INFO - ✓ 连接创建成功: veth20a <-> veth20b
+2025-09-10 22:10:07,486 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-10 22:10:12,487 - test_parameters - INFO - 设置端口eth0成本: 10
+2025-09-10 22:10:12,487 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:10:12,488 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:10:12,545 - test_parameters - INFO - 设置端口eth0成本: 100
+2025-09-10 22:10:12,546 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:10:12,546 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:10:12,649 - test_parameters - INFO - 设置端口eth0成本: 1000
+2025-09-10 22:10:12,650 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:10:12,650 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:10:12,753 - test_parameters - INFO - 设置端口eth0成本: 20000
+2025-09-10 22:10:12,754 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:10:12,754 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:10:12,857 - test_parameters - INFO - 端口成本测试通过
+2025-09-10 22:10:12,858 - RSTPTest - INFO - 测试完成: test_port_cost (耗时: 25.57秒)
+2025-09-10 22:10:12,859 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:10:12,860 - RSTPTest - INFO - ============================================================
+2025-09-10 22:10:12,860 - RSTPTest - INFO - 开始测试: test_parameter_persistence
+2025-09-10 22:10:12,860 - RSTPTest - INFO - ============================================================
+2025-09-10 22:10:12,860 - test_parameters - INFO - 测试参数持久性
+2025-09-10 22:10:14,491 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 22:10:14,492 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-10 22:10:14,492 - NetworkTopology_DUT - INFO - DUT: 设置网桥优先级 SE_ETH2 = 16384 (方法: ovs)
+2025-09-10 22:10:14,492 - NetworkTopology_DUT - INFO - DUT: 执行OVS设置优先级命令
+2025-09-10 22:10:14,611 - NetworkTopology_DUT - INFO - DUT: OVS设置优先级结果: ('1\r\n1\r\n', '', 0)
+2025-09-10 22:10:20,470 - test_parameters - INFO - 参数持久性测试通过
+2025-09-10 22:10:20,471 - RSTPTest - INFO - 测试完成: test_parameter_persistence (耗时: 7.61秒)
+2025-09-10 22:10:20,471 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:10:20,472 - RSTPTest - INFO - ============================================================
+2025-09-10 22:10:20,472 - RSTPTest - INFO - 开始测试: test_parameter_boundaries
+2025-09-10 22:10:20,472 - RSTPTest - INFO - ============================================================
+2025-09-10 22:10:20,473 - test_parameters - INFO - 测试参数边界值
+2025-09-10 22:10:22,155 - test_parameters - INFO - 最小值0: 失败
+2025-09-10 22:10:22,259 - test_parameters - INFO - 最大值65535: 失败
+2025-09-10 22:10:22,362 - test_parameters - INFO - 正确拒绝了无效值-1
+2025-09-10 22:10:22,466 - test_parameters - INFO - 正确拒绝了无效值65536
+2025-09-10 22:10:22,570 - test_parameters - INFO - 最小值1: 失败
+2025-09-10 22:10:22,671 - test_parameters - INFO - 最大值10: 失败
+2025-09-10 22:10:22,774 - test_parameters - INFO - 正确拒绝了无效值0
+2025-09-10 22:10:22,879 - test_parameters - INFO - 正确拒绝了无效值11
+2025-09-10 22:10:22,982 - test_parameters - INFO - 最小值4: 失败
+2025-09-10 22:10:23,085 - test_parameters - INFO - 最大值30: 失败
+2025-09-10 22:10:23,186 - test_parameters - INFO - 正确拒绝了无效值3
+2025-09-10 22:10:23,286 - test_parameters - INFO - 正确拒绝了无效值31
+2025-09-10 22:10:23,390 - test_parameters - INFO - 最小值6: 失败
+2025-09-10 22:10:23,490 - test_parameters - INFO - 最大值40: 失败
+2025-09-10 22:10:23,590 - test_parameters - INFO - 正确拒绝了无效值5
+2025-09-10 22:10:23,693 - test_parameters - INFO - 正确拒绝了无效值41
+2025-09-10 22:10:23,693 - test_parameters - INFO - 参数边界测试完成
+2025-09-10 22:10:23,694 - RSTPTest - INFO - 测试完成: test_parameter_boundaries (耗时: 3.22秒)
+2025-09-10 22:10:23,694 - RSTPTest - INFO - ============================================================
+
+2025-09-10 22:10:23,695 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-10 22:10:23,695 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-10 22:10:23,696 - SSH_DUT - INFO - SSH连接已关闭: DUT

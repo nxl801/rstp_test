@@ -1,0 +1,320 @@
+2025-09-09 15:00:53,694 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250909_150053.log
+2025-09-09 15:00:54,200 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-09 15:00:54,200 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-09 15:00:54,328 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-09 15:00:54,328 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-09 15:00:54,445 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-09 15:00:54,445 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-09 15:00:54,446 - RSTPTest - INFO - ============================================================
+2025-09-09 15:00:54,446 - RSTPTest - INFO - 开始测试: test_proposal_agreement_handshake
+2025-09-09 15:00:54,446 - RSTPTest - INFO - ============================================================
+2025-09-09 15:00:54,447 - test_advanced_rstp_mechanisms - INFO - 开始测试RSTP Proposal/Agreement握手机制
+2025-09-09 15:00:54,447 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-09 15:00:54,447 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-09 15:00:54,448 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-09 15:00:54,448 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-09 15:00:54,448 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-09 15:00:54,448 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-09 15:00:54,448 - NetworkTopology - INFO - DUT: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 15:00:54,449 - NetworkTopology - INFO - DUT: 检查mstpd支持...
+2025-09-09 15:00:54,454 - NetworkTopology - INFO - DUT: mstpd检查结果: code=1
+2025-09-09 15:00:54,455 - NetworkTopology - INFO - DUT: 检查iproute2支持...
+2025-09-09 15:00:54,502 - NetworkTopology - INFO - DUT: ip命令检查: code=0
+2025-09-09 15:00:54,502 - NetworkTopology - INFO - DUT: 使用iproute2配置RSTP
+2025-09-09 15:00:54,502 - NetworkTopology - INFO - DUT: 最终选择RSTP方法: iproute2
+2025-09-09 15:00:54,503 - NetworkTopology - INFO - DUT 使用方法: iproute2
+2025-09-09 15:00:54,503 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-09 15:00:54,836 - NetworkTopology - INFO - 为 DUT 配置RSTP (iproute2)...
+2025-09-09 15:00:55,269 - NetworkTopology - INFO - DUT: RSTP已通过iproute2配置
+2025-09-09 15:00:55,270 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-09 15:00:55,270 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-09 15:00:55,270 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-09 15:00:55,389 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-09 15:00:55,510 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-09 15:00:55,510 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-09 15:00:55,565 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-09 15:00:55,614 - NetworkTopology - INFO - DUT: STP/RSTP已启用
+2025-09-09 15:00:55,662 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-09 15:00:55,662 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-09 15:00:55,663 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-09 15:00:55,663 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-09 15:00:55,663 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-09 15:00:55,663 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-09 15:00:55,664 - NetworkTopology - INFO - TestNode1: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 15:00:55,664 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-09 15:00:55,671 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-09 15:00:55,672 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-09 15:01:05,740 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=1, output=
+2025-09-09 15:01:05,741 - NetworkTopology - INFO - TestNode1: 尝试启动mstpd服务...
+2025-09-09 15:01:15,852 - NetworkTopology - INFO - TestNode1: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-09 15:01:27,880 - NetworkTopology - INFO - TestNode1: mstpd启动后状态: code=1
+2025-09-09 15:01:27,880 - NetworkTopology - INFO - TestNode1: mstpd启动失败，使用iproute2
+2025-09-09 15:01:27,881 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: iproute2
+2025-09-09 15:01:27,881 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-09 15:01:27,881 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-09 15:01:58,245 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-09 15:02:58,965 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-09 15:02:58,965 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-09 15:02:58,965 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-09 15:02:58,966 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-09 15:03:19,181 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-09 15:03:39,394 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-09 15:03:39,394 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-09 15:03:46,551 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-09 15:03:46,598 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-09 15:03:46,646 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-09 15:03:46,646 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-09 15:03:46,647 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-09 15:03:46,647 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-09 15:03:46,647 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-09 15:03:46,647 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-09 15:03:46,648 - NetworkTopology - INFO - TestNode2: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 15:03:46,648 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-09 15:03:46,655 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-09 15:03:46,655 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-09 15:03:46,793 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=1, output=
+2025-09-09 15:03:46,794 - NetworkTopology - INFO - TestNode2: 尝试启动mstpd服务...
+2025-09-09 15:03:46,949 - NetworkTopology - INFO - TestNode2: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-09 15:03:49,036 - NetworkTopology - INFO - TestNode2: mstpd启动后状态: code=1
+2025-09-09 15:03:49,036 - NetworkTopology - INFO - TestNode2: mstpd启动失败，使用iproute2
+2025-09-09 15:03:49,036 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: iproute2
+2025-09-09 15:03:49,037 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-09 15:03:49,037 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-09 15:03:49,589 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-09 15:03:50,679 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-09 15:03:50,680 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-09 15:03:50,680 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-09 15:03:50,680 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-09 15:03:51,010 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-09 15:03:51,347 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-09 15:03:51,347 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-09 15:03:51,508 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-09 15:03:51,557 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-09 15:03:51,606 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-09 15:03:51,606 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-09 15:03:51,606 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-09 15:03:56,607 - test_advanced_rstp_mechanisms - INFO - 开始在eth0上捕获BPDU
+2025-09-09 15:03:56,608 - test_advanced_rstp_mechanisms - INFO - 触发拓扑变更...
+2025-09-09 15:04:20,022 - RSTPAnalyzer_DUT - INFO - 开始捕获BPDU包 (接口: eth0, 数量: 20)
+2025-09-09 15:04:20,056 - RSTPAnalyzer_DUT - INFO - 捕获到 0 个BPDU包
+2025-09-09 15:04:20,056 - test_advanced_rstp_mechanisms - INFO - 捕获到0个BPDU数据包
+2025-09-09 15:04:20,411 - RSTPTest - INFO - 测试完成: test_proposal_agreement_handshake (耗时: 205.96秒)
+2025-09-09 15:04:20,411 - RSTPTest - INFO - ============================================================
+
+2025-09-09 15:04:20,413 - RSTPTest - INFO - ============================================================
+2025-09-09 15:04:20,413 - RSTPTest - INFO - 开始测试: test_tcn_topology_change_notification
+2025-09-09 15:04:20,413 - RSTPTest - INFO - ============================================================
+2025-09-09 15:04:20,414 - test_advanced_rstp_mechanisms - INFO - 开始测试TCN拓扑变更通知机制
+2025-09-09 15:04:20,414 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-09 15:04:20,415 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-09 15:04:20,415 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-09 15:04:20,415 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-09 15:04:20,415 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-09 15:04:20,415 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:04:20,415 - NetworkTopology - INFO - DUT 使用方法: iproute2
+2025-09-09 15:04:20,416 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-09 15:04:20,671 - NetworkTopology - INFO - 为 DUT 配置RSTP (iproute2)...
+2025-09-09 15:04:21,062 - NetworkTopology - INFO - DUT: RSTP已通过iproute2配置
+2025-09-09 15:04:21,062 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-09 15:04:21,062 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-09 15:04:21,062 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-09 15:04:21,178 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-09 15:04:21,298 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-09 15:04:21,299 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-09 15:04:21,355 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-09 15:04:21,403 - NetworkTopology - INFO - DUT: STP/RSTP已启用
+2025-09-09 15:04:21,451 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-09 15:04:21,451 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-09 15:04:21,451 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-09 15:04:21,451 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-09 15:04:21,452 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-09 15:04:21,452 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:04:21,452 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-09 15:04:21,452 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-09 15:04:36,782 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-09 15:04:37,856 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-09 15:04:37,856 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-09 15:04:37,857 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-09 15:04:37,857 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-09 15:04:38,185 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-09 15:04:38,519 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-09 15:04:38,520 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-09 15:04:38,692 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-09 15:04:38,741 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-09 15:04:38,789 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-09 15:04:38,789 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-09 15:04:38,789 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-09 15:04:38,789 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-09 15:04:38,790 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-09 15:04:38,790 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:04:38,790 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-09 15:04:38,790 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-09 15:04:39,304 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-09 15:04:40,387 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-09 15:04:40,387 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-09 15:04:40,387 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-09 15:04:40,388 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-09 15:04:40,733 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-09 15:04:41,093 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-09 15:04:41,094 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-09 15:04:41,264 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-09 15:04:41,313 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-09 15:04:41,362 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-09 15:04:41,362 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-09 15:04:41,362 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-09 15:04:51,478 - test_advanced_rstp_mechanisms - INFO - 初始网桥端口数量: 3
+2025-09-09 15:04:51,479 - test_advanced_rstp_mechanisms - INFO - 触发拓扑变更：临时禁用/启用端口
+2025-09-09 15:04:51,533 - test_advanced_rstp_mechanisms - INFO - 初始TC计数: 0
+2025-09-09 15:04:59,623 - test_advanced_rstp_mechanisms - INFO - 变更后TC计数: 0
+2025-09-09 15:04:59,623 - test_advanced_rstp_mechanisms - INFO - 拓扑变更可能未被检测到，这可能是正常的（取决于实现）
+2025-09-09 15:04:59,778 - test_advanced_rstp_mechanisms - INFO - 最终网桥端口数量: 3
+2025-09-09 15:04:59,837 - test_advanced_rstp_mechanisms - INFO - 当前MAC地址表老化时间: 300秒
+2025-09-09 15:04:59,838 - test_advanced_rstp_mechanisms - WARNING - MAC地址表老化时间(300秒)未缩短，可能是实现差异
+2025-09-09 15:04:59,838 - test_advanced_rstp_mechanisms - INFO - TCN拓扑变更通知机制测试通过 - 使用安全的端口状态变更方式
+2025-09-09 15:04:59,839 - RSTPTest - INFO - 测试完成: test_tcn_topology_change_notification (耗时: 39.43秒)
+2025-09-09 15:04:59,839 - RSTPTest - INFO - ============================================================
+
+2025-09-09 15:04:59,841 - RSTPTest - INFO - ============================================================
+2025-09-09 15:04:59,841 - RSTPTest - INFO - 开始测试: test_edge_port_behavior
+2025-09-09 15:04:59,841 - RSTPTest - INFO - ============================================================
+2025-09-09 15:04:59,842 - test_advanced_rstp_mechanisms - INFO - 开始测试边缘端口行为
+2025-09-09 15:04:59,842 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-09 15:04:59,842 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-09 15:04:59,842 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-09 15:04:59,843 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-09 15:04:59,843 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-09 15:04:59,843 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:04:59,843 - NetworkTopology - INFO - DUT 使用方法: iproute2
+2025-09-09 15:04:59,843 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-09 15:05:00,170 - NetworkTopology - INFO - 为 DUT 配置RSTP (iproute2)...
+2025-09-09 15:05:00,557 - NetworkTopology - INFO - DUT: RSTP已通过iproute2配置
+2025-09-09 15:05:00,558 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-09 15:05:00,558 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-09 15:05:00,558 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-09 15:05:00,677 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-09 15:05:00,793 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-09 15:05:00,793 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-09 15:05:00,850 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-09 15:05:00,898 - NetworkTopology - INFO - DUT: STP/RSTP已启用
+2025-09-09 15:05:00,947 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-09 15:05:00,947 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-09 15:05:00,948 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-09 15:05:00,948 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-09 15:05:00,948 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-09 15:05:00,948 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:05:00,948 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-09 15:05:00,949 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-09 15:05:01,475 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-09 15:05:02,563 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-09 15:05:02,564 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-09 15:05:02,564 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-09 15:05:02,564 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-09 15:05:02,877 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-09 15:05:03,229 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-09 15:05:03,229 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-09 15:05:03,409 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-09 15:05:03,463 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-09 15:05:03,519 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-09 15:05:03,519 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-09 15:05:03,519 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-09 15:05:03,520 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-09 15:05:03,520 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-09 15:05:03,520 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:05:03,520 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-09 15:05:03,520 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-09 15:05:04,043 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-09 15:05:05,162 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-09 15:05:05,162 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-09 15:05:05,162 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-09 15:05:05,162 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-09 15:05:05,510 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-09 15:05:05,873 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-09 15:05:05,873 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-09 15:05:06,047 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-09 15:05:06,098 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-09 15:05:06,146 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-09 15:05:06,147 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-09 15:05:06,147 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-09 15:05:11,681 - test_advanced_rstp_mechanisms - INFO - 可用端口: ['enp1s0']
+2025-09-09 15:05:11,681 - test_advanced_rstp_mechanisms - INFO - 选择端口enp1s0作为边缘端口测试
+2025-09-09 15:05:11,741 - test_advanced_rstp_mechanisms - INFO - 测试边缘端口立即转发特性
+2025-09-09 15:05:14,445 - test_advanced_rstp_mechanisms - INFO - 边缘端口状态转换时间: 2.65秒
+2025-09-09 15:05:14,445 - test_advanced_rstp_mechanisms - INFO - ✓ 边缘端口转换时间合理
+2025-09-09 15:05:14,458 - test_advanced_rstp_mechanisms - INFO - ✓ 边缘端口状态变化未产生TCN
+2025-09-09 15:05:14,458 - test_advanced_rstp_mechanisms - INFO - 测试边缘端口收到BPDU后的行为
+2025-09-09 15:05:14,517 - test_advanced_rstp_mechanisms - INFO - 边缘端口状态: 1
+1
+normal
+2025-09-09 15:05:14,517 - test_advanced_rstp_mechanisms - INFO - 边缘端口行为测试通过
+2025-09-09 15:05:14,518 - RSTPTest - INFO - 测试完成: test_edge_port_behavior (耗时: 14.68秒)
+2025-09-09 15:05:14,519 - RSTPTest - INFO - ============================================================
+
+2025-09-09 15:05:14,520 - RSTPTest - INFO - ============================================================
+2025-09-09 15:05:14,520 - RSTPTest - INFO - 开始测试: test_shared_vs_point_to_point_links
+2025-09-09 15:05:14,520 - RSTPTest - INFO - ============================================================
+2025-09-09 15:05:14,521 - test_advanced_rstp_mechanisms - INFO - 开始测试不同链路类型的行为差异
+2025-09-09 15:05:14,521 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-09 15:05:14,521 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-09 15:05:14,521 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-09 15:05:14,521 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-09 15:05:14,521 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-09 15:05:14,522 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:05:14,522 - NetworkTopology - INFO - DUT 使用方法: iproute2
+2025-09-09 15:05:14,522 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-09 15:05:14,825 - NetworkTopology - INFO - 为 DUT 配置RSTP (iproute2)...
+2025-09-09 15:05:15,221 - NetworkTopology - INFO - DUT: RSTP已通过iproute2配置
+2025-09-09 15:05:15,221 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-09 15:05:15,222 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-09 15:05:15,222 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-09 15:05:15,337 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-09 15:05:15,458 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-09 15:05:15,459 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-09 15:05:15,514 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-09 15:05:15,562 - NetworkTopology - INFO - DUT: STP/RSTP已启用
+2025-09-09 15:05:15,610 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-09 15:05:15,610 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-09 15:05:15,610 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-09 15:05:15,611 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-09 15:05:15,611 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-09 15:05:15,611 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:05:15,611 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-09 15:05:15,612 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-09 15:05:16,121 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-09 15:05:17,218 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-09 15:05:17,219 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-09 15:05:17,219 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-09 15:05:17,219 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-09 15:05:17,567 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-09 15:05:17,930 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-09 15:05:17,930 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-09 15:05:18,117 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-09 15:05:18,164 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-09 15:05:18,212 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-09 15:05:18,212 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-09 15:05:18,213 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-09 15:05:18,213 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-09 15:05:18,213 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-09 15:05:18,213 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: iproute2
+2025-09-09 15:05:18,213 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-09 15:05:18,214 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-09 15:05:18,716 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-09 15:05:19,839 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-09 15:05:19,840 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-09 15:05:19,840 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-09 15:05:19,840 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-09 15:05:20,185 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-09 15:05:20,512 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-09 15:05:20,512 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-09 15:05:20,690 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-09 15:05:20,738 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-09 15:05:20,785 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-09 15:05:20,786 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-09 15:05:20,786 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-09 15:05:25,802 - test_advanced_rstp_mechanisms - INFO - 检测到的链路类型: {}
+2025-09-09 15:05:25,802 - test_advanced_rstp_mechanisms - INFO - 测试点对点链路收敛性能
+2025-09-09 15:05:25,820 - RSTPTest - INFO - 测试完成: test_shared_vs_point_to_point_links (耗时: 11.30秒)
+2025-09-09 15:05:25,820 - RSTPTest - INFO - ============================================================
+
+2025-09-09 15:05:25,821 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-09 15:05:25,821 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-09 15:05:25,822 - SSH_DUT - INFO - SSH连接已关闭: DUT

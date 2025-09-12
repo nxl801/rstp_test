@@ -1,0 +1,252 @@
+2025-09-05 15:40:01,999 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250905_154001.log
+2025-09-05 15:40:02,216 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-05 15:40:02,217 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-05 15:40:02,217 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:02,217 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[12288]
+2025-09-05 15:40:02,218 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:02,219 - test_parameters - INFO - 测试网桥优先级: 12288
+2025-09-05 15:40:02,309 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-05 15:40:04,326 - test_parameters - INFO - 读取优先级: code=0, stdout=''1\r\n1\r\n"12288"\r\n'', stderr=''
+2025-09-05 15:40:04,327 - test_parameters - INFO - 提取的优先级字符串: '12288'
+2025-09-05 15:40:04,327 - test_parameters - INFO - 优先级12288设置成功
+2025-09-05 15:40:04,328 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[12288] (耗时: 2.11秒)
+2025-09-05 15:40:04,328 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:04,329 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:04,329 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[16384]
+2025-09-05 15:40:04,330 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:04,330 - test_parameters - INFO - 测试网桥优先级: 16384
+2025-09-05 15:40:04,388 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-05 15:40:06,406 - test_parameters - INFO - 读取优先级: code=0, stdout=''1\r\n1\r\n"16384"\r\n'', stderr=''
+2025-09-05 15:40:06,406 - test_parameters - INFO - 提取的优先级字符串: '16384'
+2025-09-05 15:40:06,406 - test_parameters - INFO - 优先级16384设置成功
+2025-09-05 15:40:06,407 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[16384] (耗时: 2.08秒)
+2025-09-05 15:40:06,408 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:06,409 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:06,410 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[32768]
+2025-09-05 15:40:06,410 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:06,411 - test_parameters - INFO - 测试网桥优先级: 32768
+2025-09-05 15:40:06,472 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-05 15:40:08,489 - test_parameters - INFO - 读取优先级: code=0, stdout=''1\r\n1\r\n"32768"\r\n'', stderr=''
+2025-09-05 15:40:08,490 - test_parameters - INFO - 提取的优先级字符串: '32768'
+2025-09-05 15:40:08,490 - test_parameters - INFO - 优先级32768设置成功
+2025-09-05 15:40:08,491 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[32768] (耗时: 2.08秒)
+2025-09-05 15:40:08,491 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:08,492 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:08,492 - RSTPTest - INFO - 开始测试: test_bridge_priority_valid[61440]
+2025-09-05 15:40:08,492 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:08,493 - test_parameters - INFO - 测试网桥优先级: 61440
+2025-09-05 15:40:08,557 - test_parameters - INFO - 命令执行结果: code=0, stdout='1
+1
+', stderr=''
+2025-09-05 15:40:10,575 - test_parameters - INFO - 读取优先级: code=0, stdout=''1\r\n1\r\n"61440"\r\n'', stderr=''
+2025-09-05 15:40:10,575 - test_parameters - INFO - 提取的优先级字符串: '61440'
+2025-09-05 15:40:10,575 - test_parameters - INFO - 优先级61440设置成功
+2025-09-05 15:40:10,576 - RSTPTest - INFO - 测试完成: test_bridge_priority_valid[61440] (耗时: 2.08秒)
+2025-09-05 15:40:10,577 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:10,578 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,579 - RSTPTest - INFO - 开始测试: test_bridge_priority_invalid[4097]
+2025-09-05 15:40:10,579 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,580 - test_parameters - INFO - 测试无效优先级: 4097
+2025-09-05 15:40:10,624 - test_parameters - INFO - 无效优先级4097被正确拒绝
+2025-09-05 15:40:10,625 - RSTPTest - INFO - 测试完成: test_bridge_priority_invalid[4097] (耗时: 0.05秒)
+2025-09-05 15:40:10,626 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:10,627 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,627 - RSTPTest - INFO - 开始测试: test_bridge_priority_invalid[12289]
+2025-09-05 15:40:10,627 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,628 - test_parameters - INFO - 测试无效优先级: 12289
+2025-09-05 15:40:10,676 - test_parameters - INFO - 无效优先级12289被正确拒绝
+2025-09-05 15:40:10,677 - RSTPTest - INFO - 测试完成: test_bridge_priority_invalid[12289] (耗时: 0.05秒)
+2025-09-05 15:40:10,677 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:10,679 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,679 - RSTPTest - INFO - 开始测试: test_bridge_priority_invalid[70000]
+2025-09-05 15:40:10,679 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,680 - test_parameters - INFO - 测试无效优先级: 70000
+2025-09-05 15:40:10,728 - test_parameters - INFO - 无效优先级70000被正确拒绝
+2025-09-05 15:40:10,729 - RSTPTest - INFO - 测试完成: test_bridge_priority_invalid[70000] (耗时: 0.05秒)
+2025-09-05 15:40:10,729 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:10,730 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,731 - RSTPTest - INFO - 开始测试: test_hello_time
+2025-09-05 15:40:10,731 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:10,731 - test_parameters - INFO - 测试Hello Time参数
+2025-09-05 15:40:10,732 - test_parameters - INFO - 设置Hello Time: 1秒
+2025-09-05 15:40:12,809 - test_parameters - INFO - Hello Time 1秒设置成功
+2025-09-05 15:40:12,809 - test_parameters - INFO - 设置Hello Time: 2秒
+2025-09-05 15:40:14,889 - test_parameters - INFO - Hello Time 2秒设置成功
+2025-09-05 15:40:14,889 - test_parameters - INFO - 设置Hello Time: 5秒
+2025-09-05 15:40:16,973 - test_parameters - INFO - Hello Time 5秒设置成功
+2025-09-05 15:40:16,973 - test_parameters - INFO - Hello Time测试通过
+2025-09-05 15:40:16,974 - RSTPTest - INFO - 测试完成: test_hello_time (耗时: 6.24秒)
+2025-09-05 15:40:16,975 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:16,976 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:16,976 - RSTPTest - INFO - 开始测试: test_forward_delay
+2025-09-05 15:40:16,976 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:16,977 - test_parameters - INFO - 测试Forward Delay参数
+2025-09-05 15:40:16,977 - test_parameters - INFO - 设置Forward Delay: 4秒
+2025-09-05 15:40:19,055 - test_parameters - INFO - Forward Delay 4秒设置成功
+2025-09-05 15:40:19,056 - test_parameters - INFO - 设置Forward Delay: 10秒
+2025-09-05 15:40:21,138 - test_parameters - INFO - Forward Delay 10秒设置成功
+2025-09-05 15:40:21,138 - test_parameters - INFO - 设置Forward Delay: 15秒
+2025-09-05 15:40:23,216 - test_parameters - INFO - Forward Delay 15秒设置成功
+2025-09-05 15:40:23,217 - test_parameters - INFO - Forward Delay测试通过
+2025-09-05 15:40:23,218 - RSTPTest - INFO - 测试完成: test_forward_delay (耗时: 6.24秒)
+2025-09-05 15:40:23,218 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:23,220 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:23,220 - RSTPTest - INFO - 开始测试: test_max_age
+2025-09-05 15:40:23,220 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:23,221 - test_parameters - INFO - 测试Max Age参数
+2025-09-05 15:40:23,221 - test_parameters - INFO - 设置Max Age: 6秒
+2025-09-05 15:40:25,302 - test_parameters - INFO - Max Age 6秒设置成功
+2025-09-05 15:40:25,302 - test_parameters - INFO - 设置Max Age: 10秒
+2025-09-05 15:40:27,381 - test_parameters - INFO - Max Age 10秒设置成功
+2025-09-05 15:40:27,382 - test_parameters - INFO - 设置Max Age: 20秒
+2025-09-05 15:40:29,461 - test_parameters - INFO - Max Age 20秒设置成功
+2025-09-05 15:40:29,462 - test_parameters - INFO - Max Age测试通过
+2025-09-05 15:40:29,462 - RSTPTest - INFO - 测试完成: test_max_age (耗时: 6.24秒)
+2025-09-05 15:40:29,463 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:40:29,591 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-05 15:40:29,592 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-05 15:40:29,714 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-05 15:40:29,714 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-05 15:40:29,715 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:29,715 - RSTPTest - INFO - 开始测试: test_port_cost
+2025-09-05 15:40:29,715 - RSTPTest - INFO - ============================================================
+2025-09-05 15:40:29,716 - test_parameters - INFO - 测试端口路径成本
+2025-09-05 15:40:29,716 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-05 15:40:29,717 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-05 15:40:29,717 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-05 15:40:29,717 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-05 15:40:29,718 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-05 15:40:29,718 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-05 15:40:29,718 - NetworkTopology - INFO - DUT: 检查OVS支持...
+2025-09-05 15:40:29,724 - NetworkTopology - INFO - DUT: ovs-vsctl检查结果: code=0
+2025-09-05 15:40:29,724 - NetworkTopology - INFO - DUT: 检查OVS服务状态...
+2025-09-05 15:40:29,778 - NetworkTopology - INFO - DUT: OVS服务状态检查: code=0, output=active
+2025-09-05 15:40:29,778 - NetworkTopology - INFO - DUT: 检测到OVS支持
+2025-09-05 15:40:29,779 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-05 15:40:29,779 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-05 15:40:30,104 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-05 15:40:30,105 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-05 15:40:30,493 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-05 15:40:30,493 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-05 15:40:30,493 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-05 15:40:30,493 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-05 15:40:30,725 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-05 15:40:30,977 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-05 15:40:30,978 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-05 15:40:31,037 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-05 15:40:31,137 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-05 15:40:31,138 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-05 15:40:31,138 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-05 15:40:31,138 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-05 15:40:31,138 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-05 15:40:31,139 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-05 15:40:31,139 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-05 15:40:31,146 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-05 15:40:31,147 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-05 15:40:41,216 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=1, output=
+2025-09-05 15:40:41,217 - NetworkTopology - INFO - TestNode1: 尝试启动mstpd服务...
+2025-09-05 15:40:51,360 - NetworkTopology - INFO - TestNode1: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-05 15:41:03,389 - NetworkTopology - INFO - TestNode1: mstpd启动后状态: code=1
+2025-09-05 15:41:03,389 - NetworkTopology - INFO - TestNode1: mstpd启动失败，使用iproute2
+2025-09-05 15:41:03,390 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: iproute2
+2025-09-05 15:41:03,390 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-05 15:41:03,390 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-05 15:41:33,778 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-05 15:42:34,561 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-05 15:42:34,561 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-05 15:42:34,561 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-05 15:42:34,562 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-05 15:42:54,808 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-05 15:43:15,036 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-05 15:43:15,036 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-05 15:43:21,935 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-05 15:43:21,986 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-05 15:43:22,036 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-05 15:43:22,036 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-05 15:43:22,037 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-05 15:43:22,037 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-05 15:43:22,037 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-05 15:43:22,037 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-05 15:43:22,037 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-05 15:43:22,046 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-05 15:43:22,046 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-05 15:43:22,184 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=1, output=
+2025-09-05 15:43:22,184 - NetworkTopology - INFO - TestNode2: 尝试启动mstpd服务...
+2025-09-05 15:43:22,370 - NetworkTopology - INFO - TestNode2: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-05 15:43:24,455 - NetworkTopology - INFO - TestNode2: mstpd启动后状态: code=1
+2025-09-05 15:43:24,455 - NetworkTopology - INFO - TestNode2: mstpd启动失败，使用iproute2
+2025-09-05 15:43:24,456 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: iproute2
+2025-09-05 15:43:24,456 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-05 15:43:24,456 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-05 15:43:25,011 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-05 15:43:26,088 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-05 15:43:26,088 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-05 15:43:26,088 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-05 15:43:26,088 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-05 15:43:26,441 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-05 15:43:26,800 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-05 15:43:26,800 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-05 15:43:26,971 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-05 15:43:27,023 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-05 15:43:27,072 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-05 15:43:27,072 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-05 15:43:27,072 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-05 15:43:32,072 - test_parameters - INFO - 设置端口eth0成本: 10
+2025-09-05 15:43:32,073 - test_parameters - INFO - 设置端口eth0成本: 100
+2025-09-05 15:43:32,073 - test_parameters - INFO - 设置端口eth0成本: 1000
+2025-09-05 15:43:32,073 - test_parameters - INFO - 设置端口eth0成本: 20000
+2025-09-05 15:43:32,073 - test_parameters - INFO - 端口成本测试通过
+2025-09-05 15:43:32,074 - RSTPTest - INFO - 测试完成: test_port_cost (耗时: 182.36秒)
+2025-09-05 15:43:32,075 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:43:32,076 - RSTPTest - INFO - ============================================================
+2025-09-05 15:43:32,076 - RSTPTest - INFO - 开始测试: test_parameter_persistence
+2025-09-05 15:43:32,076 - RSTPTest - INFO - ============================================================
+2025-09-05 15:43:32,077 - test_parameters - INFO - 测试参数持久性
+2025-09-05 15:43:35,440 - test_parameters - INFO - 参数持久性测试通过
+2025-09-05 15:43:35,441 - RSTPTest - INFO - 测试完成: test_parameter_persistence (耗时: 3.36秒)
+2025-09-05 15:43:35,442 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:43:35,443 - RSTPTest - INFO - ============================================================
+2025-09-05 15:43:35,443 - RSTPTest - INFO - 开始测试: test_parameter_boundaries
+2025-09-05 15:43:35,443 - RSTPTest - INFO - ============================================================
+2025-09-05 15:43:35,444 - test_parameters - INFO - 测试参数边界值
+2025-09-05 15:43:35,497 - test_parameters - INFO - 最小值0: 失败
+2025-09-05 15:43:35,553 - test_parameters - INFO - 最大值65535: 失败
+2025-09-05 15:43:35,609 - test_parameters - INFO - 正确拒绝了无效值-1
+2025-09-05 15:43:35,665 - test_parameters - INFO - 正确拒绝了无效值65536
+2025-09-05 15:43:35,721 - test_parameters - INFO - 最小值1: 失败
+2025-09-05 15:43:35,777 - test_parameters - INFO - 最大值10: 失败
+2025-09-05 15:43:35,833 - test_parameters - INFO - 正确拒绝了无效值0
+2025-09-05 15:43:35,885 - test_parameters - INFO - 正确拒绝了无效值11
+2025-09-05 15:43:35,937 - test_parameters - INFO - 最小值4: 失败
+2025-09-05 15:43:35,990 - test_parameters - INFO - 最大值30: 失败
+2025-09-05 15:43:36,045 - test_parameters - INFO - 正确拒绝了无效值3
+2025-09-05 15:43:36,097 - test_parameters - INFO - 正确拒绝了无效值31
+2025-09-05 15:43:36,149 - test_parameters - INFO - 最小值6: 失败
+2025-09-05 15:43:36,201 - test_parameters - INFO - 最大值40: 失败
+2025-09-05 15:43:36,253 - test_parameters - INFO - 正确拒绝了无效值5
+2025-09-05 15:43:36,305 - test_parameters - INFO - 正确拒绝了无效值41
+2025-09-05 15:43:36,305 - test_parameters - INFO - 参数边界测试完成
+2025-09-05 15:43:36,306 - RSTPTest - INFO - 测试完成: test_parameter_boundaries (耗时: 0.86秒)
+2025-09-05 15:43:36,306 - RSTPTest - INFO - ============================================================
+
+2025-09-05 15:43:36,307 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-05 15:43:36,307 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-05 15:43:36,307 - SSH_DUT - INFO - SSH连接已关闭: DUT

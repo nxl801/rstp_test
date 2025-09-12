@@ -1,0 +1,6 @@
+2025-09-08 15:53:10,637 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250908_155310.log
+2025-09-08 15:53:10,831 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-08 15:53:10,831 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-08 15:53:11,176 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-08 15:53:11,177 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-08 15:53:11,431 - SSH_DUT - INFO - SSH连接已关闭: DUT

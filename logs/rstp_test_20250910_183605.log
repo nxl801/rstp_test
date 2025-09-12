@@ -1,0 +1,219 @@
+2025-09-10 18:36:05,026 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250910_183605.log
+2025-09-10 18:36:05,242 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-10 18:36:05,242 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-10 18:36:05,366 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-10 18:36:05,367 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-10 18:36:05,515 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-10 18:36:05,515 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-10 18:36:05,516 - RSTPTest - INFO - ============================================================
+2025-09-10 18:36:05,516 - RSTPTest - INFO - 开始测试: test_root_bridge_election
+2025-09-10 18:36:05,516 - RSTPTest - INFO - ============================================================
+2025-09-10 18:36:05,517 - test_protocol_conformance - INFO - 开始根网桥选举测试
+2025-09-10 18:36:05,517 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-10 18:36:05,517 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-10 18:36:05,517 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-10 18:36:05,517 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-10 18:36:05,518 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-10 18:36:05,518 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-10 18:36:05,518 - NetworkTopology - INFO - DUT: DUT设备，优先检测OVS支持...
+2025-09-10 18:36:05,571 - NetworkTopology - INFO - DUT: ovs-vsctl检查结果: code=0
+2025-09-10 18:36:05,676 - NetworkTopology - INFO - DUT: OVS服务状态检查: code=0
+2025-09-10 18:36:05,676 - NetworkTopology - INFO - DUT: 检测到OVS支持
+2025-09-10 18:36:05,677 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-10 18:36:05,677 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-10 18:36:06,236 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-10 18:36:06,236 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-10 18:36:07,272 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-10 18:36:07,272 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-10 18:36:07,272 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-10 18:36:07,272 - NetworkTopology - INFO - 跳过DUT接口 br3，将通过veth pair连接
+2025-09-10 18:36:07,273 - NetworkTopology - INFO - 跳过DUT接口 br4，将通过veth pair连接
+2025-09-10 18:36:07,273 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-10 18:36:07,273 - NetworkTopology - INFO - 启动 DUT 的网桥 SE_ETH2...
+2025-09-10 18:36:07,355 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-10 18:36:07,547 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-10 18:36:07,548 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-10 18:36:07,548 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-10 18:36:07,548 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-10 18:36:07,548 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-10 18:36:07,549 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-10 18:36:07,549 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-10 18:36:07,603 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-10 18:36:07,604 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-10 18:36:07,775 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-10 18:36:07,775 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-10 18:36:07,776 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-10 18:36:07,776 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-10 18:36:07,776 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-10 18:36:12,387 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-10 18:36:18,994 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-10 18:36:19,114 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-10 18:36:19,114 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-10 18:36:19,114 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-10 18:36:19,114 - NetworkTopology - INFO - 为 TestNode1 准备添加接口: ['eth0', 'eth2']
+2025-09-10 18:36:19,115 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-10 18:36:22,423 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-10 18:36:25,738 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-10 18:36:25,738 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-10 18:36:25,834 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-10 18:36:26,089 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-10 18:36:26,090 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-10 18:36:26,090 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-10 18:36:26,090 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-10 18:36:26,090 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-10 18:36:26,090 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-10 18:36:26,091 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-10 18:36:26,145 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-10 18:36:26,146 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-10 18:36:41,271 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-10 18:36:41,272 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-10 18:36:41,272 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-10 18:36:41,272 - NetworkTopology - INFO - TestNode2 使用方法: mstpd
+2025-09-10 18:36:41,272 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-10 18:37:26,679 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (mstpd)...
+2025-09-10 18:39:45,793 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-10 18:40:00,876 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-10 18:40:00,876 - NetworkTopology - INFO - TestNode2: RSTP已通过mstpd配置
+2025-09-10 18:40:00,876 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-10 18:40:00,876 - NetworkTopology - INFO - 为 TestNode2 准备添加接口: ['eth0', 'eth2']
+2025-09-10 18:40:00,877 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-10 18:41:46,743 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-10 18:43:32,664 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-10 18:43:32,664 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-10 18:43:32,762 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-10 18:43:47,982 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-10 18:43:47,982 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-10 18:43:47,983 - NetworkTopology - INFO - 创建节点间的veth pair连接...
+2025-09-10 18:43:47,983 - NetworkTopology - INFO - 创建连接: DUT:br3 <-> TestNode1:eth0
+2025-09-10 18:44:03,733 - NetworkTopology - INFO - ✓ 连接创建成功: veth01a <-> veth01b
+2025-09-10 18:44:03,734 - NetworkTopology - INFO - 创建连接: TestNode1:eth2 <-> TestNode2:eth0
+2025-09-10 18:44:34,403 - NetworkTopology - INFO - ✓ 连接创建成功: veth12a <-> veth12b
+2025-09-10 18:44:34,403 - NetworkTopology - INFO - 创建连接: TestNode2:eth2 <-> DUT:br4
+2025-09-10 18:44:50,089 - NetworkTopology - INFO - ✓ 连接创建成功: veth20a <-> veth20b
+2025-09-10 18:44:50,090 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-10 18:44:53,091 - test_protocol_conformance - INFO - === 检查DUT网桥配置 ===
+2025-09-10 18:44:53,091 - test_protocol_conformance - INFO - DUT使用OVS网桥: SE_ETH2
+2025-09-10 18:44:53,182 - test_protocol_conformance - INFO - OVS网桥 SE_ETH2 存在
+2025-09-10 18:44:53,304 - test_protocol_conformance - INFO - SE_ETH2 RSTP状态: true
+2025-09-10 18:44:53,304 - test_protocol_conformance - INFO - === 初始网桥状态 ===
+2025-09-10 18:44:54,526 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 返回码: 0
+2025-09-10 18:44:54,526 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 输出: 1
+1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000361b4bcce344
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(veth01a): addr:7e:19:0a:6f:ab:18
+     config:     0
+     state:      STP_FORWARD
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 2(veth20b): addr:b6:d0:61:7c:94:22
+     config:     0
+     state:      STP_FORWARD
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(SE_ETH2): addr:36:1b:4b:cc:e3:44
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+
+2025-09-10 18:44:54,527 - RSTPAnalyzer_DUT - INFO - 找到端口: veth01a (从行:  1(veth01a): addr:7e:19:0a:6f:ab:18)
+2025-09-10 18:44:54,527 - RSTPAnalyzer_DUT - INFO - 找到端口: veth20b (从行:  2(veth20b): addr:b6:d0:61:7c:94:22)
+2025-09-10 18:44:54,528 - RSTPAnalyzer_DUT - INFO - 找到端口: SE_ETH2 (从行:  LOCAL(SE_ETH2): addr:36:1b:4b:cc:e3:44)
+2025-09-10 18:44:54,528 - RSTPAnalyzer_DUT - INFO - 解析到的端口名称: ['veth01a', 'veth20b', 'SE_ETH2']
+2025-09-10 18:44:54,815 - test_protocol_conformance - INFO - 活动端口数: 2
+2025-09-10 18:44:54,816 - test_protocol_conformance - INFO - 初始端口状态:
+2025-09-10 18:44:54,816 - test_protocol_conformance - INFO -   veth01a: 角色=root, 状态=forwarding
+2025-09-10 18:44:54,816 - test_protocol_conformance - INFO -   veth20b: 角色=alternate, 状态=discarding
+2025-09-10 18:44:54,817 - test_protocol_conformance - INFO - 初始状态 - DUT有Root Port: True
+2025-09-10 18:44:54,817 - test_protocol_conformance - INFO - === 配置网桥优先级 ===
+2025-09-10 18:44:54,817 - test_protocol_conformance - INFO - 设置TestNode1优先级为16384
+2025-09-10 18:45:09,893 - test_protocol_conformance - INFO - 设置DUT优先级为32768
+2025-09-10 18:45:09,964 - test_protocol_conformance - INFO - OVS设置优先级结果: ('', '', 0)
+2025-09-10 18:45:10,067 - test_protocol_conformance - INFO - 验证优先级设置: ('"32768"\n', '', 0)
+2025-09-10 18:45:10,068 - test_protocol_conformance - INFO - 设置TestNode2优先级为24576
+2025-09-10 18:45:25,153 - test_protocol_conformance - INFO - 等待RSTP收敛...
+2025-09-10 18:45:35,154 - test_protocol_conformance - INFO - === 第一阶段验证 ===
+2025-09-10 18:45:36,343 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 返回码: 0
+2025-09-10 18:45:36,343 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 输出: 1
+1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000361b4bcce344
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(veth01a): addr:7e:19:0a:6f:ab:18
+     config:     0
+     state:      STP_FORWARD
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 2(veth20b): addr:b6:d0:61:7c:94:22
+     config:     0
+     state:      STP_FORWARD
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(SE_ETH2): addr:36:1b:4b:cc:e3:44
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+
+2025-09-10 18:45:36,344 - RSTPAnalyzer_DUT - INFO - 找到端口: veth01a (从行:  1(veth01a): addr:7e:19:0a:6f:ab:18)
+2025-09-10 18:45:36,344 - RSTPAnalyzer_DUT - INFO - 找到端口: veth20b (从行:  2(veth20b): addr:b6:d0:61:7c:94:22)
+2025-09-10 18:45:36,345 - RSTPAnalyzer_DUT - INFO - 找到端口: SE_ETH2 (从行:  LOCAL(SE_ETH2): addr:36:1b:4b:cc:e3:44)
+2025-09-10 18:45:36,345 - RSTPAnalyzer_DUT - INFO - 解析到的端口名称: ['veth01a', 'veth20b', 'SE_ETH2']
+2025-09-10 18:45:36,735 - test_protocol_conformance - INFO - DUT当前优先级: 32768
+2025-09-10 18:45:36,735 - test_protocol_conformance - INFO -   veth01a: 角色=root
+2025-09-10 18:45:36,735 - test_protocol_conformance - INFO -   veth20b: 角色=alternate
+2025-09-10 18:45:36,735 - test_protocol_conformance - INFO - ✓ 第一阶段通过：DUT有Root Port，不是根桥
+2025-09-10 18:45:36,736 - test_protocol_conformance - INFO - 
+=== 第二阶段：DUT应成为根桥 ===
+2025-09-10 18:45:36,736 - test_protocol_conformance - INFO - 设置DUT优先级为12288（最低）
+2025-09-10 18:45:36,847 - test_protocol_conformance - INFO - OVS设置最低优先级结果: ('', '', 0)
+2025-09-10 18:45:36,951 - test_protocol_conformance - INFO - 设置后优先级: 12288
+2025-09-10 18:45:36,951 - test_protocol_conformance - INFO - 等待RSTP重新收敛...
+2025-09-10 18:45:46,952 - test_protocol_conformance - INFO - === 最终验证 ===
+2025-09-10 18:45:48,145 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 返回码: 0
+2025-09-10 18:45:48,145 - RSTPAnalyzer_DUT - INFO - ovs-ofctl show SE_ETH2 输出: 1
+1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000361b4bcce344
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(veth01a): addr:7e:19:0a:6f:ab:18
+     config:     0
+     state:      STP_FORWARD
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 2(veth20b): addr:b6:d0:61:7c:94:22
+     config:     0
+     state:      STP_FORWARD
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(SE_ETH2): addr:36:1b:4b:cc:e3:44
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+
+2025-09-10 18:45:48,146 - RSTPAnalyzer_DUT - INFO - 找到端口: veth01a (从行:  1(veth01a): addr:7e:19:0a:6f:ab:18)
+2025-09-10 18:45:48,146 - RSTPAnalyzer_DUT - INFO - 找到端口: veth20b (从行:  2(veth20b): addr:b6:d0:61:7c:94:22)
+2025-09-10 18:45:48,146 - RSTPAnalyzer_DUT - INFO - 找到端口: SE_ETH2 (从行:  LOCAL(SE_ETH2): addr:36:1b:4b:cc:e3:44)
+2025-09-10 18:45:48,147 - RSTPAnalyzer_DUT - INFO - 解析到的端口名称: ['veth01a', 'veth20b', 'SE_ETH2']
+2025-09-10 18:45:48,435 - test_protocol_conformance - INFO -   veth01a: 角色=root, 状态=forwarding
+2025-09-10 18:45:48,435 - test_protocol_conformance - INFO -   veth20b: 角色=alternate, 状态=discarding
+2025-09-10 18:45:48,435 - test_protocol_conformance - ERROR - DUT RSTP实现问题诊断:
+2025-09-10 18:45:48,435 - test_protocol_conformance - ERROR - 1. DUT优先级已设置为12288（最低）
+2025-09-10 18:45:48,436 - test_protocol_conformance - ERROR - 2. 但DUT仍有Root Port: True
+2025-09-10 18:45:48,436 - test_protocol_conformance - ERROR - 3. Designated端口数: 0
+2025-09-10 18:45:48,436 - test_protocol_conformance - ERROR - 可能的原因:
+2025-09-10 18:45:48,436 - test_protocol_conformance - ERROR - - DUT的RSTP实现不符合标准
+2025-09-10 18:45:48,436 - test_protocol_conformance - ERROR - - DUT没有正确处理优先级变化
+2025-09-10 18:45:48,436 - test_protocol_conformance - ERROR - - DUT的BPDU发送/接收有问题
+2025-09-10 18:45:48,873 - RSTPTest - INFO - 测试完成: test_root_bridge_election (耗时: 583.36秒)
+2025-09-10 18:45:48,873 - RSTPTest - INFO - ============================================================
+
+2025-09-10 18:45:48,873 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-10 18:45:48,874 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-10 18:45:48,874 - SSH_DUT - INFO - SSH连接已关闭: DUT

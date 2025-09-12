@@ -1,0 +1,114 @@
+2025-09-09 16:24:38,180 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250909_162438.log
+2025-09-09 16:24:38,378 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-09 16:24:38,378 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-09 16:24:38,504 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-09 16:24:38,505 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-09 16:24:38,622 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-09 16:24:38,623 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-09 16:24:38,625 - RSTPTest - INFO - ============================================================
+2025-09-09 16:24:38,625 - RSTPTest - INFO - 开始测试: test_bpdu_filter_functionality
+2025-09-09 16:24:38,625 - RSTPTest - INFO - ============================================================
+2025-09-09 16:24:38,626 - test_security - INFO - 开始BPDU过滤器功能测试
+2025-09-09 16:24:38,626 - NetworkTopology - INFO - 创建RSTP线性拓扑...
+2025-09-09 16:24:38,626 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-09 16:24:38,626 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-09 16:24:38,626 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-09 16:24:38,627 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-09 16:24:38,627 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-09 16:24:38,627 - NetworkTopology - INFO - DUT: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 16:24:38,627 - NetworkTopology - INFO - DUT: 检查mstpd支持...
+2025-09-09 16:24:38,632 - NetworkTopology - INFO - DUT: mstpd检查结果: code=1
+2025-09-09 16:24:38,633 - NetworkTopology - INFO - DUT: 检查iproute2支持...
+2025-09-09 16:24:38,684 - NetworkTopology - INFO - DUT: ip命令检查: code=0
+2025-09-09 16:24:38,684 - NetworkTopology - INFO - DUT: 使用iproute2配置RSTP
+2025-09-09 16:24:38,685 - NetworkTopology - INFO - DUT: 最终选择RSTP方法: iproute2
+2025-09-09 16:24:38,685 - NetworkTopology - INFO - DUT 使用方法: iproute2
+2025-09-09 16:24:38,685 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-09 16:24:39,002 - NetworkTopology - INFO - 为 DUT 配置RSTP (iproute2)...
+2025-09-09 16:24:39,407 - NetworkTopology - INFO - DUT: RSTP已通过iproute2配置
+2025-09-09 16:24:39,407 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-09 16:24:39,408 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth2']
+2025-09-09 16:24:39,408 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-09 16:24:39,524 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-09 16:24:39,524 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-09 16:24:39,580 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-09 16:24:39,632 - NetworkTopology - INFO - DUT: STP/RSTP已启用
+2025-09-09 16:24:39,683 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-09 16:24:39,684 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-09 16:24:39,684 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-09 16:24:39,684 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-09 16:24:39,684 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-09 16:24:39,685 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-09 16:24:39,685 - NetworkTopology - INFO - TestNode1: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 16:24:39,685 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-09 16:24:39,693 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-09 16:24:39,693 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-09 16:24:39,832 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=1, output=
+2025-09-09 16:24:39,832 - NetworkTopology - INFO - TestNode1: 尝试启动mstpd服务...
+2025-09-09 16:24:40,007 - NetworkTopology - INFO - TestNode1: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-09 16:24:42,095 - NetworkTopology - INFO - TestNode1: mstpd启动后状态: code=1
+2025-09-09 16:24:42,095 - NetworkTopology - INFO - TestNode1: mstpd启动失败，使用iproute2
+2025-09-09 16:24:42,095 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: iproute2
+2025-09-09 16:24:42,095 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-09 16:24:42,096 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-09 16:24:42,629 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-09 16:24:43,791 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-09 16:24:43,791 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-09 16:24:43,791 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-09 16:24:43,791 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-09 16:24:44,160 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-09 16:24:44,518 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-09 16:24:44,519 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-09 16:24:44,694 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-09 16:24:44,743 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-09 16:24:44,791 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-09 16:24:44,792 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-09 16:24:44,792 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-09 16:24:44,793 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-09 16:24:44,793 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-09 16:24:44,793 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-09 16:24:44,793 - NetworkTopology - INFO - TestNode2: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 16:24:44,794 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-09 16:24:44,802 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-09 16:24:44,803 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-09 16:24:44,928 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=1, output=
+2025-09-09 16:24:44,928 - NetworkTopology - INFO - TestNode2: 尝试启动mstpd服务...
+2025-09-09 16:24:45,101 - NetworkTopology - INFO - TestNode2: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-09 16:24:47,194 - NetworkTopology - INFO - TestNode2: mstpd启动后状态: code=1
+2025-09-09 16:24:47,195 - NetworkTopology - INFO - TestNode2: mstpd启动失败，使用iproute2
+2025-09-09 16:24:47,195 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: iproute2
+2025-09-09 16:24:47,195 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-09 16:24:47,195 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-09 16:24:47,708 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-09 16:24:48,784 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-09 16:24:48,784 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-09 16:24:48,784 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0']
+2025-09-09 16:24:48,784 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-09 16:24:49,135 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-09 16:24:49,135 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-09 16:24:49,312 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-09 16:24:49,360 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-09 16:24:49,407 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-09 16:24:49,408 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-09 16:24:49,408 - NetworkTopology - INFO - 线性拓扑创建完成
+2025-09-09 16:24:54,408 - test_security - ERROR - 统计BPDU包失败: 'SSHManager' object has no attribute 'execute_command'
+2025-09-09 16:24:54,409 - test_security - INFO - 启用过滤器前端口 eth2 BPDU数量: 0
+2025-09-09 16:24:54,409 - test_security - ERROR - 启用BPDU过滤器失败: 'SSHManager' object has no attribute 'execute_command'
+2025-09-09 16:24:54,409 - test_security - INFO - 在端口 eth2 启用BPDU过滤器
+2025-09-09 16:25:04,410 - test_security - ERROR - 统计BPDU包失败: 'SSHManager' object has no attribute 'execute_command'
+2025-09-09 16:25:04,411 - test_security - INFO - 启用过滤器后端口 eth2 BPDU数量: 0
+2025-09-09 16:25:04,411 - test_security - INFO - BPDU过滤器功能正常：BPDU发送已停止或减少
+2025-09-09 16:25:04,411 - test_security - INFO - 测试向过滤端口发送外部BPDU
+2025-09-09 16:25:15,395 - test_security - INFO - BPDU过滤器功能正常：外部BPDU被忽略，网络保持稳定
+2025-09-09 16:25:15,395 - test_security - INFO - 测试BPDU过滤器错误配置场景
+2025-09-09 16:25:15,395 - test_security - ERROR - 启用BPDU过滤器失败: 'SSHManager' object has no attribute 'execute_command'
+2025-09-09 16:25:25,565 - test_security - INFO - 错误配置测试：未检测到明显的网络问题
+2025-09-09 16:25:25,566 - test_security - ERROR - 清理BPDU过滤器配置失败: 'SSHManager' object has no attribute 'execute_command'
+2025-09-09 16:25:25,566 - test_security - ERROR - 清理BPDU过滤器配置失败: 'SSHManager' object has no attribute 'execute_command'
+2025-09-09 16:25:25,566 - test_security - INFO - BPDU过滤器功能测试完成
+2025-09-09 16:25:25,567 - RSTPTest - INFO - 测试完成: test_bpdu_filter_functionality (耗时: 46.94秒)
+2025-09-09 16:25:25,568 - RSTPTest - INFO - ============================================================
+
+2025-09-09 16:25:25,568 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-09 16:25:25,568 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-09 16:25:25,569 - SSH_DUT - INFO - SSH连接已关闭: DUT

@@ -1,0 +1,10 @@
+2025-09-09 23:23:26,860 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250909_232326.log
+2025-09-09 23:23:27,107 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-09 23:23:27,108 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-09 23:23:31,288 - SSH_TestNode1 - WARNING - SSH连接失败 [TestNode1] (尝试 1/3): Authentication failed.
+2025-09-09 23:23:40,469 - SSH_TestNode1 - WARNING - SSH连接失败 [TestNode1] (尝试 2/3): Authentication failed.
+2025-09-09 23:23:49,651 - SSH_TestNode1 - WARNING - SSH连接失败 [TestNode1] (尝试 3/3): Authentication failed.
+2025-09-09 23:23:49,652 - SSH_TestNode1 - ERROR - 无法连接到 TestNode1
+2025-09-09 23:23:49,652 - RSTPTest - WARNING - 无法连接到节点: TestNode1
+2025-09-09 23:23:52,474 - SSH_TestNode2 - WARNING - SSH连接失败 [TestNode2] (尝试 1/3): Authentication failed.
+2025-09-09 23:23:56,309 - SSH_DUT - INFO - SSH连接已关闭: DUT

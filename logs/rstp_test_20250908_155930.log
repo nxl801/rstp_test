@@ -1,0 +1,201 @@
+2025-09-08 15:59:30,594 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250908_155930.log
+2025-09-08 15:59:30,813 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-08 15:59:30,813 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-08 15:59:31,155 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-08 15:59:31,156 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-08 15:59:31,460 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-08 15:59:31,460 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-08 15:59:31,461 - RSTPTest - INFO - ============================================================
+2025-09-08 15:59:31,461 - RSTPTest - INFO - 开始测试: test_topology_change_notification
+2025-09-08 15:59:31,461 - RSTPTest - INFO - ============================================================
+2025-09-08 15:59:31,462 - test_protocol_conformance - INFO - 开始拓扑变更通知测试
+2025-09-08 15:59:31,463 - test_protocol_conformance - INFO - === 步骤1: 创建多网桥环形拓扑 ===
+2025-09-08 15:59:31,808 - test_protocol_conformance - INFO - 创建网桥 rstp1 (优先级: 32768)
+2025-09-08 15:59:32,048 - test_protocol_conformance - INFO - 创建网桥 rstp2 (优先级: 36864)
+2025-09-08 15:59:32,283 - test_protocol_conformance - INFO - 创建网桥 rstp3 (优先级: 40960)
+2025-09-08 15:59:32,732 - test_protocol_conformance - INFO - ✓ 连接 rstp1 <-> rstp2
+2025-09-08 15:59:33,148 - test_protocol_conformance - INFO - ✓ 连接 rstp2 <-> rstp3
+2025-09-08 15:59:33,604 - test_protocol_conformance - INFO - ✓ 连接 rstp3 <-> rstp1
+2025-09-08 15:59:33,604 - test_protocol_conformance - INFO - 等待RSTP初始收敛...
+2025-09-08 15:59:43,605 - test_protocol_conformance - INFO - === 步骤2: 验证初始RSTP状态 ===
+2025-09-08 15:59:43,613 - test_protocol_conformance - INFO - 
+rstp1 初始RSTP状态:
+2025-09-08 15:59:43,614 - test_protocol_conformance - INFO -   ---- rstp1 ----
+2025-09-08 15:59:43,614 - test_protocol_conformance - INFO -   Root ID:
+2025-09-08 15:59:43,614 - test_protocol_conformance - INFO -     stp-priority    32768
+2025-09-08 15:59:43,614 - test_protocol_conformance - INFO -     stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:43,614 - test_protocol_conformance - INFO -     stp-hello-time  2s
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -     stp-max-age     20s
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -     stp-fwd-delay   15s
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -     This bridge is the root
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -   Bridge ID:
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -     stp-priority    32768
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -     stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:43,615 - test_protocol_conformance - INFO -     stp-hello-time  2s
+2025-09-08 15:59:43,616 - test_protocol_conformance - INFO -     stp-max-age     20s
+2025-09-08 15:59:43,616 - test_protocol_conformance - INFO -     stp-fwd-delay   15s
+2025-09-08 15:59:43,616 - test_protocol_conformance - INFO -     Interface  Role       State      Cost     Pri.Nbr 
+2025-09-08 15:59:43,616 - test_protocol_conformance - INFO -     ---------- ---------- ---------- -------- -------
+2025-09-08 15:59:43,616 - test_protocol_conformance - INFO -     veth12a    Designated Forwarding 2000     128.1
+2025-09-08 15:59:43,616 - test_protocol_conformance - INFO -     veth31b    Designated Forwarding 2000     128.2
+2025-09-08 15:59:43,617 - test_protocol_conformance - INFO -   → 包含根桥信息
+2025-09-08 15:59:43,617 - test_protocol_conformance - INFO -   → 有转发端口
+2025-09-08 15:59:43,665 - test_protocol_conformance - INFO - 
+rstp2 初始RSTP状态:
+2025-09-08 15:59:43,666 - test_protocol_conformance - INFO -   ---- rstp2 ----
+2025-09-08 15:59:43,666 - test_protocol_conformance - INFO -   Root ID:
+2025-09-08 15:59:43,666 - test_protocol_conformance - INFO -     stp-priority    32768
+2025-09-08 15:59:43,666 - test_protocol_conformance - INFO -     stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -     stp-hello-time  2s
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -     stp-max-age     20s
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -     stp-fwd-delay   15s
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -     root-port       veth12b
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -     root-path-cost  2000
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -   Bridge ID:
+2025-09-08 15:59:43,667 - test_protocol_conformance - INFO -     stp-priority    36864
+2025-09-08 15:59:43,668 - test_protocol_conformance - INFO -     stp-system-id   46:89:b9:13:ee:4f
+2025-09-08 15:59:43,668 - test_protocol_conformance - INFO -     stp-hello-time  2s
+2025-09-08 15:59:43,668 - test_protocol_conformance - INFO -     stp-max-age     20s
+2025-09-08 15:59:43,668 - test_protocol_conformance - INFO -     stp-fwd-delay   15s
+2025-09-08 15:59:43,668 - test_protocol_conformance - INFO -     Interface  Role       State      Cost     Pri.Nbr 
+2025-09-08 15:59:43,668 - test_protocol_conformance - INFO -     ---------- ---------- ---------- -------- -------
+2025-09-08 15:59:43,669 - test_protocol_conformance - INFO -     veth12b    Root       Forwarding 2000     128.1
+2025-09-08 15:59:43,669 - test_protocol_conformance - INFO -   → 包含根桥信息
+2025-09-08 15:59:43,669 - test_protocol_conformance - INFO -   → 有转发端口
+2025-09-08 15:59:43,717 - test_protocol_conformance - INFO - 
+rstp3 初始RSTP状态:
+2025-09-08 15:59:43,718 - test_protocol_conformance - INFO -   ---- rstp3 ----
+2025-09-08 15:59:43,718 - test_protocol_conformance - INFO -   Root ID:
+2025-09-08 15:59:43,718 - test_protocol_conformance - INFO -     stp-priority    32768
+2025-09-08 15:59:43,718 - test_protocol_conformance - INFO -     stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:43,718 - test_protocol_conformance - INFO -     stp-hello-time  2s
+2025-09-08 15:59:43,718 - test_protocol_conformance - INFO -     stp-max-age     20s
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     stp-fwd-delay   15s
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     root-port       veth31a
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     root-path-cost  2000
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -   Bridge ID:
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     stp-priority    40960
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     stp-system-id   4a:ee:6a:97:2c:41
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     stp-hello-time  2s
+2025-09-08 15:59:43,719 - test_protocol_conformance - INFO -     stp-max-age     20s
+2025-09-08 15:59:43,720 - test_protocol_conformance - INFO -     stp-fwd-delay   15s
+2025-09-08 15:59:43,720 - test_protocol_conformance - INFO -     Interface  Role       State      Cost     Pri.Nbr 
+2025-09-08 15:59:43,720 - test_protocol_conformance - INFO -     ---------- ---------- ---------- -------- -------
+2025-09-08 15:59:43,720 - test_protocol_conformance - INFO -     veth23b    Alternate  Discarding 2000     128.1
+2025-09-08 15:59:43,720 - test_protocol_conformance - INFO -   → 包含根桥信息
+2025-09-08 15:59:43,720 - test_protocol_conformance - INFO -   → 有转发端口
+2025-09-08 15:59:43,721 - test_protocol_conformance - INFO -   → 有阻塞端口（防环路）
+2025-09-08 15:59:43,721 - test_protocol_conformance - INFO - === 步骤3: 分析网络拓扑 ===
+2025-09-08 15:59:43,721 - test_protocol_conformance - INFO - ✓ rstp1 是根桥
+2025-09-08 15:59:43,721 - test_protocol_conformance - INFO - ✓ 找到阻塞端口: veth23b
+2025-09-08 15:59:43,721 - test_protocol_conformance - INFO - === 步骤4: 触发拓扑变更 ===
+2025-09-08 15:59:43,721 - test_protocol_conformance - INFO - 断开活动端口: veth31a
+2025-09-08 15:59:48,796 - test_protocol_conformance - INFO - ✓ rstp1 状态已变化
+2025-09-08 15:59:48,894 - test_protocol_conformance - INFO - ✓ rstp3 状态已变化
+2025-09-08 15:59:53,948 - test_protocol_conformance - INFO - === 步骤5: 验证拓扑变更 ===
+2025-09-08 15:59:53,954 - RSTPAnalyzer_DUT - INFO - 开始捕获BPDU包 (接口: veth12a, 数量: 5)
+2025-09-08 15:59:59,056 - RSTPAnalyzer_DUT - INFO - 捕获到 2 个BPDU包
+2025-09-08 15:59:59,056 - test_protocol_conformance - INFO - 在 veth12a 捕获到 2 个BPDU
+2025-09-08 15:59:59,057 - test_protocol_conformance - INFO - === 步骤6: 最终验证 ===
+2025-09-08 15:59:59,057 - test_protocol_conformance - INFO - ✓ 测试通过：检测到拓扑变更
+2025-09-08 15:59:59,109 - test_protocol_conformance - INFO - 
+========== rstp1 最终状态 ==========
+2025-09-08 15:59:59,110 - test_protocol_conformance - INFO - ---- rstp1 ----
+2025-09-08 15:59:59,110 - test_protocol_conformance - INFO - Root ID:
+2025-09-08 15:59:59,110 - test_protocol_conformance - INFO -   stp-priority    32768
+2025-09-08 15:59:59,110 - test_protocol_conformance - INFO -   stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:59,110 - test_protocol_conformance - INFO -   stp-hello-time  2s
+2025-09-08 15:59:59,110 - test_protocol_conformance - INFO -   stp-max-age     20s
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO -   stp-fwd-delay   15s
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO -   This bridge is the root
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO - Bridge ID:
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO -   stp-priority    32768
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO -   stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO -   stp-hello-time  2s
+2025-09-08 15:59:59,111 - test_protocol_conformance - INFO -   stp-max-age     20s
+2025-09-08 15:59:59,112 - test_protocol_conformance - INFO -   stp-fwd-delay   15s
+2025-09-08 15:59:59,112 - test_protocol_conformance - INFO -   Interface  Role       State      Cost     Pri.Nbr 
+2025-09-08 15:59:59,112 - test_protocol_conformance - INFO -   ---------- ---------- ---------- -------- -------
+2025-09-08 15:59:59,113 - test_protocol_conformance - INFO -   veth12a    Designated Forwarding 2000     128.1
+2025-09-08 15:59:59,113 - test_protocol_conformance - INFO -   veth31b    Designated Forwarding 2000     128.2
+2025-09-08 15:59:59,157 - test_protocol_conformance - INFO - 
+========== rstp2 最终状态 ==========
+2025-09-08 15:59:59,157 - test_protocol_conformance - INFO - ---- rstp2 ----
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO - Root ID:
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO -   stp-priority    32768
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO -   stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO -   stp-hello-time  2s
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO -   stp-max-age     20s
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO -   stp-fwd-delay   15s
+2025-09-08 15:59:59,158 - test_protocol_conformance - INFO -   root-port       veth12b
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO -   root-path-cost  2000
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO - Bridge ID:
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO -   stp-priority    36864
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO -   stp-system-id   46:89:b9:13:ee:4f
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO -   stp-hello-time  2s
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO -   stp-max-age     20s
+2025-09-08 15:59:59,159 - test_protocol_conformance - INFO -   stp-fwd-delay   15s
+2025-09-08 15:59:59,160 - test_protocol_conformance - INFO -   Interface  Role       State      Cost     Pri.Nbr 
+2025-09-08 15:59:59,160 - test_protocol_conformance - INFO -   ---------- ---------- ---------- -------- -------
+2025-09-08 15:59:59,160 - test_protocol_conformance - INFO -   veth12b    Root       Forwarding 2000     128.1
+2025-09-08 15:59:59,160 - test_protocol_conformance - INFO -   veth23a    Designated Forwarding 2000     128.2
+2025-09-08 15:59:59,205 - test_protocol_conformance - INFO - 
+========== rstp3 最终状态 ==========
+2025-09-08 15:59:59,205 - test_protocol_conformance - INFO - ---- rstp3 ----
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO - Root ID:
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO -   stp-priority    32768
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO -   stp-system-id   02:94:43:79:34:46
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO -   stp-hello-time  2s
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO -   stp-max-age     20s
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO -   stp-fwd-delay   15s
+2025-09-08 15:59:59,206 - test_protocol_conformance - INFO -   root-port       veth31a
+2025-09-08 15:59:59,207 - test_protocol_conformance - INFO -   root-path-cost  2000
+2025-09-08 15:59:59,207 - test_protocol_conformance - INFO - Bridge ID:
+2025-09-08 15:59:59,207 - test_protocol_conformance - INFO -   stp-priority    40960
+2025-09-08 15:59:59,207 - test_protocol_conformance - INFO -   stp-system-id   4a:ee:6a:97:2c:41
+2025-09-08 15:59:59,207 - test_protocol_conformance - INFO -   stp-hello-time  2s
+2025-09-08 15:59:59,208 - test_protocol_conformance - INFO -   stp-max-age     20s
+2025-09-08 15:59:59,208 - test_protocol_conformance - INFO -   stp-fwd-delay   15s
+2025-09-08 15:59:59,208 - test_protocol_conformance - INFO -   Interface  Role       State      Cost     Pri.Nbr 
+2025-09-08 15:59:59,208 - test_protocol_conformance - INFO -   ---------- ---------- ---------- -------- -------
+2025-09-08 15:59:59,208 - test_protocol_conformance - INFO -   veth23b    Alternate  Discarding 2000     128.1
+2025-09-08 15:59:59,208 - test_protocol_conformance - INFO -   veth31a    Root       Forwarding 2000     128.2
+2025-09-08 15:59:59,209 - test_protocol_conformance - INFO - 
+=== 诊断信息 ===
+2025-09-08 15:59:59,260 - test_protocol_conformance - INFO - 系统日志中的STP/RSTP信息:
+2025-09-08 15:59:59,260 - test_protocol_conformance - INFO - [362015.385938] rstp2: left promiscuous mode
+[362015.562967] rstp3: left promiscuous mode
+[362349.991643] rstp1: entered promiscuous mode
+[362350.217695] rstp2: entered promiscuous mode
+[362350.457292] rstp3: entered promiscuous mode
+
+2025-09-08 15:59:59,307 - test_protocol_conformance - INFO - OVS日志中的拓扑变更信息:
+2025-09-08 15:59:59,307 - test_protocol_conformance - INFO - 2025-09-08T07:59:59.903Z|00545|rstp_sm(handler670)|DBG|rstp2: move_rstp()
+2025-09-08T07:59:59.903Z|00546|rstp_sm(handler670)|DBG|rstp2, port 1: Port_information_sm 17 -> 7
+2025-09-08T07:59:59.903Z|00547|rstp_sm(handler670)|DBG|rstp2: move_rstp()
+2025-09-08T07:59:59.903Z|00548|rstp_sm(handler670)|DBG|rstp2, port 1: Port_information_sm 7 -> 8
+2025-09-08T07:59:59.903Z|00549|rstp_sm(handler670)|DBG|rstp2: move_rstp()
+2025-09-08T07:59:59.903Z|00550|rstp_sm(handler670)|DBG|rstp3: move_rstp()
+2025-09-08T07:59:59.903Z|00551|rstp_sm(handler670)|DBG|rstp3, port 2: Port_receive_sm 4 -> 3
+2025-09-08T07:59:59.903Z|00552|rstp_sm(handler670)|DBG|rstp3: move_rstp()
+2025-09-08T07:59:59.903Z|00553|rstp_sm(handler670)|DBG|rstp3, port 2: Port_receive_sm 3 -> 4
+2025-09-08T07:59:59.903Z|00554|rstp_sm(handler670)|DBG|rstp3, port 2: Port_information_sm 8 -> 9
+2025-09-08T07:59:59.903Z|00555|rstp_sm(handler670)|DBG|rstp3: move_rstp()
+2025-09-08T07:59:59.903Z|00556|rstp_sm(handler670)|DBG|v1: 8.000.029443793446, 0, 8.000.029443793446, 32770, 0
+2025-09-08T07:59:59.903Z|00557|rstp_sm(handler670)|DBG|v2: 8.000.029443793446, 0, 8.000.029443793446, 32770, 0
+2025-09-08T07:59:59.903Z|00558|rstp_sm(handler670)|DBG|superior_same
+2025-09-08T07:59:59.903Z|00559|rstp_sm(handler670)|DBG|rstp3, port 2: Port_information_sm 9 -> 17
+2025-09-08T07:59:59.903Z|00560|rstp_sm(handler670)|DBG|rstp3: move_rstp()
+2025-09-08T07:59:59.903Z|00561|rstp_sm(handler670)|DBG|rstp3, port 2: Port_information_sm 17 -> 7
+2025-09-08T07:59:59.903Z|00562|rstp_sm(handler670)|DBG|rstp3: move_rstp()
+2025-09-08T07:59:59.903Z|00563|rstp_sm(handler670)|DBG|rstp3, port 2: Port_information_sm 7 -> 8
+2025-09-08T07:59:59.903Z|00564|rstp_sm(handler670)|DBG|rstp3: move_rstp()
+
+2025-09-08 15:59:59,308 - test_protocol_conformance - INFO - === 清理测试环境 ===
+2025-09-08 15:59:59,895 - test_protocol_conformance - INFO - 拓扑变更通知测试完成
+2025-09-08 15:59:59,896 - RSTPTest - INFO - 测试完成: test_topology_change_notification (耗时: 28.43秒)
+2025-09-08 15:59:59,896 - RSTPTest - INFO - ============================================================
+
+2025-09-08 15:59:59,896 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-08 15:59:59,897 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-08 15:59:59,897 - SSH_DUT - INFO - SSH连接已关闭: DUT

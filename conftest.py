@@ -202,46 +202,149 @@ def convergence_monitor(test_config):
         def __init__(self, timeout=None):
             self.timeout = timeout or test_config['test_environment']['timeouts']['convergence']
             self.logger = logging.getLogger("ConvergenceMonitor")
+            
+        def measure_fault_convergence(self, fault_function, analyzers: List[RSTPAnalyzer], *args, **kwargs) -> float:
+            """测量故障收敛时间 - 一体化方法"""
+            self.logger.info("开始故障收敛时间测量...")
+            
+            # 使用改进的测量方法获取精确的触发时间
+            measurement_info = self.measure_convergence_time(fault_function, analyzers, *args, **kwargs)
+            
+            # 从检测到状态变化的时刻开始计算收敛时间
+            convergence_time = self.wait_for_convergence(analyzers, measurement_info['detection_time'])
+            
+            self.logger.info(f"故障收敛完整流程: 注入延迟{measurement_info['detection_delay']*1000:.1f}ms, 收敛时间{convergence_time:.3f}秒")
+            
+            return convergence_time
 
-        def wait_for_convergence(self, analyzers: List[RSTPAnalyzer]) -> float:
-            """等待网络收敛"""
-            start_time = time.time()
+        def wait_for_convergence(self, analyzers: List[RSTPAnalyzer], start_time: float = None) -> float:
+            """等待网络收敛 - 支持自定义开始时间"""
+            if start_time is None:
+                start_time = time.time()
+            
             self.logger.info(f"等待网络收敛 (最长{self.timeout}秒)...")
 
             while time.time() - start_time < self.timeout:
                 converged = True
                 for analyzer in analyzers:
-                    info = analyzer.get_bridge_info()
-                    for port_name, port_info in info.ports.items():
-                        state = port_info.state.value.lower()
-                        if state in ['learning', 'listening']:
-                            converged = False
+                    try:
+                        info = analyzer.get_bridge_info()
+                        for port_name, port_info in info.ports.items():
+                            state = port_info.state.value.lower()
+                            if state in ['learning', 'listening']:
+                                converged = False
+                                break
+                        if not converged:
                             break
-                    if not converged:
+                    except Exception as e:
+                        self.logger.debug(f"检查收敛状态时出错: {e}")
+                        converged = False
                         break
 
                 if converged:
                     convergence_time = time.time() - start_time
-                    self.logger.info(f"网络已收敛，耗时: {convergence_time:.2f}秒")
+                    self.logger.info(f"网络已收敛，耗时: {convergence_time:.3f}秒")
                     return convergence_time
 
-                time.sleep(0.5)
+                time.sleep(0.05)  # 优化轮询间隔为50ms
 
             self.logger.warning(f"网络未能在{self.timeout}秒内收敛")
             return self.timeout
 
-        def measure_convergence_time(self, fault_function, *args, **kwargs) -> Dict[str, Any]:
-            """测量收敛时间"""
+        def measure_convergence_time(self, fault_function, analyzers: List[RSTPAnalyzer], *args, **kwargs) -> Dict[str, Any]:
+            """测量收敛时间 - 改进版本，更精确的触发点检测"""
             self.logger.info("开始测量收敛时间...")
-
-            # 记录故障注入时间
-            fault_time = time.time()
+            
+            # 记录故障注入前的拓扑状态（关注根端口和指定端口）
+            initial_topology = {}
+            for i, analyzer in enumerate(analyzers):
+                try:
+                    info = analyzer.get_bridge_info()
+                    initial_topology[i] = {
+                        'root_id': info.root_id,
+                        'root_port': None,
+                        'designated_ports': [],
+                        'port_states': {}
+                    }
+                    
+                    for port_name, port_info in info.ports.items():
+                        initial_topology[i]['port_states'][port_name] = {
+                            'state': port_info.state,
+                            'role': port_info.role
+                        }
+                        if port_info.role.name == 'ROOT':
+                            initial_topology[i]['root_port'] = port_name
+                        elif port_info.role.name == 'DESIGNATED':
+                            initial_topology[i]['designated_ports'].append(port_name)
+                            
+                except Exception as e:
+                    self.logger.warning(f"获取分析器{i}初始拓扑失败: {e}")
+                    initial_topology[i] = {}
+            
+            # 执行故障注入
+            fault_injection_time = time.time()
+            self.logger.info(f"执行故障注入: {fault_function.__name__ if hasattr(fault_function, '__name__') else 'fault_function'}")
             fault_function(*args, **kwargs)
-
-            # 返回测量结果
+            
+            # 检测拓扑变化的时刻（关注角色变化和状态变化）
+            detection_time = None
+            detection_start = time.time()
+            
+            # 扩大检测窗口到5秒，但使用更频繁的检测
+            while time.time() - detection_start < 5.0:
+                for i, analyzer in enumerate(analyzers):
+                    try:
+                        current_info = analyzer.get_bridge_info()
+                        
+                        # 检查拓扑变化
+                        if i in initial_topology and initial_topology[i]:
+                            # 检查根网桥ID变化
+                            if current_info.root_id != initial_topology[i].get('root_id'):
+                                detection_time = time.time()
+                                self.logger.info(f"检测到根网桥变化: {initial_topology[i]['root_id']} -> {current_info.root_id}")
+                                break
+                            
+                            # 检查端口角色和状态变化
+                            for port_name, port_info in current_info.ports.items():
+                                if port_name in initial_topology[i]['port_states']:
+                                    initial_port = initial_topology[i]['port_states'][port_name]
+                                    
+                                    # 检查端口角色变化
+                                    if port_info.role != initial_port['role']:
+                                        detection_time = time.time()
+                                        self.logger.info(f"检测到端口{port_name}角色变化: {initial_port['role'].name} -> {port_info.role.name}")
+                                        break
+                                    
+                                    # 检查端口状态变化（特别关注从Forwarding到其他状态的变化）
+                                    if port_info.state != initial_port['state']:
+                                        detection_time = time.time()
+                                        self.logger.info(f"检测到端口{port_name}状态变化: {initial_port['state'].name} -> {port_info.state.name}")
+                                        break
+                        
+                        if detection_time:
+                            break
+                    except Exception as e:
+                        self.logger.debug(f"检测拓扑变化时出错: {e}")
+                        continue
+                
+                if detection_time:
+                    break
+                    
+                time.sleep(0.02)  # 20ms间隔检测拓扑变化
+            
+            # 如果没有检测到拓扑变化，使用故障注入时间作为基准
+            if not detection_time:
+                detection_time = fault_injection_time
+                self.logger.warning("未检测到明确的拓扑变化时刻，使用故障注入时间作为基准")
+            else:
+                actual_delay = detection_time - fault_injection_time
+                self.logger.info(f"DUT检测到拓扑变化的延迟: {actual_delay*1000:.1f}ms")
+            
             return {
-                'fault_injection_time': fault_time,
-                'measurement_start': time.time()
+                'fault_injection_time': fault_injection_time,
+                'detection_time': detection_time,
+                'measurement_start': detection_time,
+                'detection_delay': detection_time - fault_injection_time
             }
 
     return ConvergenceMonitor()

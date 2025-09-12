@@ -32,6 +32,14 @@ class SSHManager:
 
     def connect(self, retry: int = 3) -> bool:
         """建立SSH连接"""
+        # 如果已有连接，先关闭
+        if self.client:
+            try:
+                self.client.close()
+            except:
+                pass
+            self.client = None
+            
         for attempt in range(retry):
             try:
                 self.client = SSHClient()
@@ -53,6 +61,12 @@ class SSHManager:
                     f"SSH连接失败 [{self.config.name}] "
                     f"(尝试 {attempt + 1}/{retry}): {e}"
                 )
+                if self.client:
+                    try:
+                        self.client.close()
+                    except:
+                        pass
+                    self.client = None
                 if attempt < retry - 1:
                     time.sleep(5)
 
@@ -62,9 +76,17 @@ class SSHManager:
     def execute(self, command: str, timeout: int = 30,
                 get_pty: bool = False) -> Tuple[str, str, int]:
         """执行SSH命令"""
-        if not self.client:
-            if not self.connect():
-                raise ConnectionError(f"无法连接到 {self.config.name}")
+        # 检查连接状态，如果断开则尝试重连
+        if not self.is_connected():
+            self.logger.warning(f"{self.config.name}: SSH连接已断开，尝试重连...")
+            try:
+                self.connect()
+                if not self.is_connected():
+                    raise ConnectionError(f"{self.config.name}: SSH重连失败")
+                self.logger.info(f"{self.config.name}: SSH重连成功")
+            except Exception as e:
+                self.logger.error(f"{self.config.name}: SSH重连异常: {e}")
+                raise ConnectionError(f"{self.config.name}: SSH连接不可用: {e}")
 
         try:
             stdin, stdout, stderr = self.client.exec_command(
@@ -85,47 +107,77 @@ class SSHManager:
 
         except Exception as e:
             self.logger.error(f"命令执行失败 [{self.config.name}]: {command}\n错误: {e}")
+            # 如果是连接相关错误，标记连接为断开状态
+            if "SSH session not active" in str(e) or "Socket is closed" in str(e):
+                self.logger.warning(f"{self.config.name}: 检测到SSH会话失效，标记连接为断开")
+                if self.client:
+                    try:
+                        self.client.close()
+                    except:
+                        pass
+                    self.client = None
             raise
 
     def execute_sudo(self, command: str, timeout: int = 30) -> Tuple[str, str, int]:
         """执行需要sudo权限的命令"""
-        if not self.client:
-            if not self.connect():
-                raise ConnectionError(f"无法连接到 {self.config.name}")
-
-        if not command.startswith("sudo"):
-            command = f"sudo {command}"
-
+        # 检查连接状态，如果断开则尝试重连
+        if not self.is_connected():
+            self.logger.warning(f"{self.config.name}: SSH连接已断开，尝试重连...")
+            try:
+                self.connect()
+                if not self.is_connected():
+                    raise ConnectionError(f"{self.config.name}: SSH重连失败")
+                self.logger.info(f"{self.config.name}: SSH重连成功")
+            except Exception as e:
+                self.logger.error(f"{self.config.name}: SSH重连异常: {e}")
+                raise ConnectionError(f"{self.config.name}: SSH连接不可用: {e}")
+        
         try:
-            # 使用get_pty=True来处理交互式命令
+            # 使用pty执行sudo命令
             stdin, stdout, stderr = self.client.exec_command(
-                command,
-                timeout=timeout,
-                get_pty=True
+                f"sudo -S {command}", 
+                get_pty=True,
+                timeout=timeout
             )
             
-            # 发送密码以处理sudo认证
+            # 发送密码
             stdin.write(f"{self.config.password}\n")
             stdin.flush()
             
-            exit_status = stdout.channel.recv_exit_status()
+            # 读取输出
             stdout_data = stdout.read().decode('utf-8', errors='ignore')
             stderr_data = stderr.read().decode('utf-8', errors='ignore')
-
-            self.logger.debug(
-                f"执行sudo命令 [{self.config.name}]: {command[:50]}... "
-                f"退出码: {exit_status}"
-            )
-
-            return stdout_data, stderr_data, exit_status
-
+            exit_code = stdout.channel.recv_exit_status()
+            
+            return stdout_data, stderr_data, exit_code
+            
         except Exception as e:
-            self.logger.error(f"sudo命令执行失败 [{self.config.name}]: {command}\n错误: {e}")
-            raise
+            self.logger.error(f"{self.config.name}: 执行sudo命令失败: {e}")
+            # 如果是连接相关错误，标记连接为断开状态
+            if "SSH session not active" in str(e) or "Socket is closed" in str(e):
+                self.logger.warning(f"{self.config.name}: 检测到SSH会话失效，标记连接为断开")
+                if self.client:
+                    try:
+                        self.client.close()
+                    except:
+                        pass
+                    self.client = None
+            return "", str(e), 1
 
     def execute_as_root(self, command: str, timeout: int = 30) -> Tuple[str, str, int]:
-        """以root用户身份执行命令（适用于DUT设备）"""
-        # 直接复用 execute_sudo 逻辑，避免 su 交互卡顿
+        """以root权限执行命令（复用sudo逻辑）"""
+        # 检查连接状态，如果断开则尝试重连
+        if not self.is_connected():
+            self.logger.warning(f"{self.config.name}: SSH连接已断开，尝试重连...")
+            try:
+                self.connect()
+                if not self.is_connected():
+                    raise ConnectionError(f"{self.config.name}: SSH重连失败")
+                self.logger.info(f"{self.config.name}: SSH重连成功")
+            except Exception as e:
+                self.logger.error(f"{self.config.name}: SSH重连异常: {e}")
+                raise ConnectionError(f"{self.config.name}: SSH连接不可用: {e}")
+        
         return self.execute_sudo(command, timeout)
 
     def is_connected(self) -> bool:
@@ -135,13 +187,27 @@ class SSHManager:
         try:
             transport = self.client.get_transport()
             if transport and transport.is_active():
-                # 发送一个测试命令
-                self.execute("echo test", timeout=5)
+                # 发送一个轻量级测试命令，避免递归调用
+                stdin, stdout, stderr = self.client.exec_command("echo test", timeout=5)
+                stdout.read()
                 return True
-        except:
-            pass
+        except Exception as e:
+            self.logger.debug(f"{self.config.name}: 连接状态检查失败: {e}")
+            # 清理无效连接
+            if self.client:
+                try:
+                    self.client.close()
+                except:
+                    pass
+                self.client = None
         return False
 
+    def reconnect(self) -> bool:
+        """重新连接SSH"""
+        self.logger.info(f"{self.config.name}: 尝试重新建立SSH连接...")
+        self.close()
+        return self.connect()
+    
     def close(self):
         """关闭SSH连接"""
         if self.client:

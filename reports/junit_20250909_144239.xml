@@ -1,0 +1,1108 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="19" skipped="5" tests="50" time="718.298" timestamp="2025-09-09T14:42:40.495702+08:00" hostname="DESKTOP-FDB8GR9"><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_port_state_transitions" time="41.987"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_additional_rstp.TestAdditionalRSTP object at 0x000002D37735B4D0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3774D9400&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D3774BA350&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3774BBB10&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774DAA50&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3774DABA0&gt;
+
+    def test_port_state_transitions(self, dut_manager, test_nodes,
+                                  network_topology, rstp_analyzer):
+        """TC.AUTO.1.5: 端口状态转换测试 - 验证Learning状态转换"""
+        logger.info("开始端口状态转换测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置测试节点1为根桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待初始收敛
+        time.sleep(5)
+    
+        # 获取DUT的执行方法
+        if hasattr(dut_manager, 'execute'):
+            execute_method = dut_manager.execute
+        elif hasattr(dut_manager, 'run'):
+            execute_method = dut_manager.run
+        else:
+            execute_method = dut_manager.send_command
+    
+        # 获取网桥名称
+        bridge_name = "rstp0" if dut_manager.config.name == "DUT" else "br0"
+    
+        logger.info(f"使用网桥: {bridge_name}")
+    
+        # === 步骤1: 禁用一个端口 ===
+        logger.info("=== 步骤1: 禁用端口触发状态转换 ===")
+    
+        # 获取初始状态
+&gt;       initial_info = rstp_analyzer.get_bridge_info()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_additional_rstp.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3774DABA0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_bpdu_propagation_and_keepalive" time="14.665" /><testcase classname="tests.test_additional_rstp.TestAdditionalRSTP" name="test_disabled_port_exclusion_enhanced" time="11.397"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_additional_rstp.TestAdditionalRSTP object at 0x000002D3772C7360&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3774D9400&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D3774BA350&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3774BBB10&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774DAA50&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D37754D6D0&gt;
+
+    def test_disabled_port_exclusion_enhanced(self, dut_manager, test_nodes,
+                                            network_topology, rstp_analyzer):
+        """TC.AUTO.1.7: 增强的禁用端口排除测试"""
+        logger.info("开始增强的禁用端口排除测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待初始收敛
+        time.sleep(5)
+    
+        # 获取初始状态
+&gt;       initial_info = rstp_analyzer.get_bridge_info()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_additional_rstp.py:307: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D37754D6D0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_proposal_agreement_handshake" time="22.841"><failure message="AssertionError: 未检测到Proposal标志的BPDU&#10;assert False">self = &lt;test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms object at 0x000002D37735BB10&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3774CA780&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D37762C050&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D35BEB9B50&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37754CCD0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D37762CC30&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9940&gt;
+
+    def test_proposal_agreement_handshake(self, dut_manager, test_nodes,
+                                         network_topology, rstp_analyzer,
+                                         convergence_monitor):
+        """测试RSTP的Proposal/Agreement握手机制
+    
+        验证点：
+        1. 上游交换机发送带Proposal标志的BPDU
+        2. 下游交换机进入同步状态，阻塞其他端口
+        3. 下游交换机回复Agreement标志的BPDU
+        4. 上游交换机快速转换到Forwarding状态
+        """
+        logger = logging.getLogger(__name__)
+        logger.info("开始测试RSTP Proposal/Agreement握手机制")
+    
+        # 1. 创建环形拓扑：DUT - TestNode1 - TestNode2
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 2. 等待初始收敛
+        time.sleep(5)
+    
+        # 3. 在关键接口上开始BPDU捕获
+        capture_interface = "eth0"  # DUT的第一个接口
+        logger.info(f"开始在{capture_interface}上捕获BPDU")
+    
+        # 4. 触发拓扑变更以观察握手过程（使用更安全的方式）
+        logger.info("触发拓扑变更...")
+    
+        try:
+            # 使用优先级变更而不是断开链路来触发重新收敛
+            # 这样更安全，不会导致网络完全中断
+            original_priority = 32768
+            temp_priority = 28672
+    
+            # 临时改变优先级触发重新计算
+            NetworkTopology.execute_bridge_command(
+                test_nodes[0], "set_priority", priority=temp_priority
+            )
+            time.sleep(3)
+    
+            # 恢复原始优先级
+            NetworkTopology.execute_bridge_command(
+                test_nodes[0], "set_priority", priority=original_priority
+            )
+    
+        except Exception as e:
+            logger.warning(f"优先级变更失败，使用备用方法: {e}")
+            # 备用方法：短暂禁用DUT的一个端口（而不是test_nodes的端口）
+            try:
+                dut_manager.execute_sudo("ip link set eth0 down")
+                time.sleep(1)
+                dut_manager.execute_sudo("ip link set eth0 up")
+            except Exception as e2:
+                logger.error(f"备用方法也失败: {e2}")
+                # 如果都失败了，跳过拓扑变更，直接进行BPDU分析
+    
+        # 5. 捕获BPDU数据包
+        time.sleep(3)  # 等待握手完成
+        bpdus = rstp_analyzer.capture_bpdu(capture_interface, count=20, timeout=10)
+    
+        # 6. 分析捕获的BPDU
+        logger.info(f"捕获到{len(bpdus)}个BPDU数据包")
+        bpdu_analysis = self._analyze_bpdu_handshake(bpdus)
+    
+        # 7. 验证握手序列
+&gt;       assert bpdu_analysis['proposal_found'], "未检测到Proposal标志的BPDU"
+E       AssertionError: 未检测到Proposal标志的BPDU
+E       assert False
+
+tests\test_advanced_rstp_mechanisms.py:99: AssertionError</failure></testcase><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_tcn_topology_change_notification" time="24.512" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_edge_port_behavior" time="15.059" /><testcase classname="tests.test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms" name="test_shared_vs_point_to_point_links" time="14.362"><failure message="TypeError: convergence_monitor.&lt;locals&gt;.ConvergenceMonitor.measure_convergence_time() missing 1 required positional argument: 'fault_function'">self = &lt;test_advanced_rstp_mechanisms.TestAdvancedRSTPMechanisms object at 0x000002D3772C76F0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3774CA780&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D37762C050&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D35BEB9B50&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37754CCD0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9A90&gt;
+
+    def test_shared_vs_point_to_point_links(self, dut_manager, test_nodes,
+                                           network_topology, convergence_monitor):
+        """测试不同链路类型的行为差异
+    
+        验证点：
+        1. 点对点链路支持Proposal/Agreement握手
+        2. 共享链路回退到基于计时器的收敛
+        3. 链路类型的正确识别
+        """
+        logger = logging.getLogger(__name__)
+        logger.info("开始测试不同链路类型的行为差异")
+    
+        # 1. 创建混合拓扑（包含不同类型的链路）
+        network_topology.create_ring_topology(use_rstp=True)
+        time.sleep(5)
+    
+        # 2. 检测链路类型
+        link_types = self._detect_link_types(dut_manager)
+        logger.info(f"检测到的链路类型: {link_types}")
+    
+        # 3. 测试点对点链路的快速收敛
+        logger.info("测试点对点链路收敛性能")
+&gt;       convergence_time = convergence_monitor.measure_convergence_time()
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: convergence_monitor.&lt;locals&gt;.ConvergenceMonitor.measure_convergence_time() missing 1 required positional argument: 'fault_function'
+
+tests\test_advanced_rstp_mechanisms.py:300: TypeError</failure></testcase><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_backup_port_concept_verification" time="21.660"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_backup_port_simulation.TestBackupPortSimulation object at 0x000002D3774B8050&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3775659D0&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D3775656A0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3774A6B50&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774BB890&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377389010&gt;
+
+    def test_backup_port_concept_verification(self, dut_manager, test_nodes,
+                                             network_topology, rstp_analyzer):
+        """验证备份端口概念和检测逻辑
+    
+        注意：由于测试环境限制，无法创建真正的共享介质拓扑，
+        此测试主要验证备份端口的概念理解和相关代码逻辑。
+        """
+        logger.info("开始备份端口概念验证测试")
+    
+        # 定义execute_method
+        if hasattr(dut_manager, 'execute'):
+            execute_method = dut_manager.execute
+        elif hasattr(dut_manager, 'run'):
+            execute_method = dut_manager.run
+        else:
+            execute_method = dut_manager.send_command
+    
+        # 创建基本拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 等待收敛
+        time.sleep(10)
+    
+        # 获取当前网桥信息
+&gt;       info = rstp_analyzer.get_bridge_info()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_backup_port_simulation.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377389010&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_shared_medium_simulation_attempt" time="16.165" /><testcase classname="tests.test_backup_port_simulation.TestBackupPortSimulation" name="test_backup_port_documentation_verification" time="0.007" /><testcase classname="tests.test_convergence.TestConvergence" name="test_direct_link_failure" time="11.922"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_convergence.TestConvergence object at 0x000002D3774B8410&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3774A6750&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D3776296D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D37762B2F0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774CBA80&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775647C0&gt;
+fault_injector = &lt;src.fault_injector.FaultInjector object at 0x000002D3774DB0E0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9E80&gt;
+
+    def test_direct_link_failure(self, dut_manager, test_nodes,
+                                 network_topology, rstp_analyzer,
+                                 fault_injector, convergence_monitor):
+        """TC.AUTO.2.1: 直接链路故障测试"""
+        logger.info("开始直接链路故障测试")
+    
+        # 创建环形拓扑提供冗余路径
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 调整优先级，确保 DUT 不是根网桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=16384)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=28672)
+    
+        # 等待初始收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+&gt;       initial_convergence = convergence_monitor.wait_for_convergence(analyzers)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_convergence.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775647C0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_root_bridge_failure" time="0.157"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_convergence.py:80: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_multiple_link_failures" time="6.676"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_convergence.TestConvergence object at 0x000002D3772C7950&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D3774A6750&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D3776296D0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D37762B2F0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774CBA80&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775D6300&gt;
+fault_injector = &lt;src.fault_injector.FaultInjector object at 0x000002D37754C410&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774DA7B0&gt;
+
+    @pytest.mark.slow
+    def test_multiple_link_failures(self, dut_manager, test_nodes,
+                                    network_topology, rstp_analyzer,
+                                    fault_injector, convergence_monitor):
+        """测试多重链路故障"""
+        logger.info("开始多重链路故障测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 等待初始收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+&gt;       convergence_monitor.wait_for_convergence(analyzers)
+
+tests\test_convergence.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775D6300&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_convergence_with_traffic" time="34.389" /><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_backup_port_simulation" time="16.912"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage object at 0x000002D3774B8B90&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377662350&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377662CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D377778530&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774C9E00&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377663E70&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9550&gt;
+
+    def test_backup_port_simulation(self, dut_manager, test_nodes,
+                                   network_topology, rstp_analyzer, convergence_monitor):
+        """模拟备份端口场景测试
+    
+        由于当前测试框架无法创建真正的共享介质拓扑，
+        我们通过创建多个连接到同一网段的端口来模拟备份端口场景
+        """
+        logger.info("开始备份端口模拟测试")
+    
+        # 定义execute方法
+        if hasattr(dut_manager, 'execute'):
+            execute_method = dut_manager.execute
+        elif hasattr(dut_manager, 'run'):
+            execute_method = dut_manager.run
+        else:
+            execute_method = dut_manager.send_command
+    
+        # 创建模拟共享网段的拓扑
+        # 使用Linux bridge作为"共享介质"，连接多个OVS端口
+        logger.info("创建模拟共享网段拓扑")
+    
+        # 1. 创建Linux bridge作为共享网段
+        shared_bridge = "shared_segment"
+        execute_method(f"brctl delbr {shared_bridge} 2&gt;/dev/null || true")
+        execute_method(f"brctl addbr {shared_bridge}")
+        execute_method(f"ip link set {shared_bridge} up")
+    
+        # 2. 在DUT上创建多个端口连接到共享网段
+        veth_pairs = [
+            ("dut_port1", "shared_port1"),
+            ("dut_port2", "shared_port2")
+        ]
+    
+        dut_bridge = "rstp0"  # 假设DUT使用rstp0网桥
+    
+        for dut_port, shared_port in veth_pairs:
+            # 创建veth对
+            execute_method(f"ip link del {dut_port} 2&gt;/dev/null || true")
+            execute_method(f"ip link add {dut_port} type veth peer name {shared_port}")
+    
+            # 将DUT端连接到DUT网桥
+            execute_method(f"ovs-vsctl add-port {dut_bridge} {dut_port}")
+    
+            # 将共享端连接到共享网段
+            execute_method(f"brctl addif {shared_bridge} {shared_port}")
+    
+            # 启用接口
+            execute_method(f"ip link set {dut_port} up")
+            execute_method(f"ip link set {shared_port} up")
+    
+            logger.info(f"✓ 创建连接: {dut_bridge}:{dut_port} &lt;-&gt; {shared_bridge}:{shared_port}")
+    
+        # 3. 创建另一个网桥连接到共享网段（模拟另一台交换机）
+        remote_bridge = "remote_switch"
+        execute_method(f"ovs-vsctl --if-exists del-br {remote_bridge}")
+        execute_method(f"ovs-vsctl add-br {remote_bridge}")
+        execute_method(f"ovs-vsctl set bridge {remote_bridge} rstp_enable=true")
+        execute_method(f"ovs-vsctl set bridge {remote_bridge} other_config:rstp-priority=4096")  # 更高优先级
+    
+        # 连接远程网桥到共享网段
+        execute_method(f"ip link del remote_port 2&gt;/dev/null || true")
+        execute_method(f"ip link add remote_port type veth peer name shared_remote")
+        execute_method(f"ovs-vsctl add-port {remote_bridge} remote_port")
+        execute_method(f"brctl addif {shared_bridge} shared_remote")
+        execute_method(f"ip link set remote_port up")
+        execute_method(f"ip link set shared_remote up")
+        execute_method(f"ip link set {remote_bridge} up")
+    
+        logger.info(f"✓ 创建远程交换机: {remote_bridge}")
+    
+        # 4. 等待RSTP收敛
+        logger.info("等待RSTP收敛...")
+        time.sleep(15)
+    
+        # 5. 分析端口角色
+&gt;       dut_info = rstp_analyzer.get_bridge_info()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_enhanced_rstp_coverage.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377663E70&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_comprehensive_port_state_transitions" time="11.815"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage object at 0x000002D3774B8A50&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377662350&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377662CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D377778530&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774C9E00&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377667450&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774DA900&gt;
+
+    def test_comprehensive_port_state_transitions(self, dut_manager, test_nodes,
+                                                 network_topology, rstp_analyzer, convergence_monitor):
+        """全面的端口状态转换测试
+    
+        测试端口在各种场景下的状态转换，特别关注Learning状态
+        """
+        logger.info("开始全面端口状态转换测试")
+    
+        # 创建测试拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置优先级确保DUT不是根桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+&gt;       convergence_monitor.wait_for_convergence([rstp_analyzer])
+
+tests\test_enhanced_rstp_coverage.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377667450&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_detailed_bpdu_analysis" time="6.502"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage object at 0x000002D3774C8050&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377662350&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377662CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D377778530&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774C9E00&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377392210&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9550&gt;
+
+    def test_detailed_bpdu_analysis(self, dut_manager, test_nodes,
+                                   network_topology, rstp_analyzer, convergence_monitor):
+        """详细的BPDU分析测试
+    
+        验证RSTP的分布式BPDU生成机制和保活功能
+        """
+        logger.info("开始详细BPDU分析测试")
+    
+        # 创建多节点拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置不同优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
+    
+        # 等待收敛
+        logger.info("等待RSTP收敛...")
+&gt;       convergence_monitor.wait_for_convergence([rstp_analyzer])
+
+tests\test_enhanced_rstp_coverage.py:300: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377392210&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage" name="test_topology_change_comprehensive" time="6.457"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_enhanced_rstp_coverage.TestEnhancedRSTPCoverage object at 0x000002D3774C8510&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377662350&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377662CF0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D377778530&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D3774C9E00&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377393590&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9E80&gt;
+
+    def test_topology_change_comprehensive(self, dut_manager, test_nodes,
+                                         network_topology, rstp_analyzer, convergence_monitor):
+        """全面的拓扑变更测试
+    
+        测试各种拓扑变更场景和TC标志传播
+        """
+        logger.info("开始全面拓扑变更测试")
+    
+        # 创建复杂拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+&gt;       convergence_monitor.wait_for_convergence([rstp_analyzer])
+
+tests\test_enhanced_rstp_coverage.py:432: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377393590&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_primary_controller_failure" time="0.001"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:40: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_rstp_reconvergence_no_switchover" time="26.819" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_split_brain_scenario" time="10.204" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_switchover_with_traffic" time="0.000"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:178: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_failback" time="0.002"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:227: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[12288]" time="3.467" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[16384]" time="3.286" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[32768]" time="3.282" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[61440]" time="3.284" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[4097]" time="1.352" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[12289]" time="1.368" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[70000]" time="1.366" /><testcase classname="tests.test_parameters.TestParameters" name="test_hello_time" time="7.488" /><testcase classname="tests.test_parameters.TestParameters" name="test_forward_delay" time="7.491" /><testcase classname="tests.test_parameters.TestParameters" name="test_max_age" time="7.483" /><testcase classname="tests.test_parameters.TestParameters" name="test_port_cost" time="125.986" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_persistence" time="6.552" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_boundaries" time="2.137" /><testcase classname="tests.test_protocol_conformance" name="test_port_role_assignment_simplified" time="0.393"><error message="failed on setup with &quot;file C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py, line 32&#10;  def test_port_role_assignment_simplified(self, dut_manager, test_nodes,&#10;E       fixture 'self' not found&#10;&gt;       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, convergence_monitor, doctest_namespace, dut_manager, event_loop_policy, extra, extras, fault_injector, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, logger, metadata, monkeypatch, network_topology, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rstp_analyzer, test_config, test_nodes, test_results, test_setup_teardown, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, traffic_generator, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, vmware_controller, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py:32&quot;">file C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py, line 32
+  def test_port_role_assignment_simplified(self, dut_manager, test_nodes,
+E       fixture 'self' not found
+&gt;       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, convergence_monitor, doctest_namespace, dut_manager, event_loop_policy, extra, extras, fault_injector, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, logger, metadata, monkeypatch, network_topology, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, rstp_analyzer, test_config, test_nodes, test_results, test_setup_teardown, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, traffic_generator, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, vmware_controller, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_protocol_conformance.py:32</error></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_root_bridge_election" time="51.075"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002D3774B9810&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377750050&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377676F50&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3777E9850&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37764CAF0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3776988F0&gt;
+
+    def test_root_bridge_election(self, dut_manager, test_nodes,
+                                network_topology, rstp_analyzer):
+        """TC.AUTO.1.1: 根网桥选举测试"""
+        logger.info("开始根网桥选举测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 等待初始拓扑稳定
+        time.sleep(3)
+    
+        # 确定DUT的正确网桥名称
+        logger.info("=== 检查DUT网桥配置 ===")
+        if hasattr(dut_manager, 'execute'):
+            execute_method = dut_manager.execute
+        elif hasattr(dut_manager, 'run'):
+            execute_method = dut_manager.run
+        else:
+            execute_method = dut_manager.send_command
+    
+        # 查找正确的测试网桥（应该包含测试接口）
+        bridge_name = None
+        try:
+            # 首先检查是否存在br0（常用的测试网桥名）
+            result = execute_method("ip link show br0")
+            if isinstance(result, tuple) and result[2] == 0:  # 命令成功
+                bridge_name = "br0"
+                logger.info("找到测试网桥: br0")
+            else:
+                # 查找包含eth0的网桥
+                result = execute_method("bridge link show | grep 'master'")
+                logger.info(f"网桥端口信息: {result}")
+    
+                # 从eth0找到它所属的网桥
+                result = execute_method("ip link show eth0")
+                if isinstance(result, tuple):
+                    output = result[0]
+                    # 查找 master 字段
+                    import re
+                    master_match = re.search(r'master\s+(\S+)', output)
+                    if master_match:
+                        bridge_name = master_match.group(1)
+                        logger.info(f"eth0所属网桥: {bridge_name}")
+    
+                # 如果还是没找到，尝试创建br0
+                if not bridge_name:
+                    logger.warning("未找到测试网桥，尝试创建br0")
+                    execute_method("sudo ip link add br0 type bridge")
+                    execute_method("sudo ip link set br0 up")
+                    execute_method("sudo ip link set eth0 master br0")
+                    execute_method("sudo ip link set eth1 master br0 2&gt;/dev/null || true")
+                    execute_method("sudo ip link set eth2 master br0 2&gt;/dev/null || true")
+                    execute_method("sudo bridge vlan add dev br0 vid 1 self")
+                    bridge_name = "br0"
+                    time.sleep(2)
+    
+            if bridge_name:
+                # 确保STP已启用
+                result = execute_method(f"echo 2 | sudo tee /sys/class/net/{bridge_name}/bridge/stp_state")
+                logger.info(f"启用{bridge_name}的RSTP")
+    
+                # 验证STP状态
+                stp_state = execute_method(f"cat /sys/class/net/{bridge_name}/bridge/stp_state")
+                logger.info(f"{bridge_name} STP状态: {stp_state}")
+            else:
+                logger.error("无法确定测试网桥")
+                bridge_name = "br0"  # 使用默认值
+    
+        except Exception as e:
+            logger.warning(f"网桥检查出错: {e}")
+            bridge_name = "br0"
+    
+        # 重新获取网桥信息确保分析器使用正确的网桥
+        logger.info("=== 初始网桥状态 ===")
+&gt;       initial_info = rstp_analyzer.get_bridge_info()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_protocol_conformance.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3776988F0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_role_assignment" time="12.903"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002D3774B9950&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377750050&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377676F50&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3777E9850&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37764CAF0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3776993D0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774DAF90&gt;
+
+    def test_port_role_assignment(self, dut_manager, test_nodes,
+                                network_topology, rstp_analyzer, convergence_monitor):
+        """TC.AUTO.1.2: 端口角色与状态分配测试"""
+        logger.info("开始端口角色分配测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 确保测试节点1是根网桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待初始配置生效
+        time.sleep(3)
+    
+        # 确保DUT的所有相关接口都已启用
+        logger.info("启用DUT的网桥接口...")
+        try:
+            # 使用正确的SSH方法
+            if hasattr(dut_manager, 'execute'):
+                execute_method = dut_manager.execute
+            elif hasattr(dut_manager, 'run'):
+                execute_method = dut_manager.run
+            else:
+                execute_method = dut_manager.send_command
+    
+            # 启用物理接口和将其加入网桥
+            for iface in ['eth0', 'eth1', 'eth2']:
+                try:
+                    # 启用物理接口
+                    execute_method(f"sudo ip link set {iface} up")
+                    # 将接口加入网桥（如果还没有）
+                    execute_method(f"sudo ip link set {iface} master br0")
+                    # 在网桥中启用STP
+                    execute_method(f"sudo bridge link set dev {iface} state 3")
+                    logger.info(f"已启用接口 {iface}")
+                except Exception as e:
+                    logger.debug(f"接口 {iface} 配置: {e}")
+    
+            # 等待接口状态稳定
+            time.sleep(3)
+    
+            # 检查br0网桥的接口状态
+            result = execute_method("bridge link show br0")
+            logger.info(f"br0 网桥接口状态:\n{result}")
+    
+            # 也检查网桥本身的状态
+            result = execute_method("ip link show br0")
+            logger.info(f"br0 状态:\n{result}")
+    
+            # 检查STP状态
+            result = execute_method("cat /sys/class/net/br0/bridge/stp_state")
+            logger.info(f"br0 STP状态:\n{result}")
+    
+        except Exception as e:
+            logger.warning(f"配置接口时出错: {e}")
+    
+        # 获取初始桥信息
+        logger.info("获取初始网桥状态...")
+&gt;       initial_info = rstp_analyzer.get_bridge_info()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_protocol_conformance.py:380: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3776993D0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_rstp_protocol_verification" time="48.563" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_alternate_port_verification" time="6.572"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002D3774C9480&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377750050&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377676F50&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3777E9850&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37764CAF0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377698BF0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774DA3C0&gt;
+
+    def test_alternate_port_verification(self, dut_manager, test_nodes,
+                                        network_topology, rstp_analyzer, convergence_monitor):
+        """专门测试Alternate Port的验证"""
+        logger.info("开始Alternate Port验证测试")
+    
+        # 创建三节点环形拓扑以确保产生Alternate Port
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置不同的网桥优先级确保DUT不是根桥
+        logger.info("设置网桥优先级")
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
+    
+        # 等待充分的收敛时间
+        logger.info("等待RSTP收敛...")
+&gt;       convergence_monitor.wait_for_convergence([rstp_analyzer])
+
+tests\test_protocol_conformance.py:796: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377698BF0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_state_transitions" time="0.002"><failure message="AttributeError: 'NetworkTopology' object has no attribute 'create_linear_topology'. Did you mean: 'create_ring_topology'?">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002D3774BD250&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377750050&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377676F50&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3777E9850&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37764CAF0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D37769A4B0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774DBA10&gt;
+
+    def test_port_state_transitions(self, dut_manager, test_nodes,
+                                  network_topology, rstp_analyzer, convergence_monitor):
+        """测试端口状态转换，特别是Learning状态"""
+        logger.info("开始端口状态转换测试")
+    
+        # 创建简单的点对点拓扑
+&gt;       network_topology.create_linear_topology(use_rstp=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NetworkTopology' object has no attribute 'create_linear_topology'. Did you mean: 'create_ring_topology'?
+
+tests\test_protocol_conformance.py:840: AttributeError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_bpdu_propagation_and_keepalive" time="6.566"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002D3774F05A0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377750050&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377676F50&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3777E9850&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37764CAF0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3776992B0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774D9E80&gt;
+
+    def test_bpdu_propagation_and_keepalive(self, dut_manager, test_nodes,
+                                           network_topology, rstp_analyzer, convergence_monitor):
+        """测试BPDU传播和保活机制"""
+        logger.info("开始BPDU传播和保活机制测试")
+    
+        # 创建环形拓扑以测试分布式BPDU生成
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置不同优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+&gt;       convergence_monitor.wait_for_convergence([rstp_analyzer])
+
+tests\test_protocol_conformance.py:934: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3776992B0&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_disabled_port_exclusion" time="6.347"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002D3774F06B0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377750050&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377676F50&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D3777E9850&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D37764CAF0&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377698A70&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002D3774DA660&gt;
+
+    def test_disabled_port_exclusion(self, dut_manager, test_nodes,
+                                    network_topology, rstp_analyzer, convergence_monitor):
+        """测试禁用端口被正确排除在STP计算之外"""
+        logger.info("开始禁用端口排除测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
+    
+        # 等待初始收敛
+        logger.info("等待初始收敛...")
+&gt;       convergence_monitor.wait_for_convergence([rstp_analyzer])
+
+tests\test_protocol_conformance.py:1018: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:214: in wait_for_convergence
+    info = analyzer.get_bridge_info()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D377698A70&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_topology_change_notification" time="28.387" /><testcase classname="tests.test_security.TestSecurity" name="test_root_bridge_hijack_attack" time="16.912"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_security.TestSecurity object at 0x000002D3774B9BD0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377761B00&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377760B40&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D377707C40&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D377636A50&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775DB890&gt;
+
+    def test_root_bridge_hijack_attack(self, dut_manager, test_nodes,
+                                       network_topology, rstp_analyzer):
+        """TC.AUTO.4.1: 根网桥劫持攻击测试"""
+        logger.info("开始根网桥劫持攻击测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # DUT作为根网桥
+        dut_manager.execute_sudo("brctl setbridgeprio br0 16384")
+        if test_nodes:
+            test_nodes[0].execute_sudo("brctl setbridgeprio br0 32768")
+    
+        time.sleep(5)
+    
+        # 验证DUT是根网桥
+        assert rstp_analyzer.is_root_bridge(), "DUT应该是初始根网桥"
+&gt;       initial_root_id = rstp_analyzer.get_bridge_info().bridge_id
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_security.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775DB890&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_flood_attack" time="21.717" /><testcase classname="tests.test_security.TestSecurity" name="test_topology_change_attack" time="11.230"><failure message="TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'">self = &lt;test_security.TestSecurity object at 0x000002D3774C9810&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002D377761B00&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002D377760B40&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002D377707C40&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002D377636A50&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775E5970&gt;
+
+    def test_topology_change_attack(self, dut_manager, test_nodes,
+                                    network_topology, rstp_analyzer):
+        """测试拓扑变更攻击"""
+        logger.info("开始拓扑变更攻击测试")
+    
+        # 创建拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+        time.sleep(5)
+    
+        # 记录初始拓扑变更计数
+&gt;       initial_info = rstp_analyzer.get_bridge_info()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_security.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src\rstp_analyzer.py:87: in get_bridge_info
+    return self._infer_bridge_info(bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002D3775E5970&gt;, bridge = 'br0'
+
+    def _infer_bridge_info(self, bridge: str) -&gt; BridgeInfo:
+        """基于接口状态推断网桥信息"""
+        self.logger.warning(f"无法获取详细网桥信息，返回默认值: {bridge}")
+&gt;       return BridgeInfo(
+            bridge_id="0000.000000000000",
+            root_id="0000.000000000000",
+            root_path_cost=0,
+            topology_changes=0,
+            hello_time=2,
+            forward_delay=15,
+            max_age=20
+        )
+E       TypeError: BridgeInfo.__init__() missing 3 required positional arguments: 'root_port', 'protocol_version', and 'ports'
+
+src\rstp_analyzer.py:92: TypeError</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_mac_spoofing" time="17.434" /><testcase classname="tests.test_security.TestSecurity" name="test_port_security" time="0.009"><skipped type="pytest.skip" message="端口安全功能不可用">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_security.py:249: 端口安全功能不可用</skipped></testcase></testsuite></testsuites>

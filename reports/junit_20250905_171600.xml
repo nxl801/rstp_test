@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="5" tests="31" time="854.436" timestamp="2025-09-05T17:16:01.694456+08:00" hostname="DESKTOP-FDB8GR9"><testcase classname="tests.test_convergence.TestConvergence" name="test_direct_link_failure" time="397.741"><failure message="AssertionError: 未找到Root Port&#10;assert None">self = &lt;test_convergence.TestConvergence object at 0x000002724E427610&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002724E44FE00&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002724E62D090&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002724E62E5D0&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002724E5F9400&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E5F9550&gt;
+fault_injector = &lt;src.fault_injector.FaultInjector object at 0x000002724E5F96A0&gt;
+convergence_monitor = &lt;conftest.convergence_monitor.&lt;locals&gt;.ConvergenceMonitor object at 0x000002724E5F97F0&gt;
+
+    def test_direct_link_failure(self, dut_manager, test_nodes,
+                                 network_topology, rstp_analyzer,
+                                 fault_injector, convergence_monitor):
+        """TC.AUTO.2.1: 直接链路故障测试"""
+        logger.info("开始直接链路故障测试")
+    
+        # 创建环形拓扑提供冗余路径
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 调整优先级，确保 DUT 不是根网桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=16384)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+        if len(test_nodes) &gt; 1:
+            NetworkTopology.execute_bridge_command(test_nodes[1], "set_priority", priority=28672)
+    
+        # 等待初始收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        initial_convergence = convergence_monitor.wait_for_convergence(analyzers)
+        logger.info(f"初始收敛时间: {initial_convergence:.2f}秒")
+    
+        # 确定DUT的Root Port
+        info = rstp_analyzer.get_bridge_info()
+        root_port = None
+        for port_name, port_info in info.ports.items():
+            if port_info.role == PortRole.ROOT:
+                root_port = port_name
+                break
+    
+&gt;       assert root_port, "未找到Root Port"
+E       AssertionError: 未找到Root Port
+E       assert None
+
+tests\test_convergence.py:50: AssertionError</failure></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_root_bridge_failure" time="0.045"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_convergence.py:80: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_convergence.TestConvergence" name="test_multiple_link_failures" time="44.229" /><testcase classname="tests.test_convergence.TestConvergence" name="test_convergence_with_traffic" time="34.615" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_primary_controller_failure" time="0.001"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:40: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_rstp_reconvergence_no_switchover" time="26.957" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_split_brain_scenario" time="10.196" /><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_switchover_with_traffic" time="0.001"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:178: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_high_availability.TestHighAvailability" name="test_ha_failback" time="0.002"><skipped type="pytest.skip" message="跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_high_availability.py:227: 跳过需要VMware控制的测试: vmrun工具未找到: C:/Program Files (x86)/VMware/VMware Workstation/vmrun.exe</skipped></testcase><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[12288]" time="2.230" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[16384]" time="2.079" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[32768]" time="2.085" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_valid[61440]" time="2.079" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[4097]" time="0.046" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[12289]" time="0.052" /><testcase classname="tests.test_parameters.TestParameters" name="test_bridge_priority_invalid[70000]" time="0.050" /><testcase classname="tests.test_parameters.TestParameters" name="test_hello_time" time="6.238" /><testcase classname="tests.test_parameters.TestParameters" name="test_forward_delay" time="6.242" /><testcase classname="tests.test_parameters.TestParameters" name="test_max_age" time="6.238" /><testcase classname="tests.test_parameters.TestParameters" name="test_port_cost" time="121.009" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_persistence" time="3.364" /><testcase classname="tests.test_parameters.TestParameters" name="test_parameter_boundaries" time="0.849" /><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_root_bridge_election" time="54.840"><failure message="AssertionError: DUT不应该是根网桥（优先级较高）&#10;assert not True&#10; +  where True = is_root_bridge()&#10; +    where is_root_bridge = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E473F50&gt;.is_root_bridge">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002724E62C410&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002724E5FF550&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002724E6D4AA0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002724E6D4F50&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002724E60B490&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E473F50&gt;
+
+    def test_root_bridge_election(self, dut_manager, test_nodes,
+                                  network_topology, rstp_analyzer):
+        """TC.AUTO.1.1: 根网桥选举测试"""
+        logger.info("开始根网桥选举测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 设置节点优先级
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=16384)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待收敛
+        time.sleep(5)
+    
+        # 验证DUT不是根网桥
+&gt;       assert not rstp_analyzer.is_root_bridge(), \
+            "DUT不应该是根网桥（优先级较高）"
+E       AssertionError: DUT不应该是根网桥（优先级较高）
+E       assert not True
+E        +  where True = is_root_bridge()
+E        +    where is_root_bridge = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E473F50&gt;.is_root_bridge
+
+tests\test_protocol_conformance.py:36: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_port_role_assignment" time="12.002"><failure message="AssertionError: DUT应该有Root Port&#10;assert &lt;PortRole.ROOT: 'root'&gt; in {}&#10; +  where &lt;PortRole.ROOT: 'root'&gt; = PortRole.ROOT">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002724E62C550&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002724E5FF550&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002724E6D4AA0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002724E6D4F50&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002724E60B490&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E677EE0&gt;
+
+    def test_port_role_assignment(self, dut_manager, test_nodes,
+                                  network_topology, rstp_analyzer):
+        """TC.AUTO.1.2: 端口角色与状态分配测试"""
+        logger.info("开始端口角色分配测试")
+    
+        # 创建环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+    
+        # 确保测试节点1是根网桥
+        NetworkTopology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        NetworkTopology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+    
+        # 等待收敛
+        time.sleep(5)
+    
+        # 获取DUT端口信息
+        info = rstp_analyzer.get_bridge_info()
+    
+        # 统计端口角色
+        roles = {}
+        for port_name, port_info in info.ports.items():
+            role = port_info.role
+            if role not in roles:
+                roles[role] = []
+            roles[role].append(port_name)
+    
+        # 验证有且仅有一个Root Port
+&gt;       assert PortRole.ROOT in roles, "DUT应该有Root Port"
+E       AssertionError: DUT应该有Root Port
+E       assert &lt;PortRole.ROOT: 'root'&gt; in {}
+E        +  where &lt;PortRole.ROOT: 'root'&gt; = PortRole.ROOT
+
+tests\test_protocol_conformance.py:84: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_rstp_protocol_verification" time="0.132"><failure message="AssertionError: 应该检测到RSTP BPDU&#10;assert 0 &gt; 0&#10; +  where 0 = len([])">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002724E3B3CE0&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002724E5FF550&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E714260&gt;
+
+    def test_rstp_protocol_verification(self, dut_manager, rstp_analyzer):
+        """验证使用的是RSTP而不是STP"""
+        logger.info("开始RSTP协议验证")
+    
+        # 验证协议版本
+        assert rstp_analyzer.verify_rstp_enabled(), \
+            "DUT应该使用RSTP协议"
+    
+        # 检查BPDU格式
+        bpdus = rstp_analyzer.capture_bpdu("eth0", count=5, timeout=15)
+    
+        rstp_bpdus = [b for b in bpdus if b.get('is_rstp', False)]
+&gt;       assert len(rstp_bpdus) &gt; 0, "应该检测到RSTP BPDU"
+E       AssertionError: 应该检测到RSTP BPDU
+E       assert 0 &gt; 0
+E        +  where 0 = len([])
+
+tests\test_protocol_conformance.py:112: AssertionError</failure></testcase><testcase classname="tests.test_protocol_conformance.TestProtocolConformance" name="test_topology_change_notification" time="18.833"><failure message="AssertionError: 应该检测到拓扑变更&#10;assert 0 &gt; 0">self = &lt;test_protocol_conformance.TestProtocolConformance object at 0x000002724E3B3E10&gt;
+dut_manager = &lt;src.ssh_manager.SSHManager object at 0x000002724E5FF550&gt;
+test_nodes = [&lt;src.ssh_manager.SSHManager object at 0x000002724E6D4AA0&gt;, &lt;src.ssh_manager.SSHManager object at 0x000002724E6D4F50&gt;]
+network_topology = &lt;src.network_topology.NetworkTopology object at 0x000002724E60B490&gt;
+rstp_analyzer = &lt;src.rstp_analyzer.RSTPAnalyzer object at 0x000002724E6DD450&gt;
+fault_injector = &lt;src.fault_injector.FaultInjector object at 0x000002724E66DF20&gt;
+
+    def test_topology_change_notification(self, dut_manager, test_nodes,
+                                          network_topology, rstp_analyzer,
+                                          fault_injector):
+        """测试拓扑变更通知机制"""
+        logger.info("开始拓扑变更通知测试")
+    
+        # 创建稳定拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+        time.sleep(5)
+    
+        # 记录初始拓扑变更计数
+        initial_info = rstp_analyzer.get_bridge_info()
+        initial_changes = initial_info.topology_changes
+    
+        # 触发拓扑变更
+        fault_injector.link_down("eth0")
+        time.sleep(2)
+        fault_injector.link_up("eth0")
+        time.sleep(5)
+    
+        # 检查拓扑变更计数
+        final_info = rstp_analyzer.get_bridge_info()
+        final_changes = final_info.topology_changes
+    
+&gt;       assert final_changes &gt; initial_changes, \
+            "应该检测到拓扑变更"
+E       AssertionError: 应该检测到拓扑变更
+E       assert 0 &gt; 0
+
+tests\test_protocol_conformance.py:145: AssertionError</failure></testcase><testcase classname="tests.test_security.TestSecurity" name="test_root_bridge_hijack_attack" time="32.462" /><testcase classname="tests.test_security.TestSecurity" name="test_bpdu_flood_attack" time="21.889" /><testcase classname="tests.test_security.TestSecurity" name="test_topology_change_attack" time="29.835" /><testcase classname="tests.test_security.TestSecurity" name="test_mac_spoofing" time="17.571" /><testcase classname="tests.test_security.TestSecurity" name="test_port_security" time="0.009"><skipped type="pytest.skip" message="端口安全功能不可用">C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\tests\test_security.py:249: 端口安全功能不可用</skipped></testcase></testsuite></testsuites>

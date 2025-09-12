@@ -1,0 +1,112 @@
+2025-09-08 13:28:10,557 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250908_132810.log
+2025-09-08 13:28:10,829 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-08 13:28:10,830 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-08 13:28:11,171 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-08 13:28:11,172 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-08 13:28:11,480 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-08 13:28:11,481 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-08 13:28:11,482 - RSTPTest - INFO - ============================================================
+2025-09-08 13:28:11,482 - RSTPTest - INFO - 开始测试: test_port_role_assignment
+2025-09-08 13:28:11,482 - RSTPTest - INFO - ============================================================
+2025-09-08 13:28:11,483 - test_protocol_conformance - INFO - 开始端口角色分配测试
+2025-09-08 13:28:11,483 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-08 13:28:11,484 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-08 13:28:11,484 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-08 13:28:11,484 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-08 13:28:11,484 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-08 13:28:11,484 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-08 13:28:11,485 - NetworkTopology - INFO - DUT: 检查OVS支持...
+2025-09-08 13:28:11,490 - NetworkTopology - INFO - DUT: ovs-vsctl检查结果: code=0
+2025-09-08 13:28:11,491 - NetworkTopology - INFO - DUT: 检查OVS服务状态...
+2025-09-08 13:28:11,548 - NetworkTopology - INFO - DUT: OVS服务状态检查: code=0, output=active
+2025-09-08 13:28:11,549 - NetworkTopology - INFO - DUT: 检测到OVS支持
+2025-09-08 13:28:11,549 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-08 13:28:11,549 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-08 13:28:11,863 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-08 13:28:11,863 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-08 13:28:12,256 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-08 13:28:12,256 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-08 13:28:12,257 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-08 13:28:12,257 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-08 13:28:12,481 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-08 13:28:12,719 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-08 13:28:12,720 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-08 13:28:12,775 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-08 13:28:12,871 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-08 13:28:12,871 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-08 13:28:12,872 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-08 13:28:12,872 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-08 13:28:12,872 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-08 13:28:12,872 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-08 13:28:12,873 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-08 13:28:12,892 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-08 13:28:12,892 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-08 13:28:13,076 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=1, output=
+2025-09-08 13:28:13,077 - NetworkTopology - INFO - TestNode1: 尝试启动mstpd服务...
+2025-09-08 13:28:13,432 - NetworkTopology - INFO - TestNode1: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-08 13:28:15,578 - NetworkTopology - INFO - TestNode1: mstpd启动后状态: code=1
+2025-09-08 13:28:15,578 - NetworkTopology - INFO - TestNode1: mstpd启动失败，使用iproute2
+2025-09-08 13:28:15,579 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: iproute2
+2025-09-08 13:28:15,579 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-08 13:28:15,579 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-08 13:28:16,646 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-08 13:28:18,953 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-08 13:28:18,954 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-08 13:28:18,954 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-08 13:28:18,955 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-08 13:28:19,657 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-08 13:28:20,390 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-08 13:28:20,391 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-08 13:28:20,722 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-08 13:28:20,796 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-08 13:28:20,861 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-08 13:28:20,861 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-08 13:28:20,862 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-08 13:28:20,862 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-08 13:28:20,862 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-08 13:28:20,862 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-08 13:28:20,863 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-08 13:28:20,879 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-08 13:28:20,880 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-08 13:28:29,066 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=1, output=
+2025-09-08 13:28:29,067 - NetworkTopology - INFO - TestNode2: 尝试启动mstpd服务...
+2025-09-08 13:28:36,501 - NetworkTopology - INFO - TestNode2: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-08 13:28:46,654 - NetworkTopology - INFO - TestNode2: mstpd启动后状态: code=1
+2025-09-08 13:28:46,654 - NetworkTopology - INFO - TestNode2: mstpd启动失败，使用iproute2
+2025-09-08 13:28:46,655 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: iproute2
+2025-09-08 13:28:46,655 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-08 13:28:46,655 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-08 13:29:02,792 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-08 13:29:04,948 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-08 13:29:04,949 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-08 13:29:04,949 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-08 13:29:04,949 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-08 13:29:05,630 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-08 13:29:06,285 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-08 13:29:06,285 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-08 13:29:06,626 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-08 13:29:06,695 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-08 13:29:06,758 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-08 13:29:06,758 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-08 13:29:06,759 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-08 13:29:10,084 - test_protocol_conformance - INFO - 启用DUT的网桥接口...
+2025-09-08 13:29:10,158 - test_protocol_conformance - INFO - 已启用接口 eth0
+2025-09-08 13:29:10,279 - test_protocol_conformance - INFO - 已启用接口 eth1
+2025-09-08 13:29:10,391 - test_protocol_conformance - INFO - 已启用接口 eth2
+2025-09-08 13:29:13,399 - test_protocol_conformance - INFO - 网桥接口状态:
+('18: veth45650b3@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-b2bd2c7fedc8 state forwarding priority 32 cost 2 \n26: veth6d7f1eb@if25: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-b2bd2c7fedc8 state forwarding priority 32 cost 2 \n10908: veth83f6b2e@if10907: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-b2bd2c7fedc8 state forwarding priority 32 cost 2 \n', '', 0)
+2025-09-08 13:29:13,399 - test_protocol_conformance - INFO - 获取初始网桥状态...
+2025-09-08 13:29:13,782 - test_protocol_conformance - INFO - Bridge ID: 未获取
+2025-09-08 13:29:13,783 - test_protocol_conformance - INFO - Root ID: 未获取
+2025-09-08 13:29:13,783 - test_protocol_conformance - INFO - Root Port: eth0
+2025-09-08 13:29:13,783 - test_protocol_conformance - INFO - 协议版本: rstp
+2025-09-08 13:29:13,783 - test_protocol_conformance - INFO - 端口 eth0: 角色=root, 状态=forwarding, 成本=0
+2025-09-08 13:29:13,784 - test_protocol_conformance - INFO - 端口 eth2: 角色=alternate, 状态=disabled, 成本=0
+2025-09-08 13:29:13,784 - test_protocol_conformance - INFO - 端口 eth3: 角色=unknown, 状态=disabled, 成本=0
+2025-09-08 13:29:13,784 - test_protocol_conformance - INFO - 等待网络收敛...
+2025-09-08 13:29:14,157 - RSTPTest - INFO - 测试完成: test_port_role_assignment (耗时: 62.68秒)
+2025-09-08 13:29:14,158 - RSTPTest - INFO - ============================================================
+
+2025-09-08 13:29:14,158 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-08 13:29:14,159 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-08 13:29:14,159 - SSH_DUT - INFO - SSH连接已关闭: DUT

@@ -1,0 +1,116 @@
+2025-09-09 16:22:45,209 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250909_162245.log
+2025-09-09 16:22:45,404 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-09 16:22:45,404 - RSTPTest - INFO - 成功连接到DUT: DUT
+2025-09-09 16:22:45,536 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-09 16:22:45,536 - RSTPTest - INFO - 成功连接到节点: TestNode1
+2025-09-09 16:22:45,663 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-09 16:22:45,663 - RSTPTest - INFO - 成功连接到节点: TestNode2
+2025-09-09 16:22:45,674 - RSTPTest - INFO - ============================================================
+2025-09-09 16:22:45,675 - RSTPTest - INFO - 开始测试: test_root_guard_functionality
+2025-09-09 16:22:45,675 - RSTPTest - INFO - ============================================================
+2025-09-09 16:22:45,676 - test_security - INFO - 开始根防护功能测试
+2025-09-09 16:22:45,676 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-09 16:22:45,676 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-09 16:22:45,676 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-09 16:22:45,677 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-09 16:22:45,677 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-09 16:22:45,677 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-09 16:22:45,677 - NetworkTopology - INFO - DUT: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 16:22:45,677 - NetworkTopology - INFO - DUT: 检查mstpd支持...
+2025-09-09 16:22:45,683 - NetworkTopology - INFO - DUT: mstpd检查结果: code=1
+2025-09-09 16:22:45,683 - NetworkTopology - INFO - DUT: 检查iproute2支持...
+2025-09-09 16:22:45,730 - NetworkTopology - INFO - DUT: ip命令检查: code=0
+2025-09-09 16:22:45,730 - NetworkTopology - INFO - DUT: 使用iproute2配置RSTP
+2025-09-09 16:22:45,730 - NetworkTopology - INFO - DUT: 最终选择RSTP方法: iproute2
+2025-09-09 16:22:45,730 - NetworkTopology - INFO - DUT 使用方法: iproute2
+2025-09-09 16:22:45,730 - NetworkTopology - INFO - 清理 DUT 的旧网桥配置...
+2025-09-09 16:22:46,033 - NetworkTopology - INFO - 为 DUT 配置RSTP (iproute2)...
+2025-09-09 16:22:46,425 - NetworkTopology - INFO - DUT: RSTP已通过iproute2配置
+2025-09-09 16:22:46,426 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-09 16:22:46,426 - NetworkTopology - INFO - 为 DUT 添加接口: ['eth0', 'eth2']
+2025-09-09 16:22:46,426 - NetworkTopology - INFO - 添加接口 eth0 到 DUT 的网桥
+2025-09-09 16:22:46,549 - NetworkTopology - INFO - 添加接口 eth2 到 DUT 的网桥
+2025-09-09 16:22:46,669 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-09 16:22:46,669 - NetworkTopology - INFO - 启动 DUT 的网桥 rstp0...
+2025-09-09 16:22:46,726 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-09 16:22:46,774 - NetworkTopology - INFO - DUT: STP/RSTP已启用
+2025-09-09 16:22:46,821 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-09 16:22:46,822 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-09 16:22:46,822 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-09 16:22:46,822 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-09 16:22:46,822 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-09 16:22:46,823 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-09 16:22:46,823 - NetworkTopology - INFO - TestNode1: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 16:22:46,823 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-09 16:22:46,832 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-09 16:22:46,832 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-09 16:22:46,952 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=1, output=
+2025-09-09 16:22:46,952 - NetworkTopology - INFO - TestNode1: 尝试启动mstpd服务...
+2025-09-09 16:22:47,118 - NetworkTopology - INFO - TestNode1: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-09 16:22:49,207 - NetworkTopology - INFO - TestNode1: mstpd启动后状态: code=1
+2025-09-09 16:22:49,208 - NetworkTopology - INFO - TestNode1: mstpd启动失败，使用iproute2
+2025-09-09 16:22:49,208 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: iproute2
+2025-09-09 16:22:49,208 - NetworkTopology - INFO - TestNode1 使用方法: iproute2
+2025-09-09 16:22:49,208 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-09 16:22:49,751 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (iproute2)...
+2025-09-09 16:22:50,853 - NetworkTopology - INFO - TestNode1: RSTP已通过iproute2配置
+2025-09-09 16:22:50,854 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-09 16:22:50,854 - NetworkTopology - INFO - 为 TestNode1 添加接口: ['eth0', 'eth2']
+2025-09-09 16:22:50,854 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-09 16:22:51,230 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-09 16:22:51,572 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-09 16:22:51,573 - NetworkTopology - INFO - 启动 TestNode1 的网桥 br0...
+2025-09-09 16:22:51,762 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-09 16:22:51,811 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-09 16:22:51,861 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-09 16:22:51,862 - NetworkTopology - INFO - 节点 TestNode1 RSTP配置完成
+2025-09-09 16:22:51,862 - NetworkTopology - INFO - 开始配置节点 3/3: TestNode2
+2025-09-09 16:22:51,862 - NetworkTopology - INFO - 为节点 TestNode2 配置RSTP网桥...
+2025-09-09 16:22:51,862 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-09 16:22:51,862 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-09 16:22:51,862 - NetworkTopology - INFO - TestNode2: 跳过OVS检测，使用统一的RSTP方法
+2025-09-09 16:22:51,863 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-09 16:22:51,872 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-09 16:22:51,872 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-09 16:22:52,000 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=1, output=
+2025-09-09 16:22:52,001 - NetworkTopology - INFO - TestNode2: 尝试启动mstpd服务...
+2025-09-09 16:22:52,195 - NetworkTopology - INFO - TestNode2: mstpd启动命令结果: code=0, stderr=[sudo] admin 的密码：
+2025-09-09 16:22:54,304 - NetworkTopology - INFO - TestNode2: mstpd启动后状态: code=1
+2025-09-09 16:22:54,304 - NetworkTopology - INFO - TestNode2: mstpd启动失败，使用iproute2
+2025-09-09 16:22:54,304 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: iproute2
+2025-09-09 16:22:54,305 - NetworkTopology - INFO - TestNode2 使用方法: iproute2
+2025-09-09 16:22:54,305 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-09 16:22:54,834 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (iproute2)...
+2025-09-09 16:22:55,965 - NetworkTopology - INFO - TestNode2: RSTP已通过iproute2配置
+2025-09-09 16:22:55,965 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-09 16:22:55,966 - NetworkTopology - INFO - 为 TestNode2 添加接口: ['eth0', 'eth2']
+2025-09-09 16:22:55,966 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-09 16:22:56,314 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-09 16:22:56,679 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-09 16:22:56,679 - NetworkTopology - INFO - 启动 TestNode2 的网桥 br0...
+2025-09-09 16:22:56,854 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-09 16:22:56,903 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-09 16:22:56,951 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-09 16:22:56,952 - NetworkTopology - INFO - 节点 TestNode2 RSTP配置完成
+2025-09-09 16:22:56,952 - NetworkTopology - INFO - 环形拓扑创建完成
+2025-09-09 16:23:02,016 - RSTPAnalyzer_DUT - WARNING - 无法获取详细网桥信息，返回默认值: br0
+2025-09-09 16:23:02,174 - test_security - INFO - 当前根桥ID: 
+2025-09-09 16:23:02,225 - test_security - WARNING - 启用根防护失败: 
+2025-09-09 16:23:02,226 - test_security - INFO - 在端口 eth1 启用根防护
+2025-09-09 16:23:02,274 - test_security - INFO - 端口 eth1 初始状态: unknown
+2025-09-09 16:23:02,274 - test_security - INFO - 发送更优BPDU尝试劫持根桥
+2025-09-09 16:23:18,259 - test_security - INFO - 根防护触发后端口 eth1 状态: unknown
+2025-09-09 16:23:18,364 - RSTPAnalyzer_DUT - WARNING - 无法获取详细网桥信息，返回默认值: br0
+2025-09-09 16:23:18,522 - test_security - INFO - 根防护功能正常：根桥身份未被劫持
+2025-09-09 16:23:18,522 - test_security - WARNING - 根防护功能异常：端口未进入阻塞状态
+2025-09-09 16:23:18,522 - test_security - INFO - 测试根防护端口 eth1 恢复功能
+2025-09-09 16:23:18,522 - test_security - INFO - 停止发送更优BPDU
+2025-09-09 16:23:28,529 - test_security - INFO - 端口恢复后状态: unknown
+2025-09-09 16:23:28,529 - test_security - WARNING - 根防护端口未能自动恢复
+2025-09-09 16:23:28,640 - test_security - INFO - 根防护功能测试完成
+2025-09-09 16:23:28,642 - RSTPTest - INFO - 测试完成: test_root_guard_functionality (耗时: 42.97秒)
+2025-09-09 16:23:28,642 - RSTPTest - INFO - ============================================================
+
+2025-09-09 16:23:28,643 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-09 16:23:28,643 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-09 16:23:28,643 - SSH_DUT - INFO - SSH连接已关闭: DUT

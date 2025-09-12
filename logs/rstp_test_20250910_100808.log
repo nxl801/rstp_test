@@ -1,0 +1,53 @@
+2025-09-10 10:08:08,697 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250910_100808.log
+2025-09-10 10:08:08,814 - src.dut_manager - INFO - 加载DUT配置: localhost (127.0.0.1)
+2025-09-10 10:08:08,814 - src.dut_manager - ERROR - 初始化SSH连接失败: SSHManager.__init__() got an unexpected keyword argument 'hostname'
+2025-09-10 10:08:08,814 - src.test_node.test_node_1 - INFO - 创建测试节点: test_node_1 (类型: bridge)
+2025-09-10 10:08:08,815 - src.test_node.test_node_2 - INFO - 创建测试节点: test_node_2 (类型: bridge)
+2025-09-10 10:08:08,825 - src.test_node.test_node_3 - INFO - 创建测试节点: test_node_3 (类型: bridge)
+2025-09-10 10:08:09,437 - conftest - INFO - 开始测试: test_edge_port_behavior
+2025-09-10 10:08:09,460 - conftest - INFO - 结束测试: test_edge_port_behavior
+2025-09-10 10:08:09,560 - conftest - INFO - 开始测试: test_backup_port_documentation_verification
+2025-09-10 10:08:09,560 - test_backup_port_simulation - INFO - 开始备份端口文档验证
+2025-09-10 10:08:09,560 - test_backup_port_simulation - INFO - ✓ PortRole.BACKUP 存在
+2025-09-10 10:08:09,561 - test_backup_port_simulation - INFO - === 备份端口理论特性验证 ===
+2025-09-10 10:08:09,561 - test_backup_port_simulation - INFO - purpose: 为共享介质网段提供冗余
+2025-09-10 10:08:09,561 - test_backup_port_simulation - INFO - difference_from_alternate: 备份端口是同一交换机上指定端口的备份，而备用端口是不同交换机提供的路径
+2025-09-10 10:08:09,561 - test_backup_port_simulation - INFO - state: Discarding
+2025-09-10 10:08:09,562 - test_backup_port_simulation - INFO - scenario: 出现在连接到集线器或共享介质的场景中
+2025-09-10 10:08:09,562 - test_backup_port_simulation - INFO - fast_transition: 当对应的指定端口失效时，可以快速转换为指定端口
+2025-09-10 10:08:09,562 - test_backup_port_simulation - INFO - === 端口角色对比 ===
+2025-09-10 10:08:09,562 - test_backup_port_simulation - INFO - root: 连接到根桥的最佳路径
+2025-09-10 10:08:09,562 - test_backup_port_simulation - INFO - designated: 为网段提供转发服务
+2025-09-10 10:08:09,562 - test_backup_port_simulation - INFO - alternate: 提供到根桥的备用路径（来自其他交换机）
+2025-09-10 10:08:09,563 - test_backup_port_simulation - INFO - backup: 同一交换机上指定端口的备份（共享介质场景）
+2025-09-10 10:08:09,563 - test_backup_port_simulation - INFO - === 测试覆盖率分析 ===
+2025-09-10 10:08:09,563 - test_backup_port_simulation - INFO - backup_port_detection: 通过共享介质拓扑模拟检测备份端口
+2025-09-10 10:08:09,563 - test_backup_port_simulation - INFO - role_assignment_verification: 验证端口角色分配的正确性
+2025-09-10 10:08:09,563 - test_backup_port_simulation - INFO - theoretical_validation: 确认备份端口的理论特性和实际行为一致
+2025-09-10 10:08:09,563 - test_backup_port_simulation - INFO - edge_case_handling: 处理现代网络中备份端口罕见的情况
+2025-09-10 10:08:09,564 - test_backup_port_simulation - INFO - 备份端口文档验证完成
+2025-09-10 10:08:09,564 - conftest - INFO - 结束测试: test_backup_port_documentation_verification
+2025-09-10 10:08:09,672 - conftest - INFO - 开始测试: test_convergence_with_traffic
+2025-09-10 10:08:09,690 - conftest - INFO - 结束测试: test_convergence_with_traffic
+2025-09-10 10:08:09,908 - conftest - INFO - 开始测试: test_split_brain_scenario
+2025-09-10 10:08:09,933 - conftest - INFO - 结束测试: test_split_brain_scenario
+2025-09-10 10:08:10,069 - conftest - INFO - 开始测试: test_bridge_priority_invalid[4097]
+2025-09-10 10:08:10,070 - test_parameters - INFO - 测试无效优先级: 4097
+2025-09-10 10:08:10,091 - conftest - INFO - 结束测试: test_bridge_priority_invalid[4097]
+2025-09-10 10:08:10,092 - conftest - INFO - 开始测试: test_bridge_priority_invalid[12289]
+2025-09-10 10:08:10,093 - test_parameters - INFO - 测试无效优先级: 12289
+2025-09-10 10:08:10,113 - conftest - INFO - 结束测试: test_bridge_priority_invalid[12289]
+2025-09-10 10:08:10,115 - conftest - INFO - 开始测试: test_bridge_priority_invalid[70000]
+2025-09-10 10:08:10,116 - test_parameters - INFO - 测试无效优先级: 70000
+2025-09-10 10:08:10,136 - conftest - INFO - 结束测试: test_bridge_priority_invalid[70000]
+2025-09-10 10:08:10,304 - conftest - INFO - 开始测试: test_parameter_boundaries
+2025-09-10 10:08:10,305 - test_parameters - INFO - 测试参数边界值
+2025-09-10 10:08:10,328 - conftest - INFO - 结束测试: test_parameter_boundaries
+2025-09-10 10:08:11,028 - src.test_node.test_node_1 - INFO - 清理节点test_node_1资源
+2025-09-10 10:08:11,032 - src.test_node.test_node_1 - ERROR - 删除网络命名空间异常: [WinError 2] 系统找不到指定的文件。
+2025-09-10 10:08:11,032 - src.test_node.test_node_2 - INFO - 清理节点test_node_2资源
+2025-09-10 10:08:11,036 - src.test_node.test_node_2 - ERROR - 删除网络命名空间异常: [WinError 2] 系统找不到指定的文件。
+2025-09-10 10:08:11,036 - src.test_node.test_node_3 - INFO - 清理节点test_node_3资源
+2025-09-10 10:08:11,040 - src.test_node.test_node_3 - ERROR - 删除网络命名空间异常: [WinError 2] 系统找不到指定的文件。
+2025-09-10 10:08:11,040 - src.dut_manager - INFO - 清理DUT管理器资源
+2025-09-10 10:08:11,040 - src.dut_manager - INFO - 已断开DUT连接

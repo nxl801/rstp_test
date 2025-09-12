@@ -1,0 +1,158 @@
+2025-09-10 10:10:13,017 - root - INFO - 日志系统初始化完成，日志文件: logs\rstp_test_20250910_101013.log
+2025-09-10 10:10:13,130 - src.dut_manager - INFO - 加载DUT配置: localhost (127.0.0.1)
+2025-09-10 10:10:15,156 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:22,165 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:29,195 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:29,206 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:10:29,206 - src.dut_manager - ERROR - 无法连接到DUT: localhost
+2025-09-10 10:10:29,206 - src.test_node.test_node_1 - INFO - 创建测试节点: test_node_1 (类型: bridge)
+2025-09-10 10:10:29,207 - src.test_node.test_node_2 - INFO - 创建测试节点: test_node_2 (类型: bridge)
+2025-09-10 10:10:29,207 - src.test_node.test_node_3 - INFO - 创建测试节点: test_node_3 (类型: bridge)
+2025-09-10 10:10:29,207 - conftest - INFO - 开始测试: test_port_state_transitions
+2025-09-10 10:10:29,618 - conftest - INFO - 结束测试: test_port_state_transitions
+2025-09-10 10:10:29,619 - conftest - INFO - 开始测试: test_bpdu_propagation_and_keepalive
+2025-09-10 10:10:29,640 - conftest - INFO - 结束测试: test_bpdu_propagation_and_keepalive
+2025-09-10 10:10:29,641 - conftest - INFO - 开始测试: test_disabled_port_exclusion_enhanced
+2025-09-10 10:10:29,661 - conftest - INFO - 结束测试: test_disabled_port_exclusion_enhanced
+2025-09-10 10:10:29,662 - conftest - INFO - 开始测试: test_proposal_agreement_handshake
+2025-09-10 10:10:29,684 - conftest - INFO - 结束测试: test_proposal_agreement_handshake
+2025-09-10 10:10:29,686 - conftest - INFO - 开始测试: test_tcn_topology_change_notification
+2025-09-10 10:10:29,708 - conftest - INFO - 结束测试: test_tcn_topology_change_notification
+2025-09-10 10:10:29,709 - conftest - INFO - 开始测试: test_edge_port_behavior
+2025-09-10 10:10:29,732 - conftest - INFO - 结束测试: test_edge_port_behavior
+2025-09-10 10:10:29,734 - conftest - INFO - 开始测试: test_shared_vs_point_to_point_links
+2025-09-10 10:10:29,755 - conftest - INFO - 结束测试: test_shared_vs_point_to_point_links
+2025-09-10 10:10:29,756 - conftest - INFO - 开始测试: test_backup_port_concept_verification
+2025-09-10 10:10:29,781 - conftest - INFO - 结束测试: test_backup_port_concept_verification
+2025-09-10 10:10:29,783 - conftest - INFO - 开始测试: test_shared_medium_simulation_attempt
+2025-09-10 10:10:29,808 - conftest - INFO - 结束测试: test_shared_medium_simulation_attempt
+2025-09-10 10:10:29,809 - conftest - INFO - 开始测试: test_backup_port_documentation_verification
+2025-09-10 10:10:29,810 - test_backup_port_simulation - INFO - 开始备份端口文档验证
+2025-09-10 10:10:29,810 - test_backup_port_simulation - INFO - ✓ PortRole.BACKUP 存在
+2025-09-10 10:10:29,810 - test_backup_port_simulation - INFO - === 备份端口理论特性验证 ===
+2025-09-10 10:10:29,810 - test_backup_port_simulation - INFO - purpose: 为共享介质网段提供冗余
+2025-09-10 10:10:29,810 - test_backup_port_simulation - INFO - difference_from_alternate: 备份端口是同一交换机上指定端口的备份，而备用端口是不同交换机提供的路径
+2025-09-10 10:10:29,811 - test_backup_port_simulation - INFO - state: Discarding
+2025-09-10 10:10:29,811 - test_backup_port_simulation - INFO - scenario: 出现在连接到集线器或共享介质的场景中
+2025-09-10 10:10:29,811 - test_backup_port_simulation - INFO - fast_transition: 当对应的指定端口失效时，可以快速转换为指定端口
+2025-09-10 10:10:29,811 - test_backup_port_simulation - INFO - === 端口角色对比 ===
+2025-09-10 10:10:29,811 - test_backup_port_simulation - INFO - root: 连接到根桥的最佳路径
+2025-09-10 10:10:29,811 - test_backup_port_simulation - INFO - designated: 为网段提供转发服务
+2025-09-10 10:10:29,812 - test_backup_port_simulation - INFO - alternate: 提供到根桥的备用路径（来自其他交换机）
+2025-09-10 10:10:29,812 - test_backup_port_simulation - INFO - backup: 同一交换机上指定端口的备份（共享介质场景）
+2025-09-10 10:10:29,812 - test_backup_port_simulation - INFO - === 测试覆盖率分析 ===
+2025-09-10 10:10:29,812 - test_backup_port_simulation - INFO - backup_port_detection: 通过共享介质拓扑模拟检测备份端口
+2025-09-10 10:10:29,812 - test_backup_port_simulation - INFO - role_assignment_verification: 验证端口角色分配的正确性
+2025-09-10 10:10:29,812 - test_backup_port_simulation - INFO - theoretical_validation: 确认备份端口的理论特性和实际行为一致
+2025-09-10 10:10:29,813 - test_backup_port_simulation - INFO - edge_case_handling: 处理现代网络中备份端口罕见的情况
+2025-09-10 10:10:29,813 - test_backup_port_simulation - INFO - 备份端口文档验证完成
+2025-09-10 10:10:29,813 - conftest - INFO - 结束测试: test_backup_port_documentation_verification
+2025-09-10 10:10:29,814 - conftest - INFO - 开始测试: test_direct_link_failure
+2025-09-10 10:10:29,833 - conftest - INFO - 结束测试: test_direct_link_failure
+2025-09-10 10:10:29,876 - conftest - INFO - 开始测试: test_multiple_link_failures
+2025-09-10 10:10:29,893 - conftest - INFO - 结束测试: test_multiple_link_failures
+2025-09-10 10:10:29,894 - conftest - INFO - 开始测试: test_convergence_with_traffic
+2025-09-10 10:10:29,912 - conftest - INFO - 结束测试: test_convergence_with_traffic
+2025-09-10 10:10:29,913 - conftest - INFO - 开始测试: test_backup_port_simulation
+2025-09-10 10:10:29,940 - conftest - INFO - 结束测试: test_backup_port_simulation
+2025-09-10 10:10:29,941 - conftest - INFO - 开始测试: test_comprehensive_port_state_transitions
+2025-09-10 10:10:29,967 - conftest - INFO - 结束测试: test_comprehensive_port_state_transitions
+2025-09-10 10:10:29,969 - conftest - INFO - 开始测试: test_detailed_bpdu_analysis
+2025-09-10 10:10:29,994 - conftest - INFO - 结束测试: test_detailed_bpdu_analysis
+2025-09-10 10:10:29,995 - conftest - INFO - 开始测试: test_topology_change_comprehensive
+2025-09-10 10:10:30,021 - conftest - INFO - 结束测试: test_topology_change_comprehensive
+2025-09-10 10:10:30,025 - conftest - INFO - 开始测试: test_rstp_reconvergence_no_switchover
+2025-09-10 10:10:30,050 - conftest - INFO - 结束测试: test_rstp_reconvergence_no_switchover
+2025-09-10 10:10:30,052 - conftest - INFO - 开始测试: test_split_brain_scenario
+2025-09-10 10:10:30,076 - conftest - INFO - 结束测试: test_split_brain_scenario
+2025-09-10 10:10:30,083 - conftest - INFO - 开始测试: test_bridge_priority_valid[12288]
+2025-09-10 10:10:30,083 - test_parameters - INFO - 测试网桥优先级: 12288
+2025-09-10 10:10:30,104 - conftest - INFO - 结束测试: test_bridge_priority_valid[12288]
+2025-09-10 10:10:30,105 - conftest - INFO - 开始测试: test_bridge_priority_valid[16384]
+2025-09-10 10:10:30,106 - test_parameters - INFO - 测试网桥优先级: 16384
+2025-09-10 10:10:30,126 - conftest - INFO - 结束测试: test_bridge_priority_valid[16384]
+2025-09-10 10:10:30,128 - conftest - INFO - 开始测试: test_bridge_priority_valid[32768]
+2025-09-10 10:10:30,128 - test_parameters - INFO - 测试网桥优先级: 32768
+2025-09-10 10:10:30,149 - conftest - INFO - 结束测试: test_bridge_priority_valid[32768]
+2025-09-10 10:10:30,150 - conftest - INFO - 开始测试: test_bridge_priority_valid[61440]
+2025-09-10 10:10:30,151 - test_parameters - INFO - 测试网桥优先级: 61440
+2025-09-10 10:10:30,171 - conftest - INFO - 结束测试: test_bridge_priority_valid[61440]
+2025-09-10 10:10:30,173 - conftest - INFO - 开始测试: test_bridge_priority_invalid[4097]
+2025-09-10 10:10:30,173 - test_parameters - INFO - 测试无效优先级: 4097
+2025-09-10 10:10:32,189 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:39,214 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:46,239 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:46,239 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:10:48,259 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:10:55,274 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:02,297 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:02,297 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:11:04,326 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:11,371 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:18,377 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:18,378 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:11:20,407 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:27,440 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:34,468 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:34,469 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:11:36,526 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:43,530 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:50,567 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:50,567 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:11:52,595 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:11:59,650 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:06,674 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:06,674 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:12:07,696 - conftest - INFO - 结束测试: test_bridge_priority_invalid[4097]
+2025-09-10 10:12:07,698 - conftest - INFO - 开始测试: test_bridge_priority_invalid[12289]
+2025-09-10 10:12:07,698 - test_parameters - INFO - 测试无效优先级: 12289
+2025-09-10 10:12:09,721 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:16,739 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:23,803 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:23,804 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:12:25,846 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:32,900 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:39,931 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:39,932 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:12:41,974 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:49,006 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:56,024 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:12:56,024 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:12:58,041 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:05,053 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:12,092 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:12,092 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:13:14,113 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:21,146 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:28,191 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:28,191 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:13:30,222 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:37,286 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:44,319 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:44,320 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:13:45,340 - conftest - INFO - 结束测试: test_bridge_priority_invalid[12289]
+2025-09-10 10:13:45,341 - conftest - INFO - 开始测试: test_bridge_priority_invalid[70000]
+2025-09-10 10:13:45,342 - test_parameters - INFO - 测试无效优先级: 70000
+2025-09-10 10:13:47,365 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:13:54,395 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:01,421 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:01,422 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:14:03,453 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:10,489 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:17,520 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:17,520 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:14:19,534 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:26,558 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 2/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:33,580 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 3/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:33,581 - SSH_DUT - ERROR - 无法连接到 DUT
+2025-09-10 10:14:35,605 - SSH_DUT - WARNING - SSH连接失败 [DUT] (尝试 1/3): [Errno None] Unable to connect to port 22 on 127.0.0.1
+2025-09-10 10:14:37,355 - conftest - INFO - 结束测试: test_bridge_priority_invalid[70000]
+2025-09-10 10:14:37,356 - conftest - WARNING - RSTP分析器清理失败: 'RSTPAnalyzer' object has no attribute 'cleanup'
+2025-09-10 10:14:37,356 - src.test_node.test_node_1 - INFO - 清理节点test_node_1资源
+2025-09-10 10:14:37,359 - src.test_node.test_node_1 - ERROR - 删除网络命名空间异常: [WinError 2] 系统找不到指定的文件。
+2025-09-10 10:14:37,359 - src.test_node.test_node_2 - INFO - 清理节点test_node_2资源
+2025-09-10 10:14:37,362 - src.test_node.test_node_2 - ERROR - 删除网络命名空间异常: [WinError 2] 系统找不到指定的文件。
+2025-09-10 10:14:37,363 - src.test_node.test_node_3 - INFO - 清理节点test_node_3资源
+2025-09-10 10:14:37,367 - src.test_node.test_node_3 - ERROR - 删除网络命名空间异常: [WinError 2] 系统找不到指定的文件。
+2025-09-10 10:14:37,367 - src.dut_manager - INFO - 清理DUT管理器资源
+2025-09-10 10:14:37,367 - conftest - WARNING - DUT管理器清理失败: 'SSHManager' object has no attribute 'disconnect'
