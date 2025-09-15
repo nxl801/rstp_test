@@ -23,74 +23,116 @@ class FaultType(Enum):
     JITTER = "jitter"
 
 
+# src/fault_injector.py
+
 class FaultInjector:
-    """故障注入器"""
-
-    def __init__(self, node: SSHManager):
+    def __init__(self, node=None):
+        # 接受节点参数以保持向后兼容性
         self.node = node
-        self.logger = logging.getLogger(f"FaultInjector_{node.config.name}")
-        self.active_faults: Dict[str, FaultType] = {}
+        self.disconnected_links = {}  # 改为字典来跟踪每个节点的状态
+        self.active_faults = {}  # 跟踪活动故障
+        self.logger = logging.getLogger(__name__)
 
-    def link_down(self, interface: str) -> bool:
-        """断开链路"""
-        self.logger.info(f"断开链路: {interface}")
-        if self.node.config.name == "DUT":
-            # 首先尝试root权限执行
-            stdout, stderr, code = self.node.execute_as_root(f"ip link set dev {interface} down")
-            # 若失败则回退到sudo，以适配不同环境的权限模型
-            if code != 0:
-                stdout, stderr, code = self.node.execute_sudo(f"ip link set dev {interface} down")
-        else:
-            stdout, stderr, code = self.node.execute_sudo(f"ip link set dev {interface} down")
+    def link_down(self, node=None, interface=None):
+        """在指定节点上关闭一个网络接口 - 优化为非阻塞式调用"""
+        # 支持两种调用方式：link_down(node, interface) 或 link_down(interface=interface)
+        if node is None:
+            node = self.node
+        if interface is None and isinstance(node, str):
+            # 如果第一个参数是字符串，则认为是interface
+            interface = node
+            node = self.node
+            
+        if node is None:
+            raise ValueError("必须提供节点参数")
+        if interface is None:
+            raise ValueError("必须提供接口参数")
+            
+        self.logger.info(f"在节点 {node.config.name} 上异步断开链路: {interface}")
+        
+        # paramiko 的 exec_command 是非阻塞的。
+        # 它会立即返回 stdin, stdout, stderr 对象，而不会等待命令执行完毕。
+        # 这正是我们需要的：发出命令后立即返回，让主线程可以开始计时和监控。
+        try:
+            command = f"sudo ifconfig {interface} down"
+            stdin, stdout, stderr = node.client.exec_command(command)
+            
+            # 我们不需要在这里等待结果，但可以快速检查是否有立即的错误
+            exit_status_ready = stderr.channel.exit_status_ready()
+            if exit_status_ready:
+                exit_status = stderr.channel.recv_exit_status()
+                if exit_status != 0:
+                    error_output = stderr.read().decode('utf-8')
+                    self.logger.error(f"发送 link_down 命令失败，退出码: {exit_status}, 错误: {error_output}")
+            
+            self.logger.info(f"链路断开命令已发送至 {node.config.name}:{interface}")
+            
+            # 记录下哪个节点的哪个接口被关闭了
+            if node.config.name not in self.disconnected_links:
+                self.disconnected_links[node.config.name] = set()
+            self.disconnected_links[node.config.name].add(interface)
+            
+        except Exception as e:
+            self.logger.error(f"执行 link_down 时发生异常: {e}")
+            raise ConnectionError(f"无法在节点 {node.config.name} 上断开链路 {interface}: {e}")
 
-        if code == 0:
-            self.logger.info(f"链路已断开: {interface}")
-        else:
-            self.logger.warning(f"无法实际断开链路 {interface} (code={code})，将在逻辑上标记为已断开")
-        # 无论命令结果，均记录为逻辑故障
-        self.active_faults[interface] = FaultType.LINK_DOWN
-        # 更新节点的逻辑链路状态
-        if not hasattr(self.node, "_logical_link_state"):
-            self.node._logical_link_state = {}
-        self.node._logical_link_state[interface] = "down"
-        return True
+    def link_up(self, node=None, interface=None):
+        """在指定节点上开启一个网络接口 - 优化为非阻塞式调用"""
+        # 支持两种调用方式：link_up(node, interface) 或 link_up(interface=interface)
+        if node is None:
+            node = self.node
+        if interface is None and isinstance(node, str):
+            # 如果第一个参数是字符串，则认为是interface
+            interface = node
+            node = self.node
+            
+        if node is None:
+            raise ValueError("必须提供节点参数")
+        if interface is None:
+            raise ValueError("必须提供接口参数")
+            
+        self.logger.info(f"在节点 {node.config.name} 上异步恢复链路: {interface}")
+        try:
+            command = f"sudo ifconfig {interface} up"
+            stdin, stdout, stderr = node.client.exec_command(command)
+            
+            # 同样，不需要等待完成
+            exit_status_ready = stderr.channel.exit_status_ready()
+            if exit_status_ready:
+                exit_status = stderr.channel.recv_exit_status()
+                if exit_status != 0:
+                    error_output = stderr.read().decode('utf-8')
+                    self.logger.error(f"发送 link_up 命令失败，退出码: {exit_status}, 错误: {error_output}")
 
-    def link_up(self, interface: str) -> bool:
-        """恢复链路"""
-        self.logger.info(f"恢复链路: {interface}")
-        if self.node.config.name == "DUT":
-            stdout, stderr, code = self.node.execute_as_root(f"ip link set dev {interface} up")
-            if code != 0:
-                stdout, stderr, code = self.node.execute_sudo(f"ip link set dev {interface} up")
-        else:
-            stdout, stderr, code = self.node.execute_sudo(f"ip link set dev {interface} up")
-
-        if code == 0:
-            self.logger.info(f"链路已恢复: {interface}")
-        else:
-            self.logger.warning(f"无法实际恢复链路 {interface} (code={code})，将在逻辑上标记为已恢复")
-        # 无论命令结果，移除逻辑故障
-        if interface in self.active_faults:
-            del self.active_faults[interface]
-        # 更新节点逻辑链路状态
-        if hasattr(self.node, "_logical_link_state"):
-            self.node._logical_link_state[interface] = "up"
-        return True
+            self.logger.info(f"链路恢复命令已发送至 {node.config.name}:{interface}")
+            
+            # 更新断开链路记录
+            if node.config.name in self.disconnected_links and interface in self.disconnected_links[node.config.name]:
+                self.disconnected_links[node.config.name].remove(interface)
+                
+        except Exception as e:
+            self.logger.error(f"执行 link_up 时发生异常: {e}")
+            raise ConnectionError(f"无法在节点 {node.config.name} 上恢复链路 {interface}: {e}")
 
     def add_delay(self, interface: str, delay_ms: int,
-                  variation_ms: Optional[int] = None) -> bool:
+                  variation_ms: Optional[int] = None, node=None) -> bool:
         """添加网络延迟"""
+        if node is None:
+            node = self.node
+        if node is None:
+            raise ValueError("必须提供节点参数")
+            
         self.logger.info(f"添加延迟到 {interface}: {delay_ms}ms")
 
         # 清除现有规则
-        self.clear_tc_rules(interface)
+        self.clear_tc_rules(interface, node)
 
         # 构建命令
         cmd = f"tc qdisc add dev {interface} root netem delay {delay_ms}ms"
         if variation_ms:
             cmd += f" {variation_ms}ms"
 
-        stdout, stderr, code = self.node.execute_sudo(cmd)
+        stdout, stderr, code = node.execute(f"sudo {cmd}")
 
         if code == 0:
             self.active_faults[interface] = FaultType.DELAY
@@ -100,15 +142,20 @@ class FaultInjector:
             self.logger.error(f"无法添加延迟: {stderr}")
             return False
 
-    def add_packet_loss(self, interface: str, loss_percent: float) -> bool:
+    def add_packet_loss(self, interface: str, loss_percent: float, node=None) -> bool:
         """添加丢包"""
+        if node is None:
+            node = self.node
+        if node is None:
+            raise ValueError("必须提供节点参数")
+            
         self.logger.info(f"添加丢包到 {interface}: {loss_percent}%")
 
         # 清除现有规则
-        self.clear_tc_rules(interface)
+        self.clear_tc_rules(interface, node)
 
         cmd = f"tc qdisc add dev {interface} root netem loss {loss_percent}%"
-        stdout, stderr, code = self.node.execute_sudo(cmd)
+        stdout, stderr, code = node.execute(f"sudo {cmd}")
 
         if code == 0:
             self.active_faults[interface] = FaultType.PACKET_LOSS
@@ -118,19 +165,24 @@ class FaultInjector:
             self.logger.error(f"无法添加丢包: {stderr}")
             return False
 
-    def add_bandwidth_limit(self, interface: str, bandwidth_mbps: int) -> bool:
+    def add_bandwidth_limit(self, interface: str, bandwidth_mbps: int, node=None) -> bool:
         """限制带宽"""
+        if node is None:
+            node = self.node
+        if node is None:
+            raise ValueError("必须提供节点参数")
+            
         self.logger.info(f"限制带宽 {interface}: {bandwidth_mbps}Mbps")
 
         # 清除现有规则
-        self.clear_tc_rules(interface)
+        self.clear_tc_rules(interface, node)
 
         # 使用tbf (Token Bucket Filter) 限制带宽
         cmd = (
             f"tc qdisc add dev {interface} root tbf "
             f"rate {bandwidth_mbps}mbit burst 32kbit latency 400ms"
         )
-        stdout, stderr, code = self.node.execute_sudo(cmd)
+        stdout, stderr, code = node.execute(f"sudo {cmd}")
 
         if code == 0:
             self.active_faults[interface] = FaultType.BANDWIDTH_LIMIT
@@ -140,16 +192,21 @@ class FaultInjector:
             self.logger.error(f"无法限制带宽: {stderr}")
             return False
 
-    def add_jitter(self, interface: str, jitter_ms: int) -> bool:
+    def add_jitter(self, interface: str, jitter_ms: int, node=None) -> bool:
         """添加网络抖动"""
+        if node is None:
+            node = self.node
+        if node is None:
+            raise ValueError("必须提供节点参数")
+            
         self.logger.info(f"添加抖动到 {interface}: {jitter_ms}ms")
 
         # 清除现有规则
-        self.clear_tc_rules(interface)
+        self.clear_tc_rules(interface, node)
 
         # 添加基础延迟和抖动
         cmd = f"tc qdisc add dev {interface} root netem delay 10ms {jitter_ms}ms"
-        stdout, stderr, code = self.node.execute_sudo(cmd)
+        stdout, stderr, code = node.execute(f"sudo {cmd}")
 
         if code == 0:
             self.active_faults[interface] = FaultType.JITTER
@@ -159,11 +216,16 @@ class FaultInjector:
             self.logger.error(f"无法添加抖动: {stderr}")
             return False
 
-    def clear_tc_rules(self, interface: str) -> bool:
+    def clear_tc_rules(self, interface: str, node=None) -> bool:
         """清除TC规则"""
+        if node is None:
+            node = self.node
+        if node is None:
+            raise ValueError("必须提供节点参数")
+            
         self.logger.info(f"清除TC规则: {interface}")
         cmd = f"tc qdisc del dev {interface} root 2>/dev/null || true"
-        stdout, stderr, code = self.node.execute_sudo(cmd)
+        stdout, stderr, code = node.execute(f"sudo {cmd}")
 
         if interface in self.active_faults:
             del self.active_faults[interface]
@@ -190,6 +252,14 @@ class FaultInjector:
         success_count = 0
         total_attempts = 0
         
+        # 记录mstpd服务的原始状态
+        mstpd_was_running = False
+        mstpd_status_cmd = "systemctl is-active mstpd"
+        mstpd_stdout, _, mstpd_code = self.node.execute(mstpd_status_cmd)
+        if mstpd_code == 0 and "active" in mstpd_stdout:
+            mstpd_was_running = True
+            self.logger.info("检测到mstpd服务正在运行，将临时停止以避免BPDU拦截")
+        
         for iface in interfaces_to_try:
             self.logger.info(f"尝试通过接口 {iface} 发送BPDU")
             
@@ -206,6 +276,13 @@ class FaultInjector:
             
             # 检查此接口是否在网桥中
             iface_in_bridge = iface in stdout
+            
+            # 临时停止mstpd服务以避免BPDU被拦截
+            if mstpd_was_running:
+                self.logger.info("临时停止mstpd服务")
+                stop_mstpd_cmd = "systemctl stop mstpd"
+                self.node.execute_sudo(stop_mstpd_cmd)
+                time.sleep(2)  # 等待服务完全停止
             
             if iface_in_bridge:
                 self.logger.info(f"接口 {iface} 在网桥中，临时移除")
@@ -339,6 +416,13 @@ class FaultInjector:
                 restore_cmd = f"brctl addif br0 {iface}"
                 self.node.execute_sudo(restore_cmd)
                 time.sleep(0.5)
+            
+            # 恢复mstpd服务（如果之前停止了）
+            if mstpd_was_running:
+                self.logger.info("恢复mstpd服务")
+                start_mstpd_cmd = "systemctl start mstpd"
+                self.node.execute_sudo(start_mstpd_cmd)
+                time.sleep(2)  # 等待服务完全启动
         
         # 输出最终结果
         self.logger.info(f"BPDU注入总结: {success_count}/{total_attempts} 个接口成功")
@@ -350,18 +434,23 @@ class FaultInjector:
             self.logger.error(f"所有接口的BPDU注入均失败")
             return False
 
-    def clear_all_faults(self) -> None:
+    def clear_all_faults(self, node=None) -> None:
         """清除所有故障"""
+        if node is None:
+            node = self.node
+        if node is None:
+            raise ValueError("必须提供节点参数")
+            
         self.logger.info("清除所有故障")
 
         for interface in list(self.active_faults.keys()):
             fault_type = self.active_faults[interface]
 
             if fault_type == FaultType.LINK_DOWN:
-                self.link_up(interface)
+                self.link_up(node, interface)
             elif fault_type in [FaultType.DELAY, FaultType.PACKET_LOSS,
                                 FaultType.BANDWIDTH_LIMIT, FaultType.JITTER]:
-                self.clear_tc_rules(interface)
+                self.clear_tc_rules(interface, node)
 
         self.active_faults.clear()
         self.logger.info("所有故障已清除")

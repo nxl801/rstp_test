@@ -967,8 +967,8 @@ class TestProtocolConformance:
         # 验证端口已禁用
         disabled_info = rstp_analyzer.get_bridge_info()
         disabled_port = disabled_info.ports.get(test_port_name)
-        assert disabled_port and disabled_port.state == PortState.DISABLED, \
-            f"端口{test_port_name}应该被禁用，实际状态: {disabled_port.state if disabled_port else 'None'}"
+        assert disabled_port and disabled_port.role == PortRole.DISABLED, \
+            f"端口{test_port_name}的角色应该是DISABLED，实际角色: {disabled_port.role if disabled_port else 'None'}"
         logger.info(f"✓ 端口{test_port_name}已成功禁用")
         
         # 重新启用端口并监控状态转换

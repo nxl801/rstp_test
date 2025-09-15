@@ -1,0 +1,500 @@
+2025-09-13 17:20:29,020 - SimpleConvergenceTest - INFO - === 开始简化的初始收敛时间测试 ===
+2025-09-13 17:20:29,025 - SimpleConvergenceTest - INFO - 创建SSH连接...
+2025-09-13 17:20:29,026 - SimpleConvergenceTest - INFO - 创建网络拓扑管理器...
+2025-09-13 17:20:29,026 - SimpleConvergenceTest - ERROR - 测试过程中发生错误: NetworkTopology.__init__() takes 2 positional arguments but 3 were given
+2025-09-13 17:20:29,027 - SimpleConvergenceTest - ERROR - Traceback (most recent call last):
+  File "C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\simple_convergence_test.py", line 144, in main
+    topology = NetworkTopology(dut_ssh, [testnode1_ssh, testnode2_ssh])
+TypeError: NetworkTopology.__init__() takes 2 positional arguments but 3 were given
+
+2025-09-13 17:20:49,592 - SimpleConvergenceTest - INFO - === 开始简化的初始收敛时间测试 ===
+2025-09-13 17:20:49,597 - SimpleConvergenceTest - INFO - 创建SSH连接...
+2025-09-13 17:20:49,597 - SimpleConvergenceTest - INFO - 创建网络拓扑管理器...
+2025-09-13 17:20:49,597 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-13 17:20:49,597 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-13 17:20:49,598 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-13 17:20:49,598 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-13 17:20:49,598 - SSH_TestNode1 - WARNING - TestNode1: SSH连接已断开，尝试重连...
+2025-09-13 17:20:49,619 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-13 17:20:49,732 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-13 17:20:49,732 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-13 17:20:49,888 - SSH_TestNode1 - INFO - TestNode1: SSH重连成功
+2025-09-13 17:20:49,937 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-13 17:20:49,937 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-13 17:21:00,063 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-13 17:21:00,064 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-13 17:21:00,064 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-13 17:21:00,064 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-13 17:21:00,064 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-13 17:21:00,064 - SSH_TestNode2 - WARNING - TestNode2: SSH连接已断开，尝试重连...
+2025-09-13 17:21:00,075 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-13 17:21:00,198 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-13 17:21:00,198 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-13 17:21:00,338 - SSH_TestNode2 - INFO - TestNode2: SSH重连成功
+2025-09-13 17:21:00,386 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-13 17:21:00,386 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-13 17:21:00,556 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-13 17:21:00,556 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-13 17:21:00,556 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-13 17:21:00,556 - SimpleConvergenceTest - INFO - 开始创建网络拓扑...
+2025-09-13 17:21:00,557 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-13 17:21:00,557 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-13 17:21:00,557 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-13 17:21:00,557 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-13 17:21:00,557 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-13 17:21:00,557 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: ovs
+2025-09-13 17:21:00,558 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-13 17:21:00,558 - NetworkTopology - INFO - 清理 DUT 的测试接口...
+2025-09-13 17:21:00,558 - NetworkTopology - INFO - 重置DUT网桥 SE_ETH2 的RSTP配置...
+2025-09-13 17:21:00,558 - SSH_DUT - WARNING - DUT: SSH连接已断开，尝试重连...
+2025-09-13 17:21:00,570 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.2p1)
+2025-09-13 17:21:00,678 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-13 17:21:00,678 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-13 17:21:00,926 - SSH_DUT - INFO - DUT: SSH重连成功
+2025-09-13 17:21:01,419 - NetworkTopology - INFO - DUT网桥 SE_ETH2 配置重置完成
+2025-09-13 17:21:01,419 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-13 17:21:01,419 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-13 17:21:01,575 - NetworkTopology - INFO - DUT: 网桥SE_ETH2已存在，跳过创建
+2025-09-13 17:21:02,670 - NetworkTopology - INFO - DUT: 网桥SE_ETH2优先级已设置为1
+1
+"8192
+2025-09-13 17:21:02,671 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-13 17:21:02,671 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-13 17:21:02,671 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-13 17:21:02,672 - NetworkTopology - INFO - 添加接口 br3 到 DUT 的网桥
+2025-09-13 17:21:03,151 - NetworkTopology - INFO - 添加接口 br4 到 DUT 的网桥
+2025-09-13 17:21:03,627 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-13 17:21:03,627 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-13 17:21:03,819 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-13 17:21:03,819 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-13 17:21:03,820 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-13 17:21:03,820 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-13 17:21:03,820 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-13 17:21:03,820 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: mstpd
+2025-09-13 17:21:03,820 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-13 17:21:03,820 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-13 17:21:34,283 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-14 13:51:36,808 - SimpleConvergenceTest - INFO - === 开始简化的初始收敛时间测试 ===
+2025-09-14 13:51:36,814 - SimpleConvergenceTest - INFO - 创建SSH连接...
+2025-09-14 13:51:36,814 - SimpleConvergenceTest - INFO - 创建网络拓扑管理器...
+2025-09-14 13:51:36,815 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-14 13:51:36,815 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-14 13:51:36,815 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-14 13:51:36,815 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-14 13:51:36,816 - SSH_TestNode1 - WARNING - TestNode1: SSH连接已断开，尝试重连...
+2025-09-14 13:51:36,840 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-14 13:51:36,953 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 13:51:36,954 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-14 13:51:37,138 - SSH_TestNode1 - INFO - TestNode1: SSH重连成功
+2025-09-14 13:51:37,188 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-14 13:51:37,189 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-14 13:51:37,385 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-14 13:51:37,385 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-14 13:51:37,385 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-14 13:51:37,385 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-14 13:51:37,386 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-14 13:51:37,386 - SSH_TestNode2 - WARNING - TestNode2: SSH连接已断开，尝试重连...
+2025-09-14 13:51:37,400 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-14 13:51:37,523 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 13:51:37,524 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-14 13:51:37,693 - SSH_TestNode2 - INFO - TestNode2: SSH重连成功
+2025-09-14 13:51:37,743 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-14 13:51:37,744 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-14 13:51:45,925 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-14 13:51:45,925 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-14 13:51:45,926 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-14 13:51:45,926 - SimpleConvergenceTest - INFO - 开始创建网络拓扑...
+2025-09-14 13:51:45,926 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-14 13:51:45,926 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-14 13:51:45,926 - NetworkTopology - INFO - 开始并行配置3个节点...
+2025-09-14 13:51:45,931 - NetworkTopology - INFO - [线程NodeConfig_0] 开始配置节点 1/3: DUT
+2025-09-14 13:51:45,931 - NetworkTopology - INFO - [线程NodeConfig_1] 开始配置节点 2/3: TestNode1
+2025-09-14 13:51:45,931 - NetworkTopology - INFO - [DUT] 配置RSTP网桥...
+2025-09-14 13:51:45,932 - NetworkTopology - INFO - [线程NodeConfig_2] 开始配置节点 3/3: TestNode2
+2025-09-14 13:51:45,932 - NetworkTopology - INFO - [TestNode1] 配置RSTP网桥...
+2025-09-14 13:51:45,932 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-14 13:51:45,932 - NetworkTopology - INFO - [TestNode2] 配置RSTP网桥...
+2025-09-14 13:51:45,933 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-14 13:51:45,933 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: ovs
+2025-09-14 13:51:45,933 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-14 13:51:45,933 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: mstpd
+2025-09-14 13:51:45,934 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-14 13:51:45,934 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: mstpd
+2025-09-14 13:51:45,934 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-14 13:51:45,934 - NetworkTopology - INFO - 清理 DUT 的测试接口...
+2025-09-14 13:51:45,934 - NetworkTopology - INFO - TestNode2 使用方法: mstpd
+2025-09-14 13:51:45,935 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-14 13:51:45,935 - NetworkTopology - INFO - 重置DUT网桥 SE_ETH2 的RSTP配置...
+2025-09-14 13:51:45,935 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-14 13:51:45,936 - SSH_DUT - WARNING - DUT: SSH连接已断开，尝试重连...
+2025-09-14 13:51:45,947 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.2p1)
+2025-09-14 13:51:46,056 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 13:51:46,056 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-14 13:51:46,304 - SSH_DUT - INFO - DUT: SSH重连成功
+2025-09-14 13:51:46,493 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-14 13:51:46,805 - NetworkTopology - INFO - DUT网桥 SE_ETH2 配置重置完成
+2025-09-14 13:51:46,806 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-14 13:51:46,806 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-14 13:51:46,960 - NetworkTopology - INFO - DUT: 网桥SE_ETH2已存在，跳过创建
+2025-09-14 13:51:48,073 - NetworkTopology - INFO - DUT: 网桥SE_ETH2优先级已设置为1
+1
+"8192
+2025-09-14 13:51:48,073 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-14 13:51:48,073 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-14 13:51:48,074 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-14 13:51:48,074 - NetworkTopology - INFO - 添加接口 br3 到 DUT 的网桥
+2025-09-14 13:51:48,548 - NetworkTopology - INFO - 添加接口 br4 到 DUT 的网桥
+2025-09-14 13:51:49,029 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-14 13:51:49,029 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-14 13:51:49,228 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-14 13:51:49,229 - NetworkTopology - INFO - [DUT] RSTP配置完成
+2025-09-14 13:51:51,103 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-14 13:51:51,238 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-14 13:51:51,238 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-14 13:51:51,239 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-14 13:51:51,239 - NetworkTopology - INFO - 为 TestNode1 准备添加接口: ['eth0', 'eth2']
+2025-09-14 13:51:51,239 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-14 13:51:52,808 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-14 13:51:54,211 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-14 13:51:54,211 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-14 13:51:54,316 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-14 13:51:54,583 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-14 13:51:54,584 - NetworkTopology - INFO - [TestNode1] RSTP配置完成
+2025-09-14 13:52:01,615 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (mstpd)...
+2025-09-14 13:52:12,829 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-14 13:52:12,980 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-14 13:52:12,980 - NetworkTopology - INFO - TestNode2: RSTP已通过mstpd配置
+2025-09-14 13:52:12,981 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-14 13:52:12,981 - NetworkTopology - INFO - 为 TestNode2 准备添加接口: ['eth0', 'eth2']
+2025-09-14 13:52:12,981 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-14 13:52:14,227 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-14 13:52:15,511 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-14 13:52:15,512 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-14 13:52:15,612 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-14 13:52:15,890 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-14 13:52:15,890 - NetworkTopology - INFO - [TestNode2] RSTP配置完成
+2025-09-14 13:52:15,891 - NetworkTopology - INFO - 并行配置完成，总耗时: 29.96秒
+2025-09-14 13:52:15,891 - NetworkTopology - INFO - 配置结果: 节点 DUT 配置成功
+2025-09-14 13:52:15,891 - NetworkTopology - INFO - 配置结果: 节点 TestNode1 配置成功
+2025-09-14 13:52:15,892 - NetworkTopology - INFO - 配置结果: 节点 TestNode2 配置成功
+2025-09-14 13:52:15,892 - NetworkTopology - INFO - 环形拓扑创建完成 - 使用真实物理连接
+2025-09-14 13:52:15,892 - SimpleConvergenceTest - INFO - 拓扑创建完成，用时: 29.97秒
+2025-09-14 13:52:15,892 - SimpleConvergenceTest - INFO - 开始等待初始收敛...
+2025-09-14 13:52:15,892 - ConvergenceMonitor - INFO - 开始等待网络收敛，超时时间: 180秒
+2025-09-14 13:52:15,893 - ConvergenceMonitor - INFO - 初始等待 30 秒...
+2025-09-14 13:52:45,893 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:52:45,893 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:52:50,894 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:52:50,894 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:52:55,895 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:52:55,895 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:00,896 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:00,897 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:05,897 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:05,898 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:10,899 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:10,899 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:15,899 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:15,900 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:20,900 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:20,900 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:25,901 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:25,901 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:30,902 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:30,902 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:35,903 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:35,904 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:40,904 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:40,905 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:45,905 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:45,906 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:50,906 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:50,906 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:53:55,907 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:53:55,907 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:00,908 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:00,909 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:05,910 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:05,910 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:10,911 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:10,911 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:15,911 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:15,912 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:20,913 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:20,913 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:25,914 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:25,914 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:30,914 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:30,914 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:35,915 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:35,915 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:40,916 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:40,916 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:45,917 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:45,917 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:50,918 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:50,919 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:54:55,919 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:54:55,920 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:55:00,920 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:55:00,920 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:55:05,921 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:55:05,921 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:55:10,922 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'SSHManager' object has no attribute 'execute_command'
+2025-09-14 13:55:10,922 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 13:55:15,923 - ConvergenceMonitor - WARNING - 等待收敛超时 (180秒)
+2025-09-14 13:55:15,923 - SimpleConvergenceTest - INFO - === 测试结果 ===
+2025-09-14 13:55:15,924 - SimpleConvergenceTest - INFO - 拓扑创建时间: 29.97秒
+2025-09-14 13:55:15,924 - SimpleConvergenceTest - INFO - 收敛时间: 180.00秒
+2025-09-14 13:55:15,924 - SimpleConvergenceTest - INFO - 总时间: 209.97秒
+2025-09-14 13:55:15,924 - SimpleConvergenceTest - WARNING - ✗ 初始收敛测试超时
+2025-09-14 13:55:15,925 - SSH_DUT - INFO - SSH连接已关闭: DUT
+2025-09-14 13:55:15,925 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-14 13:55:15,925 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-14 13:56:09,781 - SimpleConvergenceTest - INFO - === 开始简化的初始收敛时间测试 ===
+2025-09-14 13:56:09,786 - SimpleConvergenceTest - INFO - 创建SSH连接...
+2025-09-14 13:56:09,787 - SimpleConvergenceTest - INFO - 创建网络拓扑管理器...
+2025-09-14 13:56:09,787 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-14 13:56:09,787 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-14 13:56:09,787 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-14 13:56:09,788 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-14 13:56:09,788 - SSH_TestNode1 - WARNING - TestNode1: SSH连接已断开，尝试重连...
+2025-09-14 13:56:09,806 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-14 13:56:09,915 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 13:56:09,915 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-14 13:56:10,063 - SSH_TestNode1 - INFO - TestNode1: SSH重连成功
+2025-09-14 13:56:10,111 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-14 13:56:10,111 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-14 13:56:20,235 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-14 13:56:20,236 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-14 13:56:20,236 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-14 13:56:20,236 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-14 13:56:20,237 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-14 13:56:20,237 - SSH_TestNode2 - WARNING - TestNode2: SSH连接已断开，尝试重连...
+2025-09-14 13:56:20,263 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-14 13:56:20,386 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 13:56:20,386 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-14 13:56:20,526 - SSH_TestNode2 - INFO - TestNode2: SSH重连成功
+2025-09-14 13:56:20,575 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-14 13:56:20,575 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-14 13:56:20,744 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-14 13:56:20,745 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-14 13:56:20,745 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-14 13:56:20,745 - SimpleConvergenceTest - INFO - 开始创建网络拓扑...
+2025-09-14 13:56:20,745 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-14 13:56:20,746 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-14 13:56:20,746 - NetworkTopology - INFO - 开始并行配置3个节点...
+2025-09-14 13:56:20,749 - NetworkTopology - INFO - [线程NodeConfig_0] 开始配置节点 1/3: DUT
+2025-09-14 13:56:20,749 - NetworkTopology - INFO - [线程NodeConfig_1] 开始配置节点 2/3: TestNode1
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - [DUT] 配置RSTP网桥...
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - [线程NodeConfig_2] 开始配置节点 3/3: TestNode2
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - [TestNode1] 配置RSTP网桥...
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - [TestNode2] 配置RSTP网桥...
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-14 13:56:20,750 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: ovs
+2025-09-14 13:56:20,751 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-14 13:56:20,751 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: mstpd
+2025-09-14 13:56:20,751 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-14 13:56:20,751 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: mstpd
+2025-09-14 13:56:20,751 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-14 13:56:20,751 - NetworkTopology - INFO - 清理 DUT 的测试接口...
+2025-09-14 13:56:20,752 - NetworkTopology - INFO - TestNode2 使用方法: mstpd
+2025-09-14 13:56:20,752 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-14 13:56:20,752 - NetworkTopology - INFO - 重置DUT网桥 SE_ETH2 的RSTP配置...
+2025-09-14 13:56:20,752 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-14 13:56:20,753 - SSH_DUT - WARNING - DUT: SSH连接已断开，尝试重连...
+2025-09-14 13:56:20,766 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.2p1)
+2025-09-14 13:56:20,875 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 13:56:20,876 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-14 13:56:20,940 - SSH_DUT - INFO - DUT: SSH重连成功
+2025-09-14 13:56:21,276 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (mstpd)...
+2025-09-14 13:56:21,432 - NetworkTopology - INFO - DUT网桥 SE_ETH2 配置重置完成
+2025-09-14 13:56:21,433 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-14 13:56:21,433 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-14 13:56:21,596 - NetworkTopology - INFO - DUT: 网桥SE_ETH2已存在，跳过创建
+2025-09-14 13:56:22,708 - NetworkTopology - INFO - DUT: 网桥SE_ETH2优先级已设置为1
+1
+"8192
+2025-09-14 13:56:22,709 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-14 13:56:22,709 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-14 13:56:22,709 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-14 13:56:22,709 - NetworkTopology - INFO - 添加接口 br3 到 DUT 的网桥
+2025-09-14 13:56:23,197 - NetworkTopology - INFO - 添加接口 br4 到 DUT 的网桥
+2025-09-14 13:56:23,677 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-14 13:56:23,677 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-14 13:56:23,869 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-14 13:56:23,869 - NetworkTopology - INFO - [DUT] RSTP配置完成
+2025-09-14 13:56:25,803 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-14 13:56:25,959 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-14 13:56:25,959 - NetworkTopology - INFO - TestNode2: RSTP已通过mstpd配置
+2025-09-14 13:56:25,959 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-14 13:56:25,960 - NetworkTopology - INFO - 为 TestNode2 准备添加接口: ['eth0', 'eth2']
+2025-09-14 13:56:25,960 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-14 13:56:27,234 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-14 13:56:28,455 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-14 13:56:28,455 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-14 13:56:28,554 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-14 13:56:28,829 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-14 13:56:28,829 - NetworkTopology - INFO - [TestNode2] RSTP配置完成
+2025-09-14 13:56:51,120 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-14 13:58:25,229 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-14 13:58:35,311 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-14 13:58:35,311 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-14 13:58:35,311 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-14 13:58:35,311 - NetworkTopology - INFO - 为 TestNode1 准备添加接口: ['eth0', 'eth2']
+2025-09-14 13:58:35,312 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-14 13:59:43,172 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-14 14:00:36,918 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-14 14:00:36,919 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-14 14:00:37,014 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-14 14:00:45,316 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-14 14:00:45,317 - NetworkTopology - INFO - [TestNode1] RSTP配置完成
+2025-09-14 14:00:45,317 - NetworkTopology - INFO - 并行配置完成，总耗时: 264.57秒
+2025-09-14 14:00:45,317 - NetworkTopology - INFO - 配置结果: 节点 DUT 配置成功
+2025-09-14 14:00:45,318 - NetworkTopology - INFO - 配置结果: 节点 TestNode2 配置成功
+2025-09-14 14:00:45,318 - NetworkTopology - INFO - 配置结果: 节点 TestNode1 配置成功
+2025-09-14 14:00:45,318 - NetworkTopology - INFO - 环形拓扑创建完成 - 使用真实物理连接
+2025-09-14 14:00:45,318 - SimpleConvergenceTest - INFO - 拓扑创建完成，用时: 264.57秒
+2025-09-14 14:00:45,318 - SimpleConvergenceTest - INFO - 开始等待初始收敛...
+2025-09-14 14:00:45,319 - ConvergenceMonitor - INFO - 开始等待网络收敛，超时时间: 180秒
+2025-09-14 14:00:45,319 - ConvergenceMonitor - INFO - 初始等待 30 秒...
+2025-09-14 14:01:15,377 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:15,377 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:20,432 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:20,432 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:25,488 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:25,489 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:30,544 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:30,545 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:35,600 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:35,600 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:40,656 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:40,656 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:45,711 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:45,712 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:50,768 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:50,768 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:55,823 - ConvergenceMonitor - WARNING - 检查节点 DUT 状态时出错: 'tuple' object has no attribute 'exit_code'
+2025-09-14 14:01:55,823 - ConvergenceMonitor - INFO - 网络状态不稳定，重置计数器
+2025-09-14 14:01:58,537 - SSH_DUT - INFO - SSH连接已关闭: DUT
+2025-09-14 14:01:58,537 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-14 14:01:58,537 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2
+2025-09-14 14:03:49,608 - SimpleConvergenceTest - INFO - === 开始简化的初始收敛时间测试 ===
+2025-09-14 14:03:49,612 - SimpleConvergenceTest - INFO - 创建SSH连接...
+2025-09-14 14:03:49,613 - SimpleConvergenceTest - INFO - 创建网络拓扑管理器...
+2025-09-14 14:03:49,613 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-14 14:03:49,613 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-14 14:03:49,613 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-14 14:03:49,613 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-14 14:03:49,613 - SSH_TestNode1 - WARNING - TestNode1: SSH连接已断开，尝试重连...
+2025-09-14 14:03:49,632 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-14 14:03:49,744 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 14:03:49,745 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-14 14:03:49,884 - SSH_TestNode1 - INFO - TestNode1: SSH重连成功
+2025-09-14 14:03:49,934 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-14 14:03:49,935 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-14 14:03:58,148 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-14 14:03:58,149 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-14 14:03:58,149 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-14 14:03:58,149 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-14 14:03:58,149 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-14 14:03:58,149 - SSH_TestNode2 - WARNING - TestNode2: SSH连接已断开，尝试重连...
+2025-09-14 14:03:58,161 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-14 14:03:58,282 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 14:03:58,282 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-14 14:03:58,417 - SSH_TestNode2 - INFO - TestNode2: SSH重连成功
+2025-09-14 14:03:58,465 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-14 14:03:58,466 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-14 14:03:58,646 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-14 14:03:58,646 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-14 14:03:58,647 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-14 14:03:58,647 - SimpleConvergenceTest - INFO - 开始创建网络拓扑...
+2025-09-14 14:03:58,647 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-14 14:03:58,647 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-14 14:03:58,647 - NetworkTopology - INFO - 开始并行配置3个节点...
+2025-09-14 14:03:58,651 - NetworkTopology - INFO - [线程NodeConfig_0] 开始配置节点 1/3: DUT
+2025-09-14 14:03:58,651 - NetworkTopology - INFO - [线程NodeConfig_1] 开始配置节点 2/3: TestNode1
+2025-09-14 14:03:58,651 - NetworkTopology - INFO - [DUT] 配置RSTP网桥...
+2025-09-14 14:03:58,651 - NetworkTopology - INFO - [线程NodeConfig_2] 开始配置节点 3/3: TestNode2
+2025-09-14 14:03:58,652 - NetworkTopology - INFO - [TestNode1] 配置RSTP网桥...
+2025-09-14 14:03:58,652 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-14 14:03:58,652 - NetworkTopology - INFO - [TestNode2] 配置RSTP网桥...
+2025-09-14 14:03:58,652 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-14 14:03:58,652 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: ovs
+2025-09-14 14:03:58,653 - NetworkTopology - INFO - 开始为 TestNode2 检测RSTP支持方法...
+2025-09-14 14:03:58,653 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: mstpd
+2025-09-14 14:03:58,653 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-14 14:03:58,653 - NetworkTopology - INFO - TestNode2: 使用缓存的RSTP方法: mstpd
+2025-09-14 14:03:58,653 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-14 14:03:58,653 - NetworkTopology - INFO - 清理 DUT 的测试接口...
+2025-09-14 14:03:58,654 - NetworkTopology - INFO - TestNode2 使用方法: mstpd
+2025-09-14 14:03:58,654 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-14 14:03:58,654 - NetworkTopology - INFO - 重置DUT网桥 SE_ETH2 的RSTP配置...
+2025-09-14 14:03:58,654 - NetworkTopology - INFO - 清理 TestNode2 的旧网桥配置...
+2025-09-14 14:03:58,655 - SSH_DUT - WARNING - DUT: SSH连接已断开，尝试重连...
+2025-09-14 14:03:58,667 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.2p1)
+2025-09-14 14:03:58,778 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-14 14:03:58,779 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-14 14:03:58,839 - SSH_DUT - INFO - DUT: SSH重连成功
+2025-09-14 14:03:59,201 - NetworkTopology - INFO - 为 TestNode2 配置RSTP (mstpd)...
+2025-09-14 14:03:59,336 - NetworkTopology - INFO - DUT网桥 SE_ETH2 配置重置完成
+2025-09-14 14:03:59,336 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-14 14:03:59,336 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-14 14:03:59,491 - NetworkTopology - INFO - DUT: 网桥SE_ETH2已存在，跳过创建
+2025-09-14 14:04:00,581 - NetworkTopology - INFO - DUT: 网桥SE_ETH2优先级已设置为1
+1
+"8192
+2025-09-14 14:04:00,582 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-14 14:04:00,582 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-14 14:04:00,582 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-14 14:04:00,582 - NetworkTopology - INFO - 添加接口 br3 到 DUT 的网桥
+2025-09-14 14:04:01,055 - NetworkTopology - INFO - 添加接口 br4 到 DUT 的网桥
+2025-09-14 14:04:01,532 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-14 14:04:01,532 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-14 14:04:01,724 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-14 14:04:01,724 - NetworkTopology - INFO - [DUT] RSTP配置完成
+2025-09-14 14:04:03,740 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-14 14:04:03,879 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-14 14:04:03,880 - NetworkTopology - INFO - TestNode2: RSTP已通过mstpd配置
+2025-09-14 14:04:03,880 - NetworkTopology - INFO - TestNode2 RSTP核心配置完成
+2025-09-14 14:04:03,880 - NetworkTopology - INFO - 为 TestNode2 准备添加接口: ['eth0', 'eth2']
+2025-09-14 14:04:03,880 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode2 的网桥
+2025-09-14 14:04:05,079 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode2 的网桥
+2025-09-14 14:04:06,288 - NetworkTopology - INFO - TestNode2 接口添加完成
+2025-09-14 14:04:06,288 - NetworkTopology - INFO - 验证 TestNode2 的RSTP配置...
+2025-09-14 14:04:06,384 - NetworkTopology - INFO - TestNode2: STP/RSTP已启用
+2025-09-14 14:04:06,680 - NetworkTopology - INFO - TestNode2 网桥配置验证完成
+2025-09-14 14:04:06,681 - NetworkTopology - INFO - [TestNode2] RSTP配置完成
+2025-09-14 14:04:13,825 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-14 14:04:18,339 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-14 14:04:18,473 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-14 14:04:18,473 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-14 14:04:18,473 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-14 14:04:18,473 - NetworkTopology - INFO - 为 TestNode1 准备添加接口: ['eth0', 'eth2']
+2025-09-14 14:04:18,473 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥
+2025-09-14 14:04:19,664 - NetworkTopology - INFO - 添加接口 eth2 到 TestNode1 的网桥
+2025-09-14 14:04:20,882 - NetworkTopology - INFO - TestNode1 接口添加完成
+2025-09-14 14:04:20,882 - NetworkTopology - INFO - 验证 TestNode1 的RSTP配置...
+2025-09-14 14:04:20,984 - NetworkTopology - INFO - TestNode1: STP/RSTP已启用
+2025-09-14 14:04:21,267 - NetworkTopology - INFO - TestNode1 网桥配置验证完成
+2025-09-14 14:04:21,267 - NetworkTopology - INFO - [TestNode1] RSTP配置完成
+2025-09-14 14:04:21,268 - NetworkTopology - INFO - 并行配置完成，总耗时: 22.62秒
+2025-09-14 14:04:21,268 - NetworkTopology - INFO - 配置结果: 节点 DUT 配置成功
+2025-09-14 14:04:21,268 - NetworkTopology - INFO - 配置结果: 节点 TestNode2 配置成功
+2025-09-14 14:04:21,268 - NetworkTopology - INFO - 配置结果: 节点 TestNode1 配置成功
+2025-09-14 14:04:21,269 - NetworkTopology - INFO - 环形拓扑创建完成 - 使用真实物理连接
+2025-09-14 14:04:21,269 - SimpleConvergenceTest - INFO - 拓扑创建完成，用时: 22.62秒
+2025-09-14 14:04:21,269 - SimpleConvergenceTest - INFO - 开始等待初始收敛...
+2025-09-14 14:04:21,269 - ConvergenceMonitor - INFO - 开始等待网络收敛，超时时间: 180秒
+2025-09-14 14:04:21,269 - ConvergenceMonitor - INFO - 初始等待 30 秒...
+2025-09-14 14:04:51,438 - ConvergenceMonitor - INFO - 网络状态稳定检查 1/1
+2025-09-14 14:04:51,438 - ConvergenceMonitor - INFO - 网络收敛完成，用时: 30.17秒
+2025-09-14 14:04:51,438 - SimpleConvergenceTest - INFO - === 测试结果 ===
+2025-09-14 14:04:51,439 - SimpleConvergenceTest - INFO - 拓扑创建时间: 22.62秒
+2025-09-14 14:04:51,439 - SimpleConvergenceTest - INFO - 收敛时间: 30.17秒
+2025-09-14 14:04:51,439 - SimpleConvergenceTest - INFO - 总时间: 52.79秒
+2025-09-14 14:04:51,439 - SimpleConvergenceTest - INFO - ✓ 初始收敛测试成功
+2025-09-14 14:04:51,440 - SSH_DUT - INFO - SSH连接已关闭: DUT
+2025-09-14 14:04:51,440 - SSH_TestNode1 - INFO - SSH连接已关闭: TestNode1
+2025-09-14 14:04:51,441 - SSH_TestNode2 - INFO - SSH连接已关闭: TestNode2

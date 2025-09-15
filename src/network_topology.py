@@ -681,40 +681,8 @@ class NetworkTopology:
         self.logger.info(f"创建{'RSTP' if use_rstp else 'STP'}环形拓扑...")
         self.logger.info(f"可用节点数量: {len(self.nodes)}")
 
-        # 第一步：配置所有节点的网桥
-        for i, node in enumerate(self.nodes[:3]):
-            self.logger.info(f"开始配置节点 {i+1}/{min(len(self.nodes), 3)}: {node.config.name}")
-            # 为DUT设置较高优先级以确保不是根桥，其他节点设置更低优先级
-            if node.config.name == "DUT":
-                priority = 8192  # DUT使用8192优先级
-            else:
-                # TestNode1=4096, TestNode2=4096 (都比DUT优先级低，会成为根桥)
-                priority = 4096
-            # DUT使用br3和br4接口，其他节点使用eth0和eth2
-            if node.config.name == "DUT":
-                interfaces = ["br3", "br4"]
-            else:
-                interfaces = ["eth0", "eth2"]
-
-            try:
-                # 对于DUT使用SE_ETH2，其他节点使用br0
-                bridge_name = "SE_ETH2" if node.config.name == "DUT" else "br0"
-                
-                if use_rstp:
-                    self.logger.info(f"为节点 {node.config.name} 配置RSTP网桥...")
-                    self.configure_bridge_rstp(node, bridge_name, priority, interfaces)
-                    self.logger.info(f"节点 {node.config.name} RSTP配置完成")
-                else:
-                    # 使用传统STP
-                    self.logger.info(f"为节点 {node.config.name} 配置传统STP...")
-                    self._configure_rstp_legacy(node, bridge_name, priority)
-                    for iface in interfaces:
-                        self._add_interface_to_bridge(node, bridge_name, iface, RSTPMethod.LEGACY)
-                    node.execute_sudo(f"ip link set dev {bridge_name} up")
-                    self.logger.info(f"节点 {node.config.name} STP配置完成")
-            except Exception as e:
-                self.logger.error(f"配置节点 {node.config.name} 失败: {e}")
-                raise
+        # 第一步：并行配置所有节点的网桥
+        self._configure_nodes_parallel(self.nodes[:3], use_rstp, "ring")
 
         # 物理连接已存在，无需创建veth pair
         self.logger.info("环形拓扑创建完成 - 使用真实物理连接")
@@ -727,48 +695,108 @@ class NetworkTopology:
         self.logger.info(f"创建{'RSTP' if use_rstp else 'STP'}线性拓扑...")
         self.logger.info(f"可用节点数量: {len(self.nodes)}")
 
-        for i, node in enumerate(self.nodes[:3]):
-            self.logger.info(f"开始配置节点 {i+1}/{min(len(self.nodes), 3)}: {node.config.name}")
-            priority = 32768 + (i * 4096)
-            
-            # 线性拓扑的接口配置：第一个节点只用eth2，最后一个节点只用eth0，中间节点用eth0和eth2
-            # DUT使用br3和br4接口，其他节点使用eth0和eth2
-            if node.config.name == "DUT":
-                if i == 0:  # 第一个节点
-                    interfaces = ["br4"]
-                elif i == len(self.nodes[:3]) - 1:  # 最后一个节点
-                    interfaces = ["br3"]
-                else:  # 中间节点
-                    interfaces = ["br3", "br4"]
-            else:
-                if i == 0:  # 第一个节点
-                    interfaces = ["eth2"]
-                elif i == len(self.nodes[:3]) - 1:  # 最后一个节点
-                    interfaces = ["eth0"]
-                else:  # 中间节点
-                    interfaces = ["eth0", "eth2"]
+        # 并行配置所有节点的网桥
+        self._configure_nodes_parallel(self.nodes[:3], use_rstp, "linear")
 
+        self.logger.info("线性拓扑创建完成")
+
+    def _configure_nodes_parallel(self, nodes: List, use_rstp: bool, topology_type: str):
+        """并行配置多个节点的网桥"""
+        import threading
+        import concurrent.futures
+        
+        self.logger.info(f"开始并行配置{len(nodes)}个节点...")
+        
+        def configure_single_node(node_info):
+            """配置单个节点的函数"""
+            i, node = node_info
+            node_name = node.config.name
+            
             try:
+                self.logger.info(f"[线程{threading.current_thread().name}] 开始配置节点 {i+1}/{len(nodes)}: {node_name}")
+                
+                # 根据拓扑类型设置优先级和接口
+                if topology_type == "ring":
+                    # 环形拓扑配置
+                    if node_name == "DUT":
+                        priority = 8192  # DUT使用8192优先级
+                        interfaces = ["br3", "br4"]
+                    else:
+                        priority = 4096  # TestNode使用4096优先级
+                        interfaces = ["eth0", "eth2"]
+                elif topology_type == "linear":
+                    # 线性拓扑配置
+                    priority = 32768 + (i * 4096)
+                    
+                    if node_name == "DUT":
+                        if i == 0:  # 第一个节点
+                            interfaces = ["br4"]
+                        elif i == len(nodes) - 1:  # 最后一个节点
+                            interfaces = ["br3"]
+                        else:  # 中间节点
+                            interfaces = ["br3", "br4"]
+                    else:
+                        if i == 0:  # 第一个节点
+                            interfaces = ["eth2"]
+                        elif i == len(nodes) - 1:  # 最后一个节点
+                            interfaces = ["eth0"]
+                        else:  # 中间节点
+                            interfaces = ["eth0", "eth2"]
+                else:
+                    raise ValueError(f"不支持的拓扑类型: {topology_type}")
+                
                 # 对于DUT使用SE_ETH2，其他节点使用br0
-                bridge_name = "SE_ETH2" if node.config.name == "DUT" else "br0"
+                bridge_name = "SE_ETH2" if node_name == "DUT" else "br0"
                 
                 if use_rstp:
-                    self.logger.info(f"为节点 {node.config.name} 配置RSTP网桥...")
+                    self.logger.info(f"[{node_name}] 配置RSTP网桥...")
                     self.configure_bridge_rstp(node, bridge_name, priority, interfaces)
-                    self.logger.info(f"节点 {node.config.name} RSTP配置完成")
+                    self.logger.info(f"[{node_name}] RSTP配置完成")
                 else:
                     # 使用传统STP
-                    self.logger.info(f"为节点 {node.config.name} 配置传统STP...")
+                    self.logger.info(f"[{node_name}] 配置传统STP...")
                     self._configure_rstp_legacy(node, bridge_name, priority)
                     for iface in interfaces:
                         self._add_interface_to_bridge(node, bridge_name, iface, RSTPMethod.LEGACY)
                     node.execute_sudo(f"ip link set dev {bridge_name} up")
-                    self.logger.info(f"节点 {node.config.name} STP配置完成")
+                    self.logger.info(f"[{node_name}] STP配置完成")
+                    
+                return f"节点 {node_name} 配置成功"
+                
             except Exception as e:
-                self.logger.error(f"配置节点 {node.config.name} 失败: {e}")
-                raise
-
-        self.logger.info("线性拓扑创建完成")
+                error_msg = f"配置节点 {node_name} 失败: {e}"
+                self.logger.error(error_msg)
+                return error_msg
+        
+        # 使用线程池并行执行配置
+        start_time = time.time()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(nodes), thread_name_prefix="NodeConfig") as executor:
+            # 提交所有配置任务
+            future_to_node = {executor.submit(configure_single_node, (i, node)): node.config.name 
+                             for i, node in enumerate(nodes)}
+            
+            # 等待所有任务完成并收集结果
+            results = []
+            for future in concurrent.futures.as_completed(future_to_node):
+                node_name = future_to_node[future]
+                try:
+                    result = future.result()
+                    results.append(result)
+                    if "失败" in result:
+                        self.logger.error(f"节点配置失败: {result}")
+                        raise Exception(result)
+                except Exception as e:
+                    error_msg = f"节点 {node_name} 配置异常: {e}"
+                    self.logger.error(error_msg)
+                    raise Exception(error_msg)
+        
+        end_time = time.time()
+        total_time = end_time - start_time
+        self.logger.info(f"并行配置完成，总耗时: {total_time:.2f}秒")
+        
+        # 输出所有结果
+        for result in results:
+            self.logger.info(f"配置结果: {result}")
 
     def check_interface_status(self, node: SSHManager, interface: str) -> Dict[str, str]:
         """检查接口状态"""

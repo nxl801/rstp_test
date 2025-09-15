@@ -1,0 +1,95 @@
+2025-09-13 17:17:14,236 - InitialConvergenceTest - INFO - === 开始初始收敛时间测试 ===
+2025-09-13 17:17:14,237 - InitialConvergenceTest - ERROR - 测试过程中发生错误: 'gbk' codec can't decode byte 0xae in position 446: illegal multibyte sequence
+2025-09-13 17:17:14,247 - InitialConvergenceTest - ERROR - Traceback (most recent call last):
+  File "C:\Users\30380\OneDrive\101_Schneider\05_EAE_rstp_test_framework\test_initial_convergence_time.py", line 117, in main
+    config = yaml.safe_load(f)
+  File "C:\Users\30380\AppData\Roaming\Python\Python313\site-packages\yaml\__init__.py", line 125, in safe_load
+    return load(stream, SafeLoader)
+  File "C:\Users\30380\AppData\Roaming\Python\Python313\site-packages\yaml\__init__.py", line 79, in load
+    loader = Loader(stream)
+  File "C:\Users\30380\AppData\Roaming\Python\Python313\site-packages\yaml\loader.py", line 34, in __init__
+    Reader.__init__(self, stream)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\30380\AppData\Roaming\Python\Python313\site-packages\yaml\reader.py", line 85, in __init__
+    self.determine_encoding()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\30380\AppData\Roaming\Python\Python313\site-packages\yaml\reader.py", line 124, in determine_encoding
+    self.update_raw()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\30380\AppData\Roaming\Python\Python313\site-packages\yaml\reader.py", line 178, in update_raw
+    data = self.stream.read(size)
+UnicodeDecodeError: 'gbk' codec can't decode byte 0xae in position 446: illegal multibyte sequence
+
+2025-09-13 17:17:31,075 - InitialConvergenceTest - INFO - === 开始初始收敛时间测试 ===
+2025-09-13 17:17:31,081 - InitialConvergenceTest - INFO - 创建SSH连接...
+2025-09-13 17:17:31,081 - InitialConvergenceTest - INFO - 创建网络拓扑管理器...
+2025-09-13 17:17:31,082 - NetworkTopology - INFO - DUT: 开始检测RSTP支持方法...
+2025-09-13 17:17:31,082 - NetworkTopology - INFO - DUT: DUT设备，直接使用OVS方法
+2025-09-13 17:17:31,082 - NetworkTopology - INFO - TestNode1: 开始检测RSTP支持方法...
+2025-09-13 17:17:31,082 - NetworkTopology - INFO - TestNode1: 检查mstpd支持...
+2025-09-13 17:17:31,082 - SSH_TestNode1 - WARNING - TestNode1: SSH连接已断开，尝试重连...
+2025-09-13 17:17:31,100 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-13 17:17:31,211 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-13 17:17:31,211 - SSH_TestNode1 - INFO - SSH连接成功: TestNode1 (192.168.13.136)
+2025-09-13 17:17:31,351 - SSH_TestNode1 - INFO - TestNode1: SSH重连成功
+2025-09-13 17:17:31,401 - NetworkTopology - INFO - TestNode1: mstpd检查结果: code=0
+2025-09-13 17:17:31,402 - NetworkTopology - INFO - TestNode1: 检查mstpd服务状态...
+2025-09-13 17:17:41,526 - NetworkTopology - INFO - TestNode1: mstpd服务状态: code=0, output=active
+2025-09-13 17:17:41,526 - NetworkTopology - INFO - TestNode1: 检测到mstpd支持
+2025-09-13 17:17:41,526 - NetworkTopology - INFO - TestNode1: 最终选择RSTP方法: mstpd
+2025-09-13 17:17:41,526 - NetworkTopology - INFO - TestNode2: 开始检测RSTP支持方法...
+2025-09-13 17:17:41,527 - NetworkTopology - INFO - TestNode2: 检查mstpd支持...
+2025-09-13 17:17:41,527 - SSH_TestNode2 - WARNING - TestNode2: SSH连接已断开，尝试重连...
+2025-09-13 17:17:41,537 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-09-13 17:17:41,659 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-13 17:17:41,659 - SSH_TestNode2 - INFO - SSH连接成功: TestNode2 (192.168.13.137)
+2025-09-13 17:17:41,793 - SSH_TestNode2 - INFO - TestNode2: SSH重连成功
+2025-09-13 17:17:41,841 - NetworkTopology - INFO - TestNode2: mstpd检查结果: code=0
+2025-09-13 17:17:41,841 - NetworkTopology - INFO - TestNode2: 检查mstpd服务状态...
+2025-09-13 17:17:42,015 - NetworkTopology - INFO - TestNode2: mstpd服务状态: code=0, output=active
+2025-09-13 17:17:42,015 - NetworkTopology - INFO - TestNode2: 检测到mstpd支持
+2025-09-13 17:17:42,016 - NetworkTopology - INFO - TestNode2: 最终选择RSTP方法: mstpd
+2025-09-13 17:17:42,016 - InitialConvergenceTest - INFO - === 第1步：创建拓扑 ===
+2025-09-13 17:17:42,016 - NetworkTopology - INFO - 创建RSTP环形拓扑...
+2025-09-13 17:17:42,016 - NetworkTopology - INFO - 可用节点数量: 3
+2025-09-13 17:17:42,017 - NetworkTopology - INFO - 开始配置节点 1/3: DUT
+2025-09-13 17:17:42,017 - NetworkTopology - INFO - 为节点 DUT 配置RSTP网桥...
+2025-09-13 17:17:42,017 - NetworkTopology - INFO - 开始为 DUT 检测RSTP支持方法...
+2025-09-13 17:17:42,017 - NetworkTopology - INFO - DUT: 使用缓存的RSTP方法: ovs
+2025-09-13 17:17:42,017 - NetworkTopology - INFO - DUT 使用方法: ovs
+2025-09-13 17:17:42,017 - NetworkTopology - INFO - 清理 DUT 的测试接口...
+2025-09-13 17:17:42,018 - NetworkTopology - INFO - 重置DUT网桥 SE_ETH2 的RSTP配置...
+2025-09-13 17:17:42,018 - SSH_DUT - WARNING - DUT: SSH连接已断开，尝试重连...
+2025-09-13 17:17:42,029 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.2p1)
+2025-09-13 17:17:42,139 - paramiko.transport - INFO - Authentication (password) successful!
+2025-09-13 17:17:42,139 - SSH_DUT - INFO - SSH连接成功: DUT (192.168.1.123)
+2025-09-13 17:17:42,368 - SSH_DUT - INFO - DUT: SSH重连成功
+2025-09-13 17:17:42,868 - NetworkTopology - INFO - DUT网桥 SE_ETH2 配置重置完成
+2025-09-13 17:17:42,868 - NetworkTopology - INFO - 为 DUT 配置RSTP (ovs)...
+2025-09-13 17:17:42,869 - NetworkTopology - INFO - DUT: 使用OVS配置RSTP
+2025-09-13 17:17:43,024 - NetworkTopology - INFO - DUT: 网桥SE_ETH2已存在，跳过创建
+2025-09-13 17:17:44,112 - NetworkTopology - INFO - DUT: 网桥SE_ETH2优先级已设置为1
+1
+"8192
+2025-09-13 17:17:44,113 - NetworkTopology - INFO - DUT: RSTP已通过OVS配置
+2025-09-13 17:17:44,113 - NetworkTopology - INFO - DUT RSTP核心配置完成
+2025-09-13 17:17:44,113 - NetworkTopology - INFO - 为 DUT 准备添加接口: ['br3', 'br4']
+2025-09-13 17:17:44,113 - NetworkTopology - INFO - 添加接口 br3 到 DUT 的网桥
+2025-09-13 17:17:44,588 - NetworkTopology - INFO - 添加接口 br4 到 DUT 的网桥
+2025-09-13 17:17:45,077 - NetworkTopology - INFO - DUT 接口添加完成
+2025-09-13 17:17:45,077 - NetworkTopology - INFO - 验证 DUT 的RSTP配置...
+2025-09-13 17:17:45,269 - NetworkTopology - INFO - DUT 网桥配置验证完成
+2025-09-13 17:17:45,269 - NetworkTopology - INFO - 节点 DUT RSTP配置完成
+2025-09-13 17:17:45,269 - NetworkTopology - INFO - 开始配置节点 2/3: TestNode1
+2025-09-13 17:17:45,269 - NetworkTopology - INFO - 为节点 TestNode1 配置RSTP网桥...
+2025-09-13 17:17:45,269 - NetworkTopology - INFO - 开始为 TestNode1 检测RSTP支持方法...
+2025-09-13 17:17:45,270 - NetworkTopology - INFO - TestNode1: 使用缓存的RSTP方法: mstpd
+2025-09-13 17:17:45,270 - NetworkTopology - INFO - TestNode1 使用方法: mstpd
+2025-09-13 17:17:45,270 - NetworkTopology - INFO - 清理 TestNode1 的旧网桥配置...
+2025-09-13 17:18:15,626 - NetworkTopology - INFO - 为 TestNode1 配置RSTP (mstpd)...
+2025-09-13 17:19:49,704 - NetworkTopology - INFO - 验证br0的mstpd配置...
+2025-09-13 17:19:59,805 - NetworkTopology - INFO - mstpd配置验证通过
+2025-09-13 17:19:59,805 - NetworkTopology - INFO - TestNode1: RSTP已通过mstpd配置
+2025-09-13 17:19:59,806 - NetworkTopology - INFO - TestNode1 RSTP核心配置完成
+2025-09-13 17:19:59,806 - NetworkTopology - INFO - 为 TestNode1 准备添加接口: ['eth0', 'eth2']
+2025-09-13 17:19:59,806 - NetworkTopology - INFO - 添加接口 eth0 到 TestNode1 的网桥

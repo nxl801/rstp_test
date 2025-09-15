@@ -87,7 +87,7 @@ def check_network_connectivity(config):
     print(f"测试 TestNode1({testnode1_config['ip']}) 到 DUT({dut_config['ip']}) 的连通性...")
     
     # 执行ping测试
-    result = testnode1_ssh.execute_command(f"ping -c 3 {dut_config['ip']}")
+    result = testnode1_ssh.execute(f"ping -c 3 {dut_config['ip']}")
     if result.success:
         print("✓ TestNode1到DUT连通正常")
         print("Ping结果:")
@@ -100,13 +100,13 @@ def check_network_connectivity(config):
         print("\n检查TestNode1网络配置:")
         
         # 检查接口状态
-        result = testnode1_ssh.execute_command("ip addr show")
+        result = testnode1_ssh.execute("ip addr show")
         if result.success:
             print("接口配置:")
             print(result.stdout)
         
         # 检查路由表
-        result = testnode1_ssh.execute_command("ip route")
+        result = testnode1_ssh.execute("ip route")
         if result.success:
             print("\n路由表:")
             print(result.stdout)
@@ -143,7 +143,7 @@ def setup_network_for_bpdu_test(config):
     try:
         # 检查当前网络配置
         print("检查当前网络配置...")
-        result = testnode1_ssh.execute_command("ip link show")
+        result = testnode1_ssh.execute("ip link show")
         if result.success:
             print("当前接口状态:")
             print(result.stdout)
@@ -154,7 +154,7 @@ def setup_network_for_bpdu_test(config):
                 
                 # 尝试临时移除eth0从网桥
                 print("尝试临时移除eth0从网桥...")
-                result = testnode1_ssh.execute_command("sudo brctl delif br0 eth0")
+                result = testnode1_ssh.execute("sudo brctl delif br0 eth0")
                 if result.success:
                     print("✓ 已移除eth0从网桥br0")
                 else:
@@ -162,12 +162,12 @@ def setup_network_for_bpdu_test(config):
         
         # 确保scapy可用
         print("\n检查scapy安装...")
-        result = testnode1_ssh.execute_command("python3 -c 'import scapy.all; print(\"scapy可用\")'")
+        result = testnode1_ssh.execute("python3 -c 'import scapy.all; print(\"scapy可用\")')")
         if result.success:
             print("✓ scapy已安装")
         else:
             print("❌ scapy未安装，尝试安装...")
-            result = testnode1_ssh.execute_command("sudo apt-get update && sudo apt-get install -y python3-scapy")
+            result = testnode1_ssh.execute("sudo apt-get update && sudo apt-get install -y python3-scapy")
             if result.success:
                 print("✓ scapy安装成功")
             else:
@@ -175,7 +175,7 @@ def setup_network_for_bpdu_test(config):
         
         # 检查网络接口权限
         print("\n检查网络接口权限...")
-        result = testnode1_ssh.execute_command("sudo python3 -c 'from scapy.all import *; print(\"scapy权限正常\")'")
+        result = testnode1_ssh.execute("sudo python3 -c 'from scapy.all import *; print(\"scapy权限正常\")')")
         if result.success:
             print("✓ scapy权限正常")
         else:

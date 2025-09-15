@@ -93,58 +93,82 @@ class TrafficGenerator:
         Returns:
             是否成功
         """
-        # 若已有iperf3服务器在运行，直接复用
-        stdout_running, _, running_code = self.server.execute("pgrep -f 'iperf3 -s'")
-        if running_code == 0:
-            self.logger.info(f"iperf3服务器已在运行 (PID: {stdout_running.strip()})，复用现有进程")
-            if bind_ip:
-                self.server_ip = bind_ip
-            else:
-                stdout_ip, _, _ = self.server.execute("hostname -I | awk '{print $1}'")
-                self.server_ip = stdout_ip.strip()
-            self.server_port = port
-            return True
-        # 停止已有服务器
-        self._kill_iperf_server()
-
-        # 构建命令
-        cmd = f"iperf3 -s -p {port}"
-        if bind_ip:
-            cmd += f" -B {bind_ip}"
-            self.server_ip = bind_ip
-        else:
-            # 获取服务器IP
-            stdout, _, _ = self.server.execute("hostname -I | awk '{print $1}'")
-            self.server_ip = stdout.strip()
-
-        self.server_port = port
-
-        # 启动服务器线程
-        def run_server():
-            self.logger.info(f"启动iperf3服务器: {self.server_ip}:{port}")
-            stdout, stderr, code = self.server.execute(
-                f"nohup {cmd} > /tmp/iperf_server.log 2>&1 &",
-                timeout=5
-            )
-
-            # 等待服务器启动
-            time.sleep(2)
-
-            # 验证服务器是否运行
-            stdout, _, code = self.server.execute("pgrep -f 'iperf3 -s'")
-            if code == 0:
-                self.logger.info(f"iperf3服务器已启动 (PID: {stdout.strip()})")
+        # 若已有iperf3服务器在运行，检查端口是否匹配
+        stdout_running, _, running_code = self.server.execute(f"netstat -tlnp | grep ':{port} '")
+        if running_code == 0 and stdout_running.strip():
+            self.logger.info(f"端口{port}已被占用，检查是否为iperf3服务器")
+            # 检查是否为iperf3进程
+            stdout_iperf, _, iperf_code = self.server.execute("pgrep -f 'iperf3 -s'")
+            if iperf_code == 0:
+                self.logger.info(f"iperf3服务器已在运行 (PID: {stdout_iperf.strip()})，复用现有进程")
+                if bind_ip:
+                    self.server_ip = bind_ip
+                else:
+                    stdout_ip, _, _ = self.server.execute("hostname -I | awk '{print $1}'")
+                    self.server_ip = stdout_ip.strip()
+                self.server_port = port
                 return True
             else:
-                self.logger.error("iperf3服务器启动失败")
+                self.logger.warning(f"端口{port}被其他进程占用，尝试使用其他端口")
+                port = port + 1
+        
+        # 停止已有iperf3服务器
+        self._kill_iperf_server()
+        
+        # 获取服务器IP
+        if bind_ip:
+            self.server_ip = bind_ip
+        else:
+            stdout, _, _ = self.server.execute("hostname -I | awk '{print $1}'")
+            self.server_ip = stdout.strip()
+            if not self.server_ip:
+                # 备用方法获取IP
+                stdout, _, _ = self.server.execute("ip route get 8.8.8.8 | awk '{print $7; exit}'")
+                self.server_ip = stdout.strip()
+        
+        self.server_port = port
+        
+        # 构建命令
+        cmd = f"iperf3 -s -p {port} -D"  # 使用-D参数以守护进程方式运行
+        if bind_ip:
+            cmd += f" -B {bind_ip}"
+        
+        self.logger.info(f"启动iperf3服务器: {self.server_ip}:{port}")
+        
+        # 直接启动服务器（不使用线程）
+        stdout, stderr, code = self.server.execute(cmd, timeout=10)
+        
+        if code != 0:
+            self.logger.error(f"iperf3服务器启动失败: {stderr}")
+            # 尝试不使用守护进程模式
+            cmd_fallback = f"nohup iperf3 -s -p {port}"
+            if bind_ip:
+                cmd_fallback += f" -B {bind_ip}"
+            cmd_fallback += " > /tmp/iperf_server.log 2>&1 &"
+            
+            stdout, stderr, code = self.server.execute(cmd_fallback, timeout=5)
+            if code != 0:
+                self.logger.error(f"iperf3服务器启动失败（备用方法）: {stderr}")
                 return False
-
-        self.server_thread = threading.Thread(target=run_server, daemon=True)
-        self.server_thread.start()
-
-        # 等待服务器就绪
-        time.sleep(3)
-        return True
+        
+        # 等待服务器启动
+        time.sleep(2)
+        
+        # 验证服务器是否运行
+        for attempt in range(5):  # 最多尝试5次
+            stdout, _, code = self.server.execute(f"netstat -tlnp | grep ':{port} '")
+            if code == 0 and stdout.strip():
+                self.logger.info(f"iperf3服务器已成功启动并监听端口{port}")
+                return True
+            time.sleep(1)
+        
+        # 检查错误日志
+        stdout, _, _ = self.server.execute("cat /tmp/iperf_server.log 2>/dev/null || echo 'No log file'")
+        if stdout and "No log file" not in stdout:
+            self.logger.error(f"iperf3服务器日志: {stdout}")
+        
+        self.logger.error("iperf3服务器启动失败，无法监听指定端口")
+        return False
 
     def start_iperf_client(self, server_ip: str = None, bandwidth: str = "100M",
                           duration: int = 0, port: int = None,

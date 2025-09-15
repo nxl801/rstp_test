@@ -307,27 +307,23 @@ class TestEnhancedRSTPCoverage:
         # 测试1: 验证所有交换机都发送BPDU
         logger.info("=== 测试1: 验证分布式BPDU生成 ===")
         
-        # 在多个接口上同时捕获BPDU
-        active_ports = [name for name, port in dut_info.ports.items() 
-                       if port.state != PortState.DISABLED]
+        # 创建TestNode的RSTPAnalyzer实例，在TestNode端捕获来自DUT的BPDU
+        from src.rstp_analyzer import RSTPAnalyzer
         
         bpdu_sources = set()
         total_bpdus = 0
         capture_duration = hello_time * 6  # 捕获6个Hello周期
         
-        for port_name in active_ports[:2]:  # 测试前2个端口
-            logger.info(f"在端口{port_name}上捕获BPDU")
+        # 在TestNode1的eth2接口上捕获来自DUT的BPDU
+        if len(test_nodes) >= 1:
+            tn1_analyzer = RSTPAnalyzer(test_nodes[0])
+            logger.info(f"在TestNode1端口eth2上捕获来自DUT的BPDU")
             try:
-                # 兼容性处理：新版本使用timeout参数而不是duration
-                try:
-                    bpdus = rstp_analyzer.capture_bpdu(port_name, timeout=int(capture_duration))
-                except TypeError:
-                    # 回退到旧版本的duration参数
-                    bpdus = rstp_analyzer.capture_bpdu(port_name, duration=capture_duration)
-                total_bpdus += len(bpdus)
+                bpdus_on_tn1 = tn1_analyzer.capture_bpdu('eth2', timeout=int(capture_duration))
+                total_bpdus += len(bpdus_on_tn1)
                 
                 # 分析BPDU来源
-                for bpdu in bpdus:
+                for bpdu in bpdus_on_tn1:
                     if isinstance(bpdu, dict):
                         if 'bridge_id' in bpdu:
                             bpdu_sources.add(bpdu['bridge_id'])
@@ -340,9 +336,35 @@ class TestEnhancedRSTPCoverage:
                         elif hasattr(bpdu, 'source_bridge'):
                             bpdu_sources.add(bpdu.source_bridge)
                 
-                logger.info(f"端口{port_name}捕获到{len(bpdus)}个BPDU")
+                logger.info(f"TestNode1端口eth2捕获到{len(bpdus_on_tn1)}个BPDU")
             except Exception as e:
-                logger.warning(f"端口{port_name}BPDU捕获失败: {e}")
+                logger.warning(f"TestNode1端口eth2 BPDU捕获失败: {e}")
+        
+        # 在TestNode2的eth2接口上捕获来自DUT的BPDU
+        if len(test_nodes) >= 2:
+            tn2_analyzer = RSTPAnalyzer(test_nodes[1])
+            logger.info(f"在TestNode2端口eth2上捕获来自DUT的BPDU")
+            try:
+                bpdus_on_tn2 = tn2_analyzer.capture_bpdu('eth2', timeout=int(capture_duration))
+                total_bpdus += len(bpdus_on_tn2)
+                
+                # 分析BPDU来源
+                for bpdu in bpdus_on_tn2:
+                    if isinstance(bpdu, dict):
+                        if 'bridge_id' in bpdu:
+                            bpdu_sources.add(bpdu['bridge_id'])
+                        elif 'source_bridge' in bpdu:
+                            bpdu_sources.add(bpdu['source_bridge'])
+                    else:
+                        # 兼容旧版本对象访问方式
+                        if hasattr(bpdu, 'bridge_id'):
+                            bpdu_sources.add(bpdu.bridge_id)
+                        elif hasattr(bpdu, 'source_bridge'):
+                            bpdu_sources.add(bpdu.source_bridge)
+                
+                logger.info(f"TestNode2端口eth2捕获到{len(bpdus_on_tn2)}个BPDU")
+            except Exception as e:
+                logger.warning(f"TestNode2端口eth2 BPDU捕获失败: {e}")
         
         logger.info(f"总共捕获{total_bpdus}个BPDU，来自{len(bpdu_sources)}个不同源")
         
@@ -360,35 +382,27 @@ class TestEnhancedRSTPCoverage:
         # 测试2: 验证BPDU保活机制
         logger.info("=== 测试2: 验证BPDU保活机制 ===")
         
-        # 选择一个端口进行保活测试
-        test_port = active_ports[0] if active_ports else None
-        if test_port:
+        # 使用TestNode1进行保活测试
+        if len(test_nodes) >= 1:
+            tn1_analyzer = RSTPAnalyzer(test_nodes[0])
             # 捕获正常的BPDU流
-            try:
-                normal_bpdus = rstp_analyzer.capture_bpdu(test_port, timeout=int(hello_time * 3))
-            except TypeError:
-                normal_bpdus = rstp_analyzer.capture_bpdu(test_port, duration=hello_time * 3)
+            normal_bpdus = tn1_analyzer.capture_bpdu('eth2', timeout=int(hello_time * 3))
             normal_count = len(normal_bpdus)
             logger.info(f"正常情况下{hello_time * 3}秒内收到{normal_count}个BPDU")
             
-            # 模拟邻居故障（通过断开连接）
-            logger.info(f"模拟邻居故障，断开端口{test_port}")
-            if hasattr(dut_manager, 'execute'):
-                dut_manager.execute(f"ip link set {test_port} down")
+            # 模拟邻居故障（通过断开TestNode1的连接）
+            logger.info(f"模拟邻居故障，断开TestNode1的eth2端口")
+            test_nodes[0].execute(f"sudo ip link set eth2 down")
             
             time.sleep(hello_time * 4)  # 等待超过3个Hello Time
             
             # 重新连接并检查恢复
-            if hasattr(dut_manager, 'execute'):
-                dut_manager.execute(f"ip link set {test_port} up")
+            test_nodes[0].execute(f"sudo ip link set eth2 up")
             
             time.sleep(hello_time * 2)
             
             # 验证BPDU恢复
-            try:
-                recovery_bpdus = rstp_analyzer.capture_bpdu(test_port, timeout=int(hello_time * 2))
-            except TypeError:
-                recovery_bpdus = rstp_analyzer.capture_bpdu(test_port, duration=hello_time * 2)
+            recovery_bpdus = tn1_analyzer.capture_bpdu('eth2', timeout=int(hello_time * 2))
             recovery_count = len(recovery_bpdus)
             logger.info(f"恢复后{hello_time * 2}秒内收到{recovery_count}个BPDU")
             
@@ -400,8 +414,9 @@ class TestEnhancedRSTPCoverage:
         # 测试3: BPDU内容验证
         logger.info("=== 测试3: BPDU内容验证 ===")
         
-        if active_ports:
-            sample_bpdus = rstp_analyzer.capture_bpdu(active_ports[0], count=3)
+        if len(test_nodes) >= 1:
+            tn1_analyzer = RSTPAnalyzer(test_nodes[0])
+            sample_bpdus = tn1_analyzer.capture_bpdu('eth2', count=3)
             
             for i, bpdu in enumerate(sample_bpdus):
                 logger.info(f"BPDU {i+1} 分析:")

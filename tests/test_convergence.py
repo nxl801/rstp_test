@@ -34,9 +34,9 @@ class TestConvergence:
         if len(test_nodes) > 1:
             network_topology.execute_bridge_command(test_nodes[1], "set_priority", priority=28672)
 
-        # 等待初始收敛
-        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
-        initial_convergence = convergence_monitor.wait_for_convergence(analyzers)
+        # 等待初始收敛 (仍然检查所有节点以确保整个环境就绪)
+        all_analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        initial_convergence = convergence_monitor.wait_for_convergence(all_analyzers)
         logger.info(f"初始收敛时间: {initial_convergence:.2f}秒")
 
         # 确定DUT的Root Port
@@ -50,10 +50,12 @@ class TestConvergence:
         assert root_port, "未找到Root Port"
         logger.info(f"DUT的Root Port: {root_port}")
 
-        # 使用改进的故障收敛时间测量方法
+        # --- 核心修改在这里 ---
+        # 在测量故障收敛时，只传入DUT的分析器
+        logger.info("开始测量DUT的故障收敛时间 (仅监控DUT)...")
         convergence_time = convergence_monitor.measure_fault_convergence(
-            fault_function=lambda: fault_injector.link_down(root_port),
-            analyzers=analyzers
+            fault_function=lambda: fault_injector.link_down(dut_manager, root_port),
+            analyzers=[rstp_analyzer]  # <--- 修改点: 只传入DUT的analyzer
         )
 
         # 验证收敛时间（RSTP应该小于2.5秒，考虑网络环境因素）
@@ -92,8 +94,10 @@ class TestConvergence:
         if len(test_nodes) > 1:
             test_nodes[1].execute_sudo("brctl setbridgeprio br0 28672")
 
-        # 等待初始收敛
-        time.sleep(5)
+        # 等待初始收敛 - 使用convergence_monitor确保完全收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        initial_convergence = convergence_monitor.wait_for_convergence(analyzers)
+        logger.info(f"初始收敛时间: {initial_convergence:.2f}秒")
 
         # 验证节点1是根网桥
         node1_analyzer = RSTPAnalyzer(test_nodes[0])
@@ -129,6 +133,64 @@ class TestConvergence:
 
         logger.info("根网桥故障测试通过")
 
+
+    @pytest.mark.slow
+    def test_single_link_failure_and_recovery(self, dut_manager, test_nodes,
+                                              network_topology, rstp_analyzer,
+                                              fault_injector, convergence_monitor):
+        """
+        测试单个链路故障和恢复场景。
+        分别在 TestNode1 和 TestNode2 上模拟链路中断，并测量收敛时间。
+        """
+        logger.info("开始单链路故障与恢复测试")
+
+        # 拓扑创建和初始收敛
+        network_topology.create_ring_topology(use_rstp=True)
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        convergence_monitor.wait_for_convergence(analyzers)
+
+        test_node_1 = test_nodes[0]
+        test_node_2 = test_nodes[1]
+        
+        # 定义要测试的故障点
+        # 格式: (要操作的节点, 要操作的接口)
+        failure_points = [
+            (test_node_1, "eth2"),
+            (test_node_2, "eth2")
+        ]
+
+        for node, interface in failure_points:
+            logger.info(f"===== 开始测试节点 {node.config.name} 接口 {interface} =====")
+            
+            # 1. 测量链路断开时的收敛时间
+            logger.info(f"注入故障: 在 {node.config.name} 上关闭 {interface}")
+            
+            down_convergence_time = convergence_monitor.measure_fault_convergence(
+                fault_function=lambda: fault_injector.link_down(node, interface),
+                analyzers=analyzers
+            )
+            
+            logger.info(f"链路断开收敛时间: {down_convergence_time:.3f} 秒")
+            assert down_convergence_time < 3.0, \
+                f"节点 {node.config.name} 接口 {interface} 断开时收敛时间过长: {down_convergence_time}"
+
+            time.sleep(5) # 等待网络在故障状态下稳定运行一段时间
+
+            # 2. 测量链路恢复时的收敛时间
+            logger.info(f"恢复链路: 在 {node.config.name} 上开启 {interface}")
+
+            up_convergence_time = convergence_monitor.measure_fault_convergence(
+                fault_function=lambda: fault_injector.link_up(node, interface),
+                analyzers=analyzers
+            )
+
+            logger.info(f"链路恢复收敛时间: {up_convergence_time:.3f} 秒")
+            assert up_convergence_time < 3.0, \
+                f"节点 {node.config.name} 接口 {interface} 恢复时收敛时间过长: {up_convergence_time}"
+
+            time.sleep(5) # 等待网络在恢复状态下稳定，准备下一次测试
+            logger.info(f"===== 完成测试节点 {node.config.name} 接口 {interface} =====")
+
     @pytest.mark.slow
     def test_multiple_link_failures(self, dut_manager, test_nodes,
                                     network_topology, rstp_analyzer,
@@ -143,16 +205,16 @@ class TestConvergence:
         analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
         convergence_monitor.wait_for_convergence(analyzers)
 
-        # 连续故障注入
+        # 连续故障注入 - DUT使用br3和br4接口
         failures = []
-        interfaces = ["eth0", "eth2"]
+        interfaces = ["br3", "br4"]
 
         for iface in interfaces:
             logger.info(f"注入故障: {iface}")
             
             # 使用改进的故障收敛时间测量方法
             convergence_time = convergence_monitor.measure_fault_convergence(
-                fault_function=lambda i=iface: fault_injector.link_down(i),
+                fault_function=lambda i=iface: fault_injector.link_down(dut_manager, i),
                 analyzers=analyzers
             )
             failures.append({
@@ -165,7 +227,7 @@ class TestConvergence:
 
         # 恢复所有链路
         for iface in interfaces:
-            fault_injector.link_up(iface)
+            fault_injector.link_up(dut_manager, iface)
 
         # 等待最终收敛
         final_convergence = convergence_monitor.wait_for_convergence(analyzers)
@@ -180,13 +242,20 @@ class TestConvergence:
 
     def test_convergence_with_traffic(self, dut_manager, test_nodes,
                                       network_topology, traffic_generator,
-                                      fault_injector, test_config):
+                                      fault_injector, convergence_monitor, test_config):
         """测试带流量的收敛性能"""
         logger.info("开始带流量的收敛测试")
 
         # 创建拓扑
         network_topology.create_ring_topology(use_rstp=True)
-        time.sleep(5)
+        
+        # 创建DUT的RSTP分析器
+        rstp_analyzer = RSTPAnalyzer(dut_manager)
+        
+        # 等待初始收敛
+        analyzers = [rstp_analyzer] + [RSTPAnalyzer(node) for node in test_nodes]
+        initial_convergence = convergence_monitor.wait_for_convergence(analyzers)
+        logger.info(f"初始收敛时间: {initial_convergence:.2f}秒")
 
         # 启动流量
         traffic_generator.start_iperf_server()
@@ -201,9 +270,9 @@ class TestConvergence:
         # 记录故障前的统计
         initial_stats = traffic_generator.get_statistics()
 
-        # 注入故障
+        # 注入故障 - DUT使用br3接口
         fault_time = time.time()
-        fault_injector.link_down("eth0")
+        fault_injector.link_down(dut_manager, "br3")
 
         # 监控流量中断
         time.sleep(10)
