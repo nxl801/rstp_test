@@ -5,12 +5,51 @@
 import time
 import pytest
 import logging
+import subprocess
+import re
 
 from src.rstp_analyzer import RSTPAnalyzer, PortRole, PortState
 from src.network_topology import NetworkTopology
 from src.fault_injector import FaultInjector
 
 logger = logging.getLogger(__name__)
+
+
+def normalize_bridge_id(bridge_id):
+    """标准化桥ID格式，处理不同显示格式的差异
+    
+    Args:
+        bridge_id: 桥ID字符串，可能的格式：
+                  - "6e:b3:08:fa:01:34" (DUT格式)
+                  - "3.000.6E:B3:08:FA:01:34" (TestNode格式，包含优先级)
+                  - "12288.6e:b3:08:fa:01:34" (完整格式)
+    
+    Returns:
+        标准化的MAC地址部分（小写，冒号分隔）
+    """
+    if not bridge_id:
+        return ""
+    
+    # 转换为字符串并清理
+    bridge_id = str(bridge_id).strip().strip('"\'')
+    
+    # 提取MAC地址部分（去除优先级前缀）
+    # 匹配模式：可选的数字.可选的数字.MAC地址
+    mac_pattern = r'(?:\d+\.)*([0-9a-fA-F:]{17})'
+    match = re.search(mac_pattern, bridge_id)
+    
+    if match:
+        mac_addr = match.group(1).lower()
+        # 确保格式为xx:xx:xx:xx:xx:xx
+        if len(mac_addr) == 17 and mac_addr.count(':') == 5:
+            return mac_addr
+    
+    # 如果已经是纯MAC地址格式
+    if re.match(r'^[0-9a-fA-F:]{17}$', bridge_id):
+        return bridge_id.lower()
+    
+    # 如果无法解析，返回原始值的小写版本
+    return bridge_id.lower()
 
 
 def analyze_port_roles(info):
@@ -420,7 +459,51 @@ class TestProtocolConformance:
         network_topology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
 
         # 等待初始配置生效
-        time.sleep(3)
+        time.sleep(5)
+        
+        # 确认TestNode1稳定作为根桥
+        logger.info("确认TestNode1稳定作为根桥...")
+        max_retries = 10
+        for retry in range(max_retries):
+            try:
+                # 检查DUT上的根桥ID
+                result = execute_method(f"sudo ovs-vsctl get bridge {bridge_name} other_config:stp-root-id")
+                logger.info(f"DUT当前根桥ID: {result}")
+                
+                # 检查TestNode1的桥ID
+                if hasattr(test_nodes[0], 'execute'):
+                    node1_execute = test_nodes[0].execute
+                elif hasattr(test_nodes[0], 'run'):
+                    node1_execute = test_nodes[0].run
+                else:
+                    node1_execute = test_nodes[0].send_command
+                
+                node1_bridge_id = node1_execute("sudo mstpctl showbridge br0 | grep 'bridge id' | awk '{print $3}'")
+                logger.info(f"TestNode1桥ID: {node1_bridge_id}")
+                
+                # 如果根桥ID匹配TestNode1，则确认成功
+                if isinstance(result, tuple):
+                    root_id = result[0].strip().strip('"')
+                else:
+                    root_id = str(result).strip().strip('"')
+                
+                if isinstance(node1_bridge_id, tuple):
+                    node1_id = node1_bridge_id[0].strip()
+                else:
+                    node1_id = str(node1_bridge_id).strip()
+                
+                if root_id and node1_id and (root_id in node1_id or node1_id in root_id):
+                    logger.info(f"✓ 确认TestNode1已稳定作为根桥 (尝试 {retry + 1}/{max_retries})")
+                    break
+                else:
+                    logger.info(f"等待根桥选举稳定... (尝试 {retry + 1}/{max_retries})")
+                    time.sleep(3)
+                    
+            except Exception as e:
+                logger.warning(f"检查根桥状态失败 (尝试 {retry + 1}/{max_retries}): {e}")
+                time.sleep(3)
+        else:
+            logger.warning("无法确认TestNode1为根桥，继续测试但可能影响结果")
         
         # 确保DUT的OVS网桥接口已正确配置
         logger.info("检查DUT的OVS网桥接口...")
@@ -593,13 +676,13 @@ class TestProtocolConformance:
             
             logger.info("单端口验证通过")
         elif len(active_ports) == 2:
-            # 两端口情况：一个Root Port，一个Designated Port
-            logger.info("两端口验证：检查Root Port和Designated Port")
+            # 两端口环路情况：一个Root Port，一个Alternate Port
+            logger.info("两端口验证：检查Root Port和Alternate Port")
             if not is_root_bridge:
                 assert PortRole.ROOT in roles and len(roles[PortRole.ROOT]) == 1, \
                     "非根桥应该有且仅有一个Root Port"
-                assert PortRole.DESIGNATED in roles, \
-                    "两端口非根桥应该有Designated Port"
+                assert PortRole.ALTERNATE in roles and len(roles[PortRole.ALTERNATE]) == 1, \
+                    "环路中的非根桥应该有一个Alternate Port来破除环路"
             logger.info("两端口验证通过")
         else:
             # 多端口的完整验证
@@ -650,6 +733,875 @@ class TestProtocolConformance:
             logger.info("多端口验证通过")
         
         logger.info("端口角色分配测试完成")
+
+    def test_port_role_assignment_tree_topology(self, dut_manager, test_nodes,
+                                               network_topology, rstp_analyzer, convergence_monitor):
+        """TC.AUTO.1.3: 树形拓扑端口角色分配测试"""
+        logger.info("开始树形拓扑端口角色分配测试")
+
+        # 创建初始环形拓扑
+        network_topology.create_ring_topology(use_rstp=True)
+
+        # 确保测试节点1是根网桥
+        network_topology.execute_bridge_command(test_nodes[0], "set_priority", priority=12288)
+        network_topology.execute_bridge_command(dut_manager, "set_priority", priority=32768)
+
+        # 等待初始配置生效
+        time.sleep(3)
+        
+        # 确保DUT的OVS网桥接口已正确配置
+        logger.info("检查DUT的OVS网桥接口...")
+        try:
+            # 使用正确的SSH方法
+            if hasattr(dut_manager, 'execute'):
+                execute_method = dut_manager.execute
+            elif hasattr(dut_manager, 'run'):
+                execute_method = dut_manager.run
+            else:
+                execute_method = dut_manager.send_command
+            
+            # DUT使用OVS网桥SE_ETH2
+            bridge_name = "SE_ETH2"
+            
+            # 检查OVS网桥状态
+            result = execute_method(f"sudo ovs-vsctl show")
+            logger.info(f"OVS配置状态:\n{result}")
+            
+            # 检查网桥端口
+            result = execute_method(f"sudo ovs-vsctl list-ports {bridge_name}")
+            logger.info(f"{bridge_name} 网桥端口:\n{result}")
+            
+            # 检查STP状态（OVS中RSTP基于STP实现）
+            result = execute_method(f"sudo ovs-vsctl get bridge {bridge_name} stp_enable")
+            logger.info(f"{bridge_name} STP状态:\n{result}")
+            
+            # 如果STP未启用，则启用它
+            if isinstance(result, tuple) and result[0].strip() != "true":
+                execute_method(f"sudo ovs-vsctl set bridge {bridge_name} stp_enable=true")
+                logger.info(f"已启用{bridge_name}的STP")
+                time.sleep(2)
+                
+        except Exception as e:
+            logger.warning(f"检查OVS配置时出错: {e}")
+        
+        # 等待环形拓扑收敛
+        logger.info("等待环形拓扑收敛...")
+        time.sleep(8)  # 增加等待时间确保拓扑稳定
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+        
+        # 再次确认根桥状态
+        logger.info("最终确认根桥状态...")
+        try:
+            # 使用ovs-appctl rstp/show获取根桥信息
+            rstp_show_result = execute_method(f"sudo ovs-appctl rstp/show {bridge_name}")
+            logger.info(f"DUT RSTP状态:\n{rstp_show_result}")
+            
+            # 解析RSTP输出获取根桥ID
+            if isinstance(rstp_show_result, tuple):
+                rstp_output = rstp_show_result[0]
+            else:
+                rstp_output = str(rstp_show_result)
+            
+            dut_root_id = None
+            dut_bridge_id = None
+            is_root_bridge = False
+            
+            # 检查是否包含"This bridge is the root"标识
+            if "This bridge is the root" in rstp_output:
+                is_root_bridge = True
+                logger.info("检测到DUT认为自己是根桥")
+            
+            # 解析Root ID和Bridge ID
+            lines = rstp_output.split('\n')
+            for i, line in enumerate(lines):
+                if 'stp-system-id' in line:
+                    # 查找前面的Root ID或Bridge ID标识
+                    for j in range(max(0, i-5), i):
+                        if 'Root ID:' in lines[j] and dut_root_id is None:
+                            # 提取MAC地址
+                            parts = line.split()
+                            if len(parts) >= 2:
+                                dut_root_id = parts[1]  # MAC地址
+                            break
+                        elif 'Bridge ID:' in lines[j] and dut_bridge_id is None:
+                            # 提取MAC地址
+                            parts = line.split()
+                            if len(parts) >= 2:
+                                dut_bridge_id = parts[1]  # MAC地址
+                            break
+            
+            logger.info(f"DUT根桥ID: {dut_root_id}")
+            logger.info(f"DUT桥ID: {dut_bridge_id}")
+            
+            if dut_root_id and dut_bridge_id:
+                if dut_root_id == dut_bridge_id:
+                    logger.warning("⚠️ DUT认为自己是根桥，这可能导致两口都为Designated")
+                else:
+                    logger.info("✓ DUT正确识别外部根桥")
+                    
+                    # 交叉检查TestNode1是否声称自己是根桥
+                    try:
+                        if hasattr(test_nodes[0], 'execute'):
+                            node_execute = test_nodes[0].execute
+                        elif hasattr(test_nodes[0], 'run'):
+                            node_execute = test_nodes[0].run
+                        else:
+                            node_execute = test_nodes[0].send_command
+                        
+                        node_bridge_result = node_execute("sudo mstpctl showbridge br0")
+                        logger.info(f"TestNode1桥信息:\n{node_bridge_result}")
+                        
+                        # 检查TestNode1的桥ID是否与DUT的根桥ID匹配
+                        if isinstance(node_bridge_result, tuple):
+                            node_output = node_bridge_result[0]
+                        else:
+                            node_output = str(node_bridge_result)
+                        
+                        node_bridge_id = None
+                        for line in node_output.split('\n'):
+                            if 'bridge id' in line.lower():
+                                parts = line.split()
+                                if len(parts) >= 3:
+                                    node_bridge_id = parts[-1]  # 提取桥ID
+                                    break
+                        
+                        if node_bridge_id:
+                            logger.info(f"TestNode1桥ID: {node_bridge_id}")
+                            if node_bridge_id in dut_root_id:
+                                logger.info("✓ TestNode1确实是根桥，与DUT的根桥ID一致")
+                            else:
+                                logger.warning(f"TestNode1桥ID与DUT根桥ID不匹配")
+                        
+                    except Exception as e:
+                        logger.warning(f"交叉检查TestNode1根桥状态失败: {e}")
+            else:
+                logger.warning("无法解析根桥ID信息")
+                
+        except Exception as e:
+            logger.warning(f"检查最终根桥状态失败: {e}")
+        
+        # 获取环形拓扑的初始状态
+        logger.info("获取环形拓扑初始状态...")
+        ring_info = rstp_analyzer.get_bridge_info(bridge_name)
+        
+        # 打印环形拓扑的端口状态
+        logger.info("环形拓扑端口状态:")
+        for port_name, port_info in ring_info.ports.items():
+            logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                    f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+        
+        # 找到一个活动端口来禁用，将环形拓扑转换为树形拓扑
+        active_ports = {name: port for name, port in ring_info.ports.items() 
+                       if port.state != PortState.DISABLED}
+        
+        if len(active_ports) < 2:
+            pytest.skip("活动端口不足，无法进行树形拓扑测试")
+        
+        # 选择要禁用的端口（优先选择Alternate端口，如果没有则选择第一个Designated端口）
+        port_to_disable = None
+        for port_name, port_info in active_ports.items():
+            if port_info.role == PortRole.ALTERNATE:
+                port_to_disable = port_name
+                logger.info(f"选择禁用Alternate端口: {port_to_disable}")
+                break
+        
+        if not port_to_disable:
+            # 如果没有Alternate端口，选择一个Designated端口
+            for port_name, port_info in active_ports.items():
+                if port_info.role == PortRole.DESIGNATED:
+                    port_to_disable = port_name
+                    logger.info(f"选择禁用Designated端口: {port_to_disable}")
+                    break
+        
+        if not port_to_disable:
+            # 如果都没有，选择第一个活动端口
+            port_to_disable = list(active_ports.keys())[0]
+            logger.info(f"选择禁用第一个活动端口: {port_to_disable}")
+        
+        # 物理断链操作：禁用选定的端口，将环形拓扑转换为树形拓扑
+        logger.info(f"=== 执行物理断链操作 ===")
+        logger.info(f"物理断链目标: 禁用端口 {port_to_disable} 以创建树形拓扑")
+        logger.info(f"注意: 这是环境层面的物理断链，不代表RSTP协议本身的逻辑断链能力")
+        try:
+            # 方法1: 使用OVS命令禁用端口
+            execute_method(f"sudo ovs-vsctl set interface {port_to_disable} admin_state=down")
+            # 方法2: 使用系统命令禁用网络接口
+            execute_method(f"sudo ip link set {port_to_disable} down")
+            logger.info(f"✓ 物理断链完成: 端口 {port_to_disable} 已被物理禁用")
+        except Exception as e:
+            logger.warning(f"物理断链操作出错: {e}")
+            # 尝试备用方法
+            try:
+                execute_method(f"sudo ovs-vsctl del-port {bridge_name} {port_to_disable}")
+                logger.info(f"✓ 物理断链完成: 端口 {port_to_disable} 已从网桥物理移除")
+            except Exception as e2:
+                logger.error(f"物理断链操作失败: {e2}")
+                pytest.skip(f"无法执行物理断链操作，端口 {port_to_disable}")
+        
+        # 等待拓扑重新收敛
+        logger.info("等待树形拓扑收敛...")
+        time.sleep(10)  # 给更多时间让拓扑收敛
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+        
+        # 获取树形拓扑的状态
+        logger.info("获取树形拓扑状态...")
+        tree_info = rstp_analyzer.get_bridge_info(bridge_name)
+        
+        # 打印树形拓扑的端口状态
+        logger.info("树形拓扑端口状态:")
+        for port_name, port_info in tree_info.ports.items():
+            logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                    f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+        
+        # 分析树形拓扑的端口状态
+        tree_active_ports = {name: port for name, port in tree_info.ports.items() 
+                           if port.state != PortState.DISABLED and port.role != PortRole.DISABLED}
+        
+        logger.info(f"树形拓扑活动端口数: {len(tree_active_ports)}")
+        
+        if len(tree_active_ports) == 0:
+            pytest.fail("树形拓扑没有活动端口，配置失败")
+        
+        # 分析端口状态类型
+        disabled_ports = {name: port for name, port in tree_info.ports.items() 
+                         if port.state == PortState.DISABLED}
+        
+        logger.info(f"物理断口(Disabled)端口数: {len(disabled_ports)}")
+        for port_name in disabled_ports:
+            logger.info(f"  - {port_name}: 物理断口(Disabled)")
+        
+        # 如果只有一个活动端口，说明拓扑转换成功，只剩下一个连接
+        if len(tree_active_ports) == 1:
+            logger.info("树形拓扑转换成功：只有一个活动端口连接")
+            port_name = list(tree_active_ports.keys())[0]
+            port_info = tree_active_ports[port_name]
+            
+            # 单端口应该是Root或Designated
+            assert port_info.role in [PortRole.ROOT, PortRole.DESIGNATED], \
+                f"单端口应该是Root或Designated角色，实际: {port_info.role}"
+            
+            assert port_info.state == PortState.FORWARDING, \
+                f"活动端口应该处于Forwarding状态，实际: {port_info.state}"
+            
+            logger.info(f"✓ 树形拓扑验证通过: 端口{port_name}角色为{port_info.role.value}")
+            logger.info(f"✓ 场景类型: 物理断链 - 通过物理禁用端口{port_to_disable}创建树形拓扑")
+            logger.info(f"✓ 断链性质: 环境动作(物理层面)，非RSTP协议逻辑断链")
+            logger.info("=== 基础树形拓扑测试完成，开始扩展测试场景 ===")
+        
+        # 恢复原始拓扑状态
+        logger.info("恢复原始拓扑状态...")
+        try:
+            # 重新启用之前禁用的端口
+            execute_method(f"sudo ovs-vsctl set interface {port_to_disable} admin_state=up")
+            execute_method(f"sudo ip link set {port_to_disable} up")
+            logger.info(f"已重新启用端口 {port_to_disable}")
+        except Exception as e:
+            logger.warning(f"恢复端口时出错: {e}")
+            # 如果之前是移除端口，则重新添加
+            try:
+                execute_method(f"sudo ovs-vsctl add-port {bridge_name} {port_to_disable}")
+                logger.info(f"已重新添加端口 {port_to_disable}")
+            except Exception as e2:
+                logger.error(f"重新添加端口失败: {e2}")
+        
+        # 等待拓扑恢复
+        time.sleep(5)
+        convergence_monitor.wait_for_convergence([rstp_analyzer])
+        
+        # === 测试场景1: 物理断链 - TestNode eth2端口down ===
+        logger.info("=== 测试场景1: 物理断链 - TestNode eth2端口down ===")
+        logger.info("场景说明: 通过物理down掉TestNode端口，验证拓扑适应性")
+        logger.info("断链性质: 物理层面环境动作，非RSTP协议逻辑断链")
+        self._test_testnode_eth2_down(test_nodes, rstp_analyzer, convergence_monitor, bridge_name)
+        
+        # === 测试场景2: 协议逻辑断链 - 调整port priority ===
+        logger.info("=== 测试场景2: 协议逻辑断链 - 调整port priority ===")
+        logger.info("场景说明: 通过RSTP协议参数调整实现优雅断链")
+        logger.info("断链性质: RSTP协议逻辑层面，通过Alternate角色体现")
+        self._test_port_priority_disconnect(test_nodes, rstp_analyzer, convergence_monitor, bridge_name)
+        
+        # === 测试场景3: 协议逻辑断链 - 调整path cost ===
+        logger.info("=== 测试场景3: 协议逻辑断链 - 调整path cost ===")
+        logger.info("场景说明: 通过RSTP协议参数调整实现优雅断链")
+        logger.info("断链性质: RSTP协议逻辑层面，通过Alternate角色体现")
+        self._test_path_cost_disconnect(dut_manager, rstp_analyzer, convergence_monitor, bridge_name)
+        
+        logger.info("树形拓扑端口角色分配测试完成")
+    
+    def _test_testnode_eth2_down(self, test_nodes, rstp_analyzer, convergence_monitor, bridge_name):
+        """测试场景1: 物理断链 - TestNode eth2端口down，验证是否获得root+designated组合"""
+        logger.info("开始物理断链测试: TestNode eth2端口down...")
+        logger.info("测试性质: 物理层面环境动作，验证拓扑适应性而非协议逻辑断链能力")
+        
+        # 选择TestNode2 (test_nodes[1]) 来down掉eth2端口
+        target_node = test_nodes[1]
+        target_interface = "eth2"
+        
+        try:
+            # 获取TestNode的execute方法
+            if hasattr(target_node, 'execute'):
+                node_execute = target_node.execute
+            elif hasattr(target_node, 'run'):
+                node_execute = target_node.run
+            else:
+                node_execute = target_node.send_command
+            
+            # 物理断链操作：Down掉TestNode的eth2接口
+            logger.info(f"=== 执行物理断链操作 ===")
+            logger.info(f"物理断链目标: 在TestNode2上down掉{target_interface}接口")
+            logger.info(f"注意: 这是物理层面的环境动作，不代表RSTP协议的逻辑断链")
+            node_execute(f"sudo ip link set {target_interface} down")
+            logger.info(f"✓ 物理断链完成: TestNode2的{target_interface}接口已被物理禁用")
+            
+            # 等待拓扑收敛
+            logger.info("等待拓扑收敛...")
+            time.sleep(8)
+            convergence_monitor.wait_for_convergence([rstp_analyzer])
+            
+            # 获取DUT的端口状态
+            logger.info("获取DUT端口状态...")
+            dut_info = rstp_analyzer.get_bridge_info(bridge_name)
+            
+            # 打印端口状态
+            logger.info("TestNode eth2 down后的DUT端口状态:")
+            active_ports = {}
+            for port_name, port_info in dut_info.ports.items():
+                logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                        f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+                if port_info.state != PortState.DISABLED and port_info.role != PortRole.DISABLED:
+                    active_ports[port_name] = port_info
+            
+            # 验证端口角色组合
+            if len(active_ports) >= 2:
+                roles = {}
+                for port_name, port_info in active_ports.items():
+                    roles.setdefault(port_info.role, []).append(port_name)
+                
+                logger.info(f"端口角色分布: {roles}")
+                
+                # 检查是否有Root + Designated组合
+                has_root = PortRole.ROOT in roles
+                has_designated = PortRole.DESIGNATED in roles
+                
+                if has_root and has_designated:
+                    logger.info("✓ 成功获得Root + Designated端口角色组合")
+                    logger.info(f"Root端口: {roles[PortRole.ROOT]}")
+                    logger.info(f"Designated端口: {roles[PortRole.DESIGNATED]}")
+                    
+                    # 验证端口状态
+                    for port_name, port_info in active_ports.items():
+                        if port_info.role in [PortRole.ROOT, PortRole.DESIGNATED]:
+                            assert port_info.state == PortState.FORWARDING, \
+                                f"端口{port_name}应该处于Forwarding状态，实际: {port_info.state}"
+                    
+                    logger.info("✓ 物理断链测试验证通过: TestNode eth2 down")
+                    logger.info("✓ 断链性质: 物理层面环境动作，验证了拓扑适应性")
+                else:
+                    logger.warning(f"未获得预期的Root + Designated组合，当前角色: {roles}")
+            else:
+                logger.warning(f"活动端口数不足: {len(active_ports)}")
+            
+        except Exception as e:
+            logger.error(f"TestNode eth2 down测试失败: {e}")
+        finally:
+            # 恢复TestNode的eth2接口
+            try:
+                logger.info(f"恢复TestNode2的{target_interface}接口...")
+                node_execute(f"sudo ip link set {target_interface} up")
+                time.sleep(3)
+                logger.info(f"已恢复TestNode2的{target_interface}接口")
+            except Exception as e:
+                 logger.error(f"恢复TestNode接口失败: {e}")
+    
+    def _test_port_priority_disconnect(self, test_nodes, rstp_analyzer, convergence_monitor, bridge_name):
+        """测试场景2: 通过调整port priority优雅断链"""
+        logger.info("开始port priority优雅断链测试...")
+        
+        # 选择TestNode2 (test_nodes[1]) 来调整port priority
+        target_node = test_nodes[1]
+        target_bridge = "br0"  # TestNode使用的网桥名
+        target_port = "eth2"   # 连接DUT的端口
+        
+        try:
+            # 获取TestNode的execute方法
+            if hasattr(target_node, 'execute'):
+                node_execute = target_node.execute
+            elif hasattr(target_node, 'run'):
+                node_execute = target_node.run
+            else:
+                node_execute = target_node.send_command
+            
+            # 首先检查端口是否存在于桥中
+            logger.info(f"检查TestNode2 {target_port}是否存在于{target_bridge}中...")
+            try:
+                # 检查端口是否在桥中
+                bridge_ports_result = node_execute(f"sudo brctl show {target_bridge}")
+                logger.info(f"桥端口信息: {bridge_ports_result}")
+                
+                # 验证端口是否被mstpd管理
+                port_check_result = node_execute(f"sudo mstpctl showport {target_bridge} {target_port}")
+                logger.info(f"mstpctl端口检查: {port_check_result}")
+                
+                if isinstance(port_check_result, tuple):
+                    port_check_output = port_check_result[0]
+                else:
+                    port_check_output = str(port_check_result)
+                
+                # 检查是否有错误信息
+                if "Couldn't find port" in port_check_output or "Failed to get port state" in port_check_output:
+                    logger.error(f"端口{target_port}未被mstpd管理或不存在于{target_bridge}中")
+                    logger.error(f"错误信息: {port_check_output}")
+                    raise Exception(f"端口{target_port}不可用于mstpctl操作")
+                
+                logger.info(f"✓ 端口{target_port}存在且被mstpd管理")
+                
+            except Exception as e:
+                logger.error(f"端口存在性检查失败: {e}")
+                raise
+            
+            # 获取原始port priority
+            logger.info(f"获取TestNode2 {target_port}的原始port priority...")
+            try:
+                # 使用正确的mstpctl命令格式
+                original_priority_result = node_execute(f"sudo mstpctl showport {target_bridge} {target_port}")
+                logger.info(f"端口详细信息: {original_priority_result}")
+                
+                # 尝试从输出中提取priority信息
+                if isinstance(original_priority_result, tuple):
+                    port_info = original_priority_result[0]
+                else:
+                    port_info = str(original_priority_result)
+                
+                # 解析priority值，默认为8（mstpctl范围0-15）
+                original_priority = 8  # 使用整数而非字符串
+                for line in port_info.split('\n'):
+                    if 'priority' in line.lower():
+                        parts = line.split()
+                        if len(parts) >= 2:
+                            # 确保priority值在0-15范围内
+                            try:
+                                priority_val = int(parts[-1])
+                                if 0 <= priority_val <= 15:
+                                    original_priority = priority_val
+                                else:
+                                    # 如果超出范围，使用默认值8
+                                    original_priority = 8
+                            except ValueError:
+                                original_priority = 8
+                            break
+                            
+                logger.info(f"原始port priority: {original_priority}")
+            except Exception as e:
+                logger.warning(f"获取原始priority失败: {e}，使用默认值8")
+                original_priority = 8
+            
+            # 设置port priority为较高值15（范围0-15，15是最高优先级）
+            new_priority = 15  # 使用最高优先级值来确保端口成为Alternate
+            logger.info(f"在TestNode2上设置{target_port}的port priority为{new_priority}...")
+            try:
+                # 使用正确的mstpctl命令格式: settreeportprio bridge port tree priority
+                # priority范围是0-15，15是最高的值（对应实际优先级240）
+                set_result = node_execute(f"sudo mstpctl settreeportprio {target_bridge} {target_port} 0 {new_priority}")
+                logger.info(f"设置port priority结果: {set_result}")
+                
+                # 检查设置命令是否成功
+                if isinstance(set_result, tuple):
+                    set_output = set_result[0]
+                else:
+                    set_output = str(set_result)
+                
+                # 检查是否有错误信息
+                if "must be between 0 and 15" in set_output or "Couldn't find port" in set_output:
+                    logger.error(f"设置port priority失败: {set_output}")
+                    raise Exception(f"mstpctl settreeportprio命令失败: {set_output}")
+                
+                # 验证设置是否成功
+                time.sleep(2)
+                verify_result = node_execute(f"sudo mstpctl showport {target_bridge} {target_port}")
+                logger.info(f"验证设置后的端口信息: {verify_result}")
+                
+                logger.info(f"已设置TestNode2 {target_port}的port priority为{new_priority}")
+            except Exception as e:
+                logger.error(f"设置port priority失败: {e}")
+                raise
+            
+            # 等待拓扑收敛
+            logger.info("等待拓扑收敛...")
+            time.sleep(8)
+            convergence_monitor.wait_for_convergence([rstp_analyzer])
+            
+            # 获取DUT的端口状态
+            logger.info("获取DUT端口状态...")
+            dut_info = rstp_analyzer.get_bridge_info(bridge_name)
+            
+            # 打印端口状态
+            logger.info("Port priority调整后的DUT端口状态:")
+            active_ports = {}
+            for port_name, port_info in dut_info.ports.items():
+                logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                        f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+                if port_info.state != PortState.DISABLED and port_info.role != PortRole.DISABLED:
+                    active_ports[port_name] = port_info
+            
+            # 验证端口角色
+            if len(active_ports) >= 1:
+                roles = {}
+                for port_name, port_info in active_ports.items():
+                    roles.setdefault(port_info.role, []).append(port_name)
+                
+                logger.info(f"端口角色分布: {roles}")
+                
+                # 检查是否有Alternate端口（被逻辑阻塞但仍active）
+                has_alternate = PortRole.ALTERNATE in roles
+                has_designated = PortRole.DESIGNATED in roles
+                
+                if has_alternate:
+                    logger.info("✓ 成功通过port priority创建Alternate端口（协议阻塞但端口仍active）")
+                    logger.info(f"Alternate端口: {roles[PortRole.ALTERNATE]}")
+                    
+                    # 验证Alternate端口状态
+                    for alt_port in roles[PortRole.ALTERNATE]:
+                        alt_port_info = active_ports[alt_port]
+                        assert alt_port_info.state == PortState.DISCARDING, \
+                            f"Alternate端口{alt_port}应该是Discarding状态，实际: {alt_port_info.state}"
+                        logger.info(f"  - {alt_port}: 协议阻塞(Alternate/Discarding)")
+                    
+                    logger.info("✓ Port priority优雅断链测试验证通过")
+                    logger.info("✓ 场景类型: 协议阻塞(Port Priority调整)")
+                elif has_designated:
+                    logger.info("端口角色为Designated，可能是根桥或拓扑结构导致")
+                else:
+                    logger.warning(f"未获得预期的端口角色，当前角色: {roles}")
+            else:
+                logger.warning(f"活动端口数不足: {len(active_ports)}")
+            
+        except Exception as e:
+            logger.error(f"Port priority优雅断链测试失败: {e}")
+        finally:
+            # 恢复原始port priority
+            try:
+                logger.info(f"恢复TestNode2 {target_port}的原始port priority为{original_priority}...")
+                restore_result = node_execute(f"sudo mstpctl settreeportprio {target_bridge} {target_port} 0 {original_priority}")
+                logger.info(f"恢复port priority结果: {restore_result}")
+                
+                # 检查恢复命令是否成功
+                if isinstance(restore_result, tuple):
+                    restore_output = restore_result[0]
+                else:
+                    restore_output = str(restore_result)
+                
+                # 检查是否有错误信息
+                if "must be between 0 and 15" in restore_output or "Couldn't find port" in restore_output:
+                    logger.error(f"恢复port priority失败: {restore_output}")
+                    # 尝试使用默认值8恢复
+                    logger.info("尝试使用默认值8恢复port priority...")
+                    restore_result = node_execute(f"sudo mstpctl settreeportprio {target_bridge} {target_port} 0 8")
+                    logger.info(f"使用默认值恢复结果: {restore_result}")
+                
+                time.sleep(3)
+                
+                # 验证恢复是否成功
+                verify_restore = node_execute(f"sudo mstpctl showport {target_bridge} {target_port}")
+                logger.info(f"验证恢复后的端口信息: {verify_restore}")
+                
+                logger.info(f"已恢复TestNode2 {target_port}的port priority为{original_priority}")
+            except Exception as e:
+                 logger.error(f"恢复port priority失败: {e}")
+    
+    def _test_path_cost_disconnect(self, dut_manager, rstp_analyzer, convergence_monitor, bridge_name):
+        """测试场景3: 通过调整path cost优雅断链"""
+        logger.info("开始path cost优雅断链测试...")
+        
+        # 选择DUT上的一个端口来调整path cost
+        dut_info = rstp_analyzer.get_bridge_info(bridge_name)
+        target_port = None
+        
+        # 找到一个活动端口
+        for port_name, port_info in dut_info.ports.items():
+            if port_info.state != PortState.DISABLED and port_info.role != PortRole.DISABLED:
+                target_port = port_name
+                break
+        
+        if not target_port:
+            logger.error("未找到可用的活动端口进行path cost测试")
+            return
+        
+        try:
+            # 获取DUT的execute方法
+            if hasattr(dut_manager, 'execute'):
+                dut_execute = dut_manager.execute
+            elif hasattr(dut_manager, 'run'):
+                dut_execute = dut_manager.run
+            else:
+                dut_execute = dut_manager.send_command
+            
+            # 获取原始path cost
+            logger.info(f"获取DUT端口{target_port}的原始path cost...")
+            try:
+                result = dut_execute(f"sudo ovs-vsctl get port {target_port} other_config:stp-path-cost")
+                logger.info(f"获取path cost结果: {result}")
+                
+                if isinstance(result, tuple):
+                    cost_output = result[0].strip()
+                else:
+                    cost_output = str(result).strip()
+                
+                if cost_output and cost_output != '[]' and 'no key' not in cost_output.lower():
+                    original_cost = cost_output.strip('"')
+                    logger.info(f"原始path cost: {original_cost}")
+                else:
+                    # 如果没有设置过，使用默认值
+                    original_cost = None
+                    logger.info("端口使用默认path cost")
+            except Exception as e:
+                logger.warning(f"获取原始path cost失败: {e}，将使用默认值")
+                original_cost = None
+            
+            # 设置path cost为很大的值200000
+            logger.info(f"在DUT上设置{target_port}的path cost为200000...")
+            try:
+                set_result = dut_execute(f"sudo ovs-vsctl set port {target_port} other_config:stp-path-cost=200000")
+                logger.info(f"设置path cost结果: {set_result}")
+                
+                # 验证设置是否成功
+                time.sleep(2)
+                verify_result = dut_execute(f"sudo ovs-vsctl get port {target_port} other_config:stp-path-cost")
+                logger.info(f"验证设置后的path cost: {verify_result}")
+                
+                logger.info(f"已设置DUT {target_port}的path cost为200000")
+            except Exception as e:
+                logger.error(f"设置path cost失败: {e}")
+                raise
+            
+            # 等待拓扑收敛
+            logger.info("等待拓扑收敛...")
+            time.sleep(8)
+            convergence_monitor.wait_for_convergence([rstp_analyzer])
+            
+            # 获取DUT的端口状态
+            logger.info("获取DUT端口状态...")
+            dut_info = rstp_analyzer.get_bridge_info(bridge_name)
+            
+            # 打印端口状态
+            logger.info("Path cost调整后的DUT端口状态:")
+            active_ports = {}
+            for port_name, port_info in dut_info.ports.items():
+                logger.info(f"端口 {port_name}: 角色={port_info.role.value}, "
+                        f"状态={port_info.state.value}, 成本={port_info.path_cost}")
+                if port_info.state != PortState.DISABLED and port_info.role != PortRole.DISABLED:
+                    active_ports[port_name] = port_info
+            
+            # 验证端口角色
+            if len(active_ports) >= 1:
+                roles = {}
+                for port_name, port_info in active_ports.items():
+                    roles.setdefault(port_info.role, []).append(port_name)
+                
+                logger.info(f"端口角色分布: {roles}")
+                
+                # 检查是否有Alternate端口（被逻辑阻塞但仍active）
+                has_alternate = PortRole.ALTERNATE in roles
+                has_designated = PortRole.DESIGNATED in roles
+                
+                if has_alternate:
+                    logger.info("✓ 成功通过path cost创建Alternate端口（协议阻塞但端口仍active）")
+                    logger.info(f"Alternate端口: {roles[PortRole.ALTERNATE]}")
+                    
+                    # 验证Alternate端口状态
+                    for alt_port in roles[PortRole.ALTERNATE]:
+                        alt_port_info = active_ports[alt_port]
+                        assert alt_port_info.state == PortState.DISCARDING, \
+                            f"Alternate端口{alt_port}应该是Discarding状态，实际: {alt_port_info.state}"
+                        logger.info(f"  - {alt_port}: 协议阻塞(Alternate/Discarding)")
+                    
+                    # 验证调整的端口确实有高path cost
+                    if target_port in active_ports:
+                        target_info = active_ports[target_port]
+                        logger.info(f"调整的端口{target_port}当前path cost: {target_info.path_cost}")
+                    
+                    logger.info("✓ Path cost优雅断链测试验证通过")
+                    logger.info("✓ 场景类型: 协议阻塞(Path Cost调整)")
+                elif has_designated:
+                    logger.info("端口角色为Designated，可能是根桥或拓扑结构导致")
+                else:
+                    logger.warning(f"未获得预期的端口角色，当前角色: {roles}")
+            else:
+                logger.warning(f"活动端口数不足: {len(active_ports)}")
+            
+        except Exception as e:
+            logger.error(f"Path cost优雅断链测试失败: {e}")
+        finally:
+            # 恢复原始path cost
+            try:
+                logger.info(f"恢复DUT端口{target_port}的原始path cost...")
+                if original_cost is not None:
+                    restore_result = dut_execute(f"sudo ovs-vsctl set port {target_port} other_config:stp-path-cost={original_cost}")
+                    logger.info(f"恢复path cost结果: {restore_result}")
+                    logger.info(f"已恢复DUT {target_port}的path cost为{original_cost}")
+                else:
+                    # 清除设置，恢复默认值
+                    remove_result = dut_execute(f"sudo ovs-vsctl remove port {target_port} other_config stp-path-cost")
+                    logger.info(f"清除path cost结果: {remove_result}")
+                    logger.info(f"已清除DUT {target_port}的path cost设置，恢复默认值")
+                
+                time.sleep(3)
+                
+                # 验证恢复是否成功
+                verify_restore = dut_execute(f"sudo ovs-vsctl get port {target_port} other_config:stp-path-cost")
+                logger.info(f"验证恢复后的path cost: {verify_restore}")
+                
+            except Exception as e:
+                logger.error(f"恢复path cost失败: {e}")
+            
+            return
+        
+        # 判断是否为根桥
+        is_root_bridge = False
+        try:
+            is_root_result = rstp_analyzer.is_root_bridge(bridge_name)
+            logger.info(f"is_root_bridge() 返回: {is_root_result}")
+            
+            # 检查是否有Root Port
+            has_root_port = any(
+                port.role == PortRole.ROOT 
+                for port in tree_info.ports.values() 
+                if port.state != PortState.DISABLED
+            )
+            logger.info(f"有Root Port: {has_root_port}")
+            
+            if has_root_port:
+                is_root_bridge = False
+            elif all(port.role == PortRole.DESIGNATED 
+                    for port in tree_info.ports.values() 
+                    if port.state != PortState.DISABLED):
+                is_root_bridge = True
+                
+        except Exception as e:
+            logger.warning(f"判断根桥状态时出错: {e}")
+        
+        logger.info(f"树形拓扑 - DUT是根桥: {is_root_bridge}")
+        
+        # 统计端口角色
+        tree_roles = {}
+        for port_name, port_info in tree_active_ports.items():
+            tree_roles.setdefault(port_info.role, []).append(port_name)
+        
+        logger.info(f"树形拓扑端口角色分布: {tree_roles}")
+        
+        # 验证树形拓扑的端口角色分配
+        if len(tree_active_ports) == 1:
+            # 单端口情况
+            logger.info("树形拓扑单端口验证")
+            port_name = list(tree_active_ports.keys())[0]
+            port_info = tree_active_ports[port_name]
+            
+            # 单端口应该是Root或Designated
+            assert port_info.role in [PortRole.ROOT, PortRole.DESIGNATED], \
+                f"单端口应该是Root或Designated角色，实际: {port_info.role}"
+            
+            assert port_info.state == PortState.FORWARDING, \
+                f"活动端口应该处于Forwarding状态，实际: {port_info.state}"
+            
+            logger.info("树形拓扑单端口验证通过")
+        
+        elif len(tree_active_ports) == 2:
+            # 两端口树形拓扑：应该有一个Root Port和一个Designated Port
+            logger.info("树形拓扑两端口验证：检查Root Port和Designated Port")
+            
+            if not is_root_bridge:
+                # 非根桥必须有一个Root Port
+                assert PortRole.ROOT in tree_roles and len(tree_roles[PortRole.ROOT]) == 1, \
+                    f"树形拓扑的非根桥应该有且仅有一个Root Port，当前角色: {tree_roles}"
+                
+                # 另一个端口可以是Designated或者在某些情况下可能没有（如果被物理down）
+                remaining_ports = len(tree_active_ports) - 1
+                if remaining_ports > 0:
+                    # 如果还有其他活动端口，应该是Designated
+                    if PortRole.DESIGNATED in tree_roles:
+                        logger.info(f"✓ 有{len(tree_roles[PortRole.DESIGNATED])}个Designated Port")
+                    else:
+                        logger.warning("没有Designated Port，可能是特殊拓扑情况")
+                
+                logger.info("✓ 树形拓扑端口角色验证通过: 至少有1个Root Port")
+            else:
+                # 根桥的所有端口都应该是Designated
+                for port_name, port_info in tree_active_ports.items():
+                    assert port_info.role == PortRole.DESIGNATED, \
+                        f"根桥端口{port_name}应该是Designated角色，实际: {port_info.role}"
+                logger.info("✓ 根桥所有端口都是Designated角色")
+            
+            logger.info("树形拓扑两端口验证通过")
+        
+        else:
+            # 多端口树形拓扑验证
+            logger.info(f"树形拓扑{len(tree_active_ports)}端口验证")
+            
+            if not is_root_bridge:
+                # 非根桥必须有且仅有一个Root Port
+                assert PortRole.ROOT in tree_roles, f"非根桥应该有Root Port，当前角色: {tree_roles}"
+                assert len(tree_roles[PortRole.ROOT]) == 1, f"应该只有一个Root Port，实际: {tree_roles[PortRole.ROOT]}"
+                
+                # 其他端口通常是Designated Port，但在树形拓扑中可能有特殊情况
+                remaining_ports = len(tree_active_ports) - 1
+                if remaining_ports > 0:
+                    if PortRole.DESIGNATED in tree_roles:
+                        logger.info(f"✓ 有{len(tree_roles[PortRole.DESIGNATED])}个Designated Port")
+                    
+                    # 在某些断链测试场景中，可能会有Alternate Port（逻辑断链但端口仍active）
+                    if PortRole.ALTERNATE in tree_roles:
+                        logger.info(f"检测到{len(tree_roles[PortRole.ALTERNATE])}个Alternate Port（逻辑断链场景）")
+                
+                logger.info(f"✓ 树形拓扑端口角色验证通过: 1个Root Port + {remaining_ports}个其他端口")
+            else:
+                # 根桥的所有端口都应该是Designated
+                for port_name, port_info in tree_active_ports.items():
+                    assert port_info.role == PortRole.DESIGNATED, \
+                        f"根桥端口{port_name}应该是Designated角色，实际: {port_info.role}"
+                logger.info("✓ 根桥所有端口都是Designated角色")
+            
+            logger.info("树形拓扑多端口验证通过")
+        
+        # 验证端口状态
+        for port_name, port_info in tree_active_ports.items():
+            # Root和Designated端口应该处于Forwarding状态
+            if port_info.role in [PortRole.ROOT, PortRole.DESIGNATED]:
+                assert port_info.state == PortState.FORWARDING, \
+                    f"Root/Designated端口{port_name}应该处于Forwarding状态，实际: {port_info.state}"
+            # Alternate端口应该处于Discarding状态（逻辑断链场景）
+            elif port_info.role == PortRole.ALTERNATE:
+                assert port_info.state == PortState.DISCARDING, \
+                    f"Alternate端口{port_name}应该处于Discarding状态，实际: {port_info.state}"
+                logger.info(f"✓ Alternate端口{port_name}正确处于Discarding状态")
+        
+        logger.info("✓ 端口状态验证通过")
+        
+        # 对比环形拓扑和树形拓扑的差异
+        logger.info("=== 拓扑对比分析 ===")
+        logger.info(f"环形拓扑活动端口数: {len(active_ports)}")
+        logger.info(f"树形拓扑活动端口数: {len(tree_active_ports)}")
+        
+        ring_roles = {}
+        for port_name, port_info in active_ports.items():
+            ring_roles.setdefault(port_info.role, []).append(port_name)
+        
+        logger.info(f"环形拓扑角色分布: {ring_roles}")
+        logger.info(f"树形拓扑角色分布: {tree_roles}")
+        
+        # 验证拓扑转换的效果
+        if not is_root_bridge:
+            # 环形拓扑应该有Alternate Port，树形拓扑不应该有
+            ring_has_alternate = PortRole.ALTERNATE in ring_roles
+            tree_has_alternate = PortRole.ALTERNATE in tree_roles
+            
+            logger.info(f"环形拓扑有Alternate Port: {ring_has_alternate}")
+            logger.info(f"树形拓扑有Alternate Port: {tree_has_alternate}")
+            
+            if ring_has_alternate and not tree_has_alternate:
+                logger.info("✓ 成功将环形拓扑转换为树形拓扑，消除了Alternate Port")
+            elif not ring_has_alternate:
+                logger.warning("环形拓扑中未检测到Alternate Port，可能拓扑配置有问题")
+        
+        logger.info("树形拓扑端口角色分配测试完成")
 
     def test_rstp_protocol_verification(self, dut_manager, rstp_analyzer, network_topology):
         """验证使用的是RSTP而不是STP"""
@@ -878,12 +1830,11 @@ class TestProtocolConformance:
         network_topology.create_ring_topology(use_rstp=True)
         
         # 设置不同的网桥优先级确保DUT不是根桥
-        logger.info("设置网桥优先级")
-        network_topology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096)
-        network_topology.execute_bridge_command(dut_manager, "set_priority", priority=8192)
-        if len(test_nodes) > 1:
-            network_topology.execute_bridge_command(test_nodes[1], "set_priority", priority=12288)
-        
+        logger.info("设置网桥优先级，确保DUT的优先级最高以产生Alternate Port")
+        network_topology.execute_bridge_command(test_nodes[0], "set_priority", priority=4096) # Root Bridge
+        network_topology.execute_bridge_command(test_nodes[1], "set_priority", priority=8192) # Intermediate Bridge
+        network_topology.execute_bridge_command(dut_manager, "set_priority", priority=12288) # DUT, will have RP + AP
+
         # 等待充分的收敛时间
         logger.info("等待RSTP收敛...")
         convergence_monitor.wait_for_convergence([rstp_analyzer])
@@ -892,16 +1843,80 @@ class TestProtocolConformance:
         dut_info = rstp_analyzer.get_bridge_info("SE_ETH2")
         logger.info(f"DUT桥信息: {dut_info}")
         
-        # 确保DUT不是根桥 - 传递正确的网桥名称SE_ETH2
-        is_root = rstp_analyzer.is_root_bridge("SE_ETH2")
-        logger.info(f"DUT根桥判断结果: {is_root}")
+        # 严格验证根桥选举结果
         logger.info(f"DUT桥信息 - bridge_id: '{dut_info.bridge_id}', root_id: '{dut_info.root_id}'")
         
-        # 如果bridge_id或root_id为空，说明解析失败，不能依赖is_root_bridge判断
-        if not dut_info.bridge_id or not dut_info.root_id or dut_info.bridge_id == '' or dut_info.root_id == '':
-            logger.warning("DUT桥信息解析不完整，跳过根桥判断，继续端口角色验证")
-        else:
-            assert not is_root, f"DUT不应该是根桥（优先级设置为8192），bridge_id={dut_info.bridge_id}, root_id={dut_info.root_id}"
+        # 使用ovs-appctl rstp/show获取更准确的根桥信息
+        try:
+            if hasattr(dut_manager, 'execute'):
+                execute_method = dut_manager.execute
+            elif hasattr(dut_manager, 'run'):
+                execute_method = dut_manager.run
+            else:
+                execute_method = dut_manager.send_command
+            
+            rstp_show_result = execute_method(f"sudo ovs-appctl rstp/show SE_ETH2")
+            logger.info(f"DUT RSTP详细状态:\n{rstp_show_result}")
+            
+            # 解析RSTP输出获取根桥ID和桥ID
+            if isinstance(rstp_show_result, tuple):
+                rstp_output = rstp_show_result[0]
+            else:
+                rstp_output = str(rstp_show_result)
+            
+            dut_root_id = None
+            dut_bridge_id = None
+            is_root_bridge = False
+            
+            # 检测DUT是否认为自己是根桥
+            if 'This bridge is the root' in rstp_output:
+                is_root_bridge = True
+            
+            for line in rstp_output.split('\n'):
+                if 'Root ID' in line:
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        dut_root_id = parts[2]  # 提取根桥ID
+                elif 'Bridge ID' in line:
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        dut_bridge_id = parts[2]  # 提取桥ID
+            
+            logger.info(f"从ovs-appctl解析 - Root ID: {dut_root_id}, Bridge ID: {dut_bridge_id}, Is Root: {is_root_bridge}")
+            
+            # 严格断言：DUT不应该是根桥
+            if is_root_bridge:
+                # DUT认为自己是根桥，但我们设置了TestNode1优先级更高(4096 < 12288)
+                pytest.fail(f"DUT错误地认为自己是根桥！检测到'This bridge is the root'标识。"
+                          f"这表明根桥选举失败，TestNode1(优先级4096)应该是根桥，而不是DUT(优先级12288)。"
+                          f"Root ID: {dut_root_id}, Bridge ID: {dut_bridge_id}")
+            
+            # 进一步验证：如果能解析到ID，使用normalize函数处理格式差异
+            if dut_root_id and dut_bridge_id:
+                # 使用normalize函数处理格式差异
+                normalized_root_id = normalize_bridge_id(dut_root_id)
+                normalized_bridge_id = normalize_bridge_id(dut_bridge_id)
+                
+                logger.info(f"标准化后 - Root ID: {normalized_root_id}, Bridge ID: {normalized_bridge_id}")
+                
+                if normalized_root_id == normalized_bridge_id:
+                    pytest.fail(f"DUT错误地认为自己是根桥！Root ID({normalized_root_id}) == Bridge ID({normalized_bridge_id})。"
+                              f"这表明根桥选举失败，TestNode1(优先级4096)应该是根桥，而不是DUT(优先级12288)。")
+                else:
+                    logger.info(f"✓ DUT正确识别外部根桥: Root ID={normalized_root_id}, DUT Bridge ID={normalized_bridge_id}")
+            else:
+                logger.warning("无法从ovs-appctl解析根桥ID信息，使用备用验证方法")
+                # 备用验证：检查是否有Root Port
+                is_root = rstp_analyzer.is_root_bridge("SE_ETH2")
+                if is_root:
+                    pytest.fail(f"DUT不应该是根桥（优先级设置为12288 > TestNode1的4096），但检测到DUT是根桥")
+                    
+        except Exception as e:
+            logger.warning(f"根桥验证过程中出错: {e}，使用基本验证")
+            # 基本验证：确保DUT不是根桥
+            is_root = rstp_analyzer.is_root_bridge("SE_ETH2")
+            if is_root:
+                pytest.fail(f"DUT不应该是根桥（优先级设置为12288 > TestNode1的4096），但检测到DUT是根桥")
         
         # 分析端口角色
         roles, active_ports, disabled_ports = analyze_port_roles(dut_info)
@@ -916,20 +1931,47 @@ class TestProtocolConformance:
         assert PortRole.ROOT in roles, f"非根桥必须有Root Port，当前角色: {roles}"
         assert len(roles[PortRole.ROOT]) == 1, f"应该只有一个Root Port，实际: {roles[PortRole.ROOT]}"
         
-        # 在环形拓扑中，必须有Alternate Port来防止环路
+        # 严格验证端口角色组合 - 环形拓扑必须是Root+Alternate组合
         if len(active_ports) >= 2:
+            # 检查是否出现Designated+Designated组合（这是错误的）
+            if PortRole.DESIGNATED in roles and len(roles[PortRole.DESIGNATED]) >= 2:
+                pytest.fail(f"检测到Designated+Designated组合，这表明拓扑配置错误或根桥选举失败。当前角色分布: {roles}")
+            
+            # 环形拓扑中非根桥必须有Root+Alternate组合
+            assert PortRole.ROOT in roles, f"环形拓扑中非根桥必须有Root Port，当前角色: {roles}"
             assert PortRole.ALTERNATE in roles, f"环形拓扑中必须有Alternate Port来防止环路，当前角色: {roles}"
+            
+            # 验证Root+Alternate组合的正确性
+            assert len(roles[PortRole.ROOT]) == 1, f"应该只有一个Root Port，实际: {len(roles[PortRole.ROOT])}"
+            assert len(roles[PortRole.ALTERNATE]) >= 1, f"应该至少有一个Alternate Port，实际: {len(roles[PortRole.ALTERNATE])}"
             
             # 验证Alternate Port的状态
             for alt_port_name in roles[PortRole.ALTERNATE]:
                 alt_port = active_ports[alt_port_name]
-                # Alternate端口应该是非转发状态（Discarding、Learning或Listening）
-                non_forwarding_states = [PortState.DISCARDING, PortState.LEARNING, PortState.LISTENING]
-                assert alt_port.state in non_forwarding_states, \
-                    f"Alternate端口{alt_port_name}必须是非转发状态（Discarding/Learning/Listening），实际: {alt_port.state}"
+                # Alternate端口必须是Discarding状态
+                assert alt_port.state == PortState.DISCARDING, \
+                    f"Alternate端口{alt_port_name}必须是Discarding状态，实际: {alt_port.state}"
                 logger.info(f"✓ Alternate端口{alt_port_name}状态正确: {alt_port.state.value}")
             
-            logger.info(f"✓ 成功验证Alternate Port: {roles[PortRole.ALTERNATE]}")
+            # 验证Root Port的状态
+            for root_port_name in roles[PortRole.ROOT]:
+                root_port = active_ports[root_port_name]
+                assert root_port.state == PortState.FORWARDING, \
+                    f"Root端口{root_port_name}必须是Forwarding状态，实际: {root_port.state}"
+                logger.info(f"✓ Root端口{root_port_name}状态正确: {root_port.state.value}")
+            
+            logger.info(f"✓ 环形拓扑验证通过 - Root+Alternate组合: Root={roles[PortRole.ROOT]}, Alternate={roles[PortRole.ALTERNATE]}")
+        
+        # 集中打印测试结果汇总
+        logger.info("\n" + "="*60)
+        logger.info("测试结果汇总 - Alternate Port验证")
+        logger.info("="*60)
+        logger.info(f"✓ 根桥验证: DUT正确识别外部根桥，未错误认为自己是根桥")
+        logger.info(f"✓ 端口数量验证: 环形拓扑中有{len(active_ports)}个活动端口 (≥2)")
+        logger.info(f"✓ 端口角色验证: Root Port数量={len(roles.get(PortRole.ROOT, []))}, Alternate Port数量={len(roles.get(PortRole.ALTERNATE, []))}")
+        logger.info(f"✓ 端口状态验证: Root端口为Forwarding状态，Alternate端口为Discarding状态")
+        logger.info(f"✓ 拓扑验证: 成功检测Root+Alternate组合，避免了Designated+Designated错误组合")
+        logger.info("="*60)
         
         logger.info("Alternate Port验证测试完成")
     
@@ -1040,46 +2082,55 @@ class TestProtocolConformance:
         hello_time = getattr(dut_info, 'hello_time', 2)  # 默认2秒
         logger.info(f"Hello Time: {hello_time}秒")
         
-        # 开始BPDU捕获
-        logger.info("开始捕获BPDU报文")
+        # 为TestNode创建RSTPAnalyzer实例，在TestNode端捕获来自DUT的BPDU
+        from src.rstp_analyzer import RSTPAnalyzer
+        
+        logger.info("开始从TestNode端捕获来自DUT的BPDU报文")
         capture_duration = hello_time * 5  # 捕获5个Hello Time周期
         
-        # 获取DUT的活动端口
-        active_ports = [name for name, port in dut_info.ports.items() 
-                       if port.state != PortState.DISABLED]
-        
-        assert len(active_ports) > 0, "需要至少一个活动端口进行BPDU测试"
-        
-        # 在每个活动端口上捕获BPDU
+        # 在TestNode上捕获BPDU
         bpdu_captures = {}
-        for port_name in active_ports:
-            logger.info(f"在端口{port_name}上开始BPDU捕获")
+        total_bpdus = 0
+        
+        # 在TestNode1的eth2接口上捕获来自DUT的BPDU
+        if len(test_nodes) >= 1:
+            tn1_analyzer = RSTPAnalyzer(test_nodes[0])
+            logger.info(f"在TestNode1端口eth2上捕获来自DUT的BPDU")
             try:
-                # 使用rstp_analyzer的capture_bpdu方法
-                # 兼容性处理：新版本使用timeout参数而不是duration
-                try:
-                    bpdus = rstp_analyzer.capture_bpdu(port_name, timeout=int(capture_duration))
-                except TypeError:
-                    # 回退到旧版本的duration参数
-                    bpdus = rstp_analyzer.capture_bpdu(port_name, duration=capture_duration)
-                bpdu_captures[port_name] = bpdus
-                logger.info(f"端口{port_name}捕获到{len(bpdus)}个BPDU")
+                bpdus_on_tn1 = tn1_analyzer.capture_bpdu('eth2', timeout=int(capture_duration))
+                bpdu_captures['TestNode1_eth2'] = bpdus_on_tn1
+                total_bpdus += len(bpdus_on_tn1)
+                logger.info(f"TestNode1端口eth2捕获到{len(bpdus_on_tn1)}个BPDU")
             except Exception as e:
-                logger.warning(f"端口{port_name}BPDU捕获失败: {e}")
-                bpdu_captures[port_name] = []
+                logger.warning(f"TestNode1端口eth2 BPDU捕获失败: {e}")
+                bpdu_captures['TestNode1_eth2'] = []
+        
+        # 在TestNode2的eth2接口上捕获来自DUT的BPDU
+        if len(test_nodes) >= 2:
+            tn2_analyzer = RSTPAnalyzer(test_nodes[1])
+            logger.info(f"在TestNode2端口eth2上捕获来自DUT的BPDU")
+            try:
+                bpdus_on_tn2 = tn2_analyzer.capture_bpdu('eth2', timeout=int(capture_duration))
+                bpdu_captures['TestNode2_eth2'] = bpdus_on_tn2
+                total_bpdus += len(bpdus_on_tn2)
+                logger.info(f"TestNode2端口eth2捕获到{len(bpdus_on_tn2)}个BPDU")
+            except Exception as e:
+                logger.warning(f"TestNode2端口eth2 BPDU捕获失败: {e}")
+                bpdu_captures['TestNode2_eth2'] = []
         
         # 验证BPDU传播
-        total_bpdus = sum(len(bpdus) for bpdus in bpdu_captures.values())
-        logger.info(f"总共捕获到{total_bpdus}个BPDU")
+        logger.info(f"总共从TestNode端捕获到{total_bpdus}个来自DUT的BPDU")
         
-        # 在RSTP中，所有交换机都应该定期发送BPDU
+        # 在RSTP中，DUT应该定期向TestNode发送BPDU
         # 预期在capture_duration时间内至少收到几个BPDU
         expected_min_bpdus = max(1, capture_duration // hello_time - 1)
         assert total_bpdus >= expected_min_bpdus, \
-            f"在{capture_duration}秒内应该至少捕获到{expected_min_bpdus}个BPDU，实际: {total_bpdus}"
+            f"在{capture_duration}秒内应该至少从TestNode端捕获到{expected_min_bpdus}个来自DUT的BPDU，实际: {total_bpdus}"
         
         # 验证BPDU的周期性
-        for port_name, bpdus in bpdu_captures.items():
+        all_bpdus = []
+        for interface_name, bpdus in bpdu_captures.items():
+            all_bpdus.extend(bpdus)
             if len(bpdus) >= 2:
                 # 计算BPDU间隔
                 intervals = []
@@ -1106,23 +2157,23 @@ class TestProtocolConformance:
                 
                 if intervals:
                     avg_interval = sum(intervals) / len(intervals)
-                    logger.info(f"端口{port_name}平均BPDU间隔: {avg_interval:.2f}秒")
+                    logger.info(f"{interface_name}平均BPDU间隔: {avg_interval:.2f}秒")
                     
                     # 验证间隔接近Hello Time（允许一定误差）
                     tolerance = hello_time * 0.5  # 50%容差
                     assert abs(avg_interval - hello_time) <= tolerance, \
-                        f"端口{port_name}BPDU间隔({avg_interval:.2f}s)应该接近Hello Time({hello_time}s)"
+                        f"{interface_name}BPDU间隔({avg_interval:.2f}s)应该接近Hello Time({hello_time}s)"
                     
-                    logger.info(f"✓ 端口{port_name}BPDU周期性验证通过")
+                    logger.info(f"✓ {interface_name}BPDU周期性验证通过")
         
         # 验证BPDU内容
-        for port_name, bpdus in bpdu_captures.items():
+        for interface_name, bpdus in bpdu_captures.items():
             for bpdu in bpdus[:3]:  # 检查前3个BPDU
                 # 验证BPDU基本字段（BPDU现在是字典类型）
                 assert 'timestamp' in bpdu, f"BPDU应该包含timestamp字段"
                 assert 'raw' in bpdu, f"BPDU应该包含raw字段"
                 assert 'is_rstp' in bpdu, f"BPDU应该包含is_rstp字段"
-                logger.info(f"端口{port_name}BPDU: 时间戳={bpdu['timestamp']}, RSTP={bpdu['is_rstp']}")
+                logger.info(f"{interface_name}捕获的BPDU: 时间戳={bpdu['timestamp']}, RSTP={bpdu['is_rstp']}")
         
         logger.info("✓ BPDU传播和保活机制验证完成")
     

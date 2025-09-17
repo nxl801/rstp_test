@@ -239,8 +239,22 @@ class TestAdvancedRSTPMechanisms:
                 # OVS配置边缘端口
                 dut_manager.execute_sudo(f"ovs-vsctl set port {edge_port} other-config:stp-port-type=edge")
             else:
-                # 传统Linux bridge配置
-                dut_manager.execute_sudo(f"brctl setportprio br0 {edge_port} 128")
+                # 检测RSTP实现方法并配置端口优先级
+                # 首先检查是否有mstpd
+                stdout, stderr, code = dut_manager.execute_sudo("which mstpctl")
+                if code == 0:
+                    # 使用mstpd配置，优先级范围0-15
+                    port_priority = 8  # 使用0-15范围内的值
+                    dut_manager.execute_sudo(f"mstpctl settreeportprio br0 {edge_port} 0 {port_priority}")
+                    logger.info(f"使用mstpctl设置端口{edge_port}优先级为{port_priority}")
+                else:
+                    # 传统brctl配置（如果支持）
+                    # 注意：brctl setportprio使用标准STP优先级范围(0-255)
+                    stdout, stderr, code = dut_manager.execute_sudo(f"brctl setportprio br0 {edge_port} 32")
+                    if code != 0:
+                        logger.warning(f"brctl setportprio命令失败: {stderr}")
+                        # 尝试其他方式配置边缘端口行为
+                        logger.info(f"跳过端口优先级设置，继续测试边缘端口行为")
             
             # 3. 测试立即转发特性（使用更安全的方法）
             logger.info("测试边缘端口立即转发特性")
